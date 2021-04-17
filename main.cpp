@@ -15,14 +15,14 @@
 #define TDE_MODE    PHASE_TDE
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-#define SAMLE_DELAY     2
+#define SAMLE_DELAY     3
 
 int main()
 {
     uint8_t status = 0;
     uint16_t RATE = 44100;		//sampling frequancy(Hz)
     uint16_t size = 2048;       //size of window/arrays (samples)
-    double window_size = static_cast<double>(size)/static_cast <double> (RATE);		//size of one window(sec)
+    double window_size = static_cast<double>(size)/static_cast<double>(RATE);		//size of one window(sec)
 
     double delta_t = 1/static_cast<double>(RATE);                   	//delta_t in sec
     double delay = 0;                               	//result of delay's calculations
@@ -42,18 +42,8 @@ int main()
 
     double          first_array_real[size],
                     second_array_real[size],
-                    result_array_real[size],
-		            TEST_ARRAY_1[UINT16_MAX],
-                    TEST_ARRAY_2[UINT16_MAX];
+                    result_array_real[size];
 
-    /*
-    for (uint16_t i = 0; i < UINT16_MAX; i++)
-    {
-        TEST_ARRAY_1[i] = double(rand()%2000 - 1000)/1000;
-        TEST_ARRAY_2[i] = TEST_ARRAY_1[i];
-    }
-    shift_array(UINT16_MAX, TEST_ARRAY_2, 400);
-    */
 
 
 # if (SIGNAL == WAV_SIGNAL)
@@ -78,7 +68,7 @@ int main()
         {
             ///*
             first_array_real[sample_num]     = file.samples[0][window_num*size + sample_num];
-            second_array_real[sample_num]    = file.samples[0][window_num*size + sample_num + SAMLE_DELAY];
+            second_array_real[sample_num]    = first_array_real[sample_num];
             //*
             /*
             first_array_real[j]     = TEST_ARRAY_1[i*size + j]
@@ -178,23 +168,12 @@ int main()
         if (i >= 0 && i < 4)
         {
             first_array_real[i] = 2;
-            //second_array_real[i] = 2;
+            second_array_real[i] = 2;
         }
         else
         {
             first_array_real[i] = 0;
-            //second_array_real[i] = 0;
-        }
-
-        if (i > 2 && i < 7)
-        {
-            second_array_real[i] = 2;
-            //first_array_real[i] = 2;
-        }
-        else
-        {
             second_array_real[i] = 0;
-            //first_array[i][REAL] = 0;
         }
     }
 
@@ -203,20 +182,20 @@ int main()
     for (uint16_t i = 0; i < size; i++)
     {
         first_array_real[i] = 	cos(1*2*M_PI*i/size)
-        						+cos(2*2*M_PI*i/size + 3*M_PI/4)
-								+cos(3*2*M_PI*i/size + 5*M_PI/6)
+        						//+cos(2*2*M_PI*i/size + 3*M_PI/4)
+								//+cos(3*2*M_PI*i/size + 5*M_PI/6)
 								;
         second_array_real[i] = 	cos(1*2*M_PI*i/size)
-        						+cos(2*2*M_PI*i/size + 3*M_PI/4)
-								+cos(3*2*M_PI*i/size + 5*M_PI/6)
+        						//+cos(2*2*M_PI*i/size + 3*M_PI/4)
+								//+cos(3*2*M_PI*i/size + 5*M_PI/6)
 								;
     }
-    shift_array(size, second_array_real, 3);
-
-    //print_real_arr(size, first_array_real);
-    //print_real_arr(size, second_array_real);
 
 #endif // SIGNAL
+
+    shift_array(size, second_array_real, SAMLE_DELAY);
+    //print_real_arr(size, first_array_real);
+    //print_real_arr(size, second_array_real);
 
 #if (TDE_MODE == CORRELATION_TDE)
 
@@ -233,6 +212,7 @@ int main()
 
 	/*==============PHASE ANALISIS================*/
     double phase_diff[size/2+1], time_diff[size/2+1];
+    unsigned int harmonicas_counter = 0;
     status = phase_delay_r2c(size, first_array_real, second_array_real, phase_diff);
     assert(status == 0);
     for(uint16_t i = 0; i < size/2+1; i++)
@@ -242,22 +222,30 @@ int main()
         if (i > 0)
         {
             frequancy = i/window_size;
-            if (frequancy > 3400 )
+            if (frequancy > 300 && frequancy < 700)
+            //if (frequancy > 0)
             {
-                break;
+                delay += time_diff[i];
+                ++harmonicas_counter;
             }
-            delay += time_diff[i];
+            else
+            {
+                time_diff[i] = 0;
+            }
         }
     }
     print_msg("TIME ARRAY:\n");
     print_real_arr(size/2+1, time_diff);
-    delay /= (double)(size/2+1);
-    printf("Time avg delay:\t%.10f\n", delay);
+    delay /= harmonicas_counter;
+    printf("Time avg delay:\n%.15f\n", delay);
     delay = 0;
+    harmonicas_counter = 0;
     //get_pos_spectre(size, first_array);
     //print_complex_arr(size, first_array_complex);
+
+
 #endif // TDE_MODE
-    print_msg("Finish\n");
+    printf("Finish");
 
     return 0;
 }

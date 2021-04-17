@@ -23,7 +23,7 @@ uint8_t complex_conj(   uint16_t        len,        //length of array       (in)
 // functions divides elements of array by given number
 uint8_t normalize_array(    uint16_t    len,        //ammount of elements of array  (in)
                             uint16_t    coef,       //normalisation coef            (in)
-                            fftw_complex* array)    //arrya                         (in/out)
+                            fftw_complex* array)    //array                         (in/out)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -273,6 +273,16 @@ uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of ele
     	//phase_diff[i] = asin(2*specter_1[i][IMAG]) - asin(2*specter_2[i][IMAG]);
     	//time_diff[i] = phase_diff[i]/window_size/i;
         phase_diff[i] = phase_spectrum_1[i] - phase_spectrum_2[i];
+        /*
+        if (phase_diff[i] > M_PI)
+        {
+            phase_diff[i] -= 2*M_PI;
+        }
+        if (phase_diff[i] < -M_PI)
+        {
+            phase_diff[i] += 2*M_PI;
+        }
+        //*/
 
     }
     print_msg("PHASE_DIFF\n");

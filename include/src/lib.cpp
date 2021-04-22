@@ -228,6 +228,58 @@ uint8_t get_phase_spectrum( fftw_complex*   fur,                // result of fft
     return SUCCESS;
 }
 
+
+uint8_t unwrap_angle(double* first_angle, double* second_angle)
+{
+    uint8_t status = 0;
+    if (first_angle == 0 || second_angle == 0)
+    {
+        return 1;
+    }
+    while (fabs(*first_angle - *second_angle) > M_PI)
+    {
+        if (*second_angle < *first_angle)
+        {
+            *second_angle += 2 * M_PI;
+        }
+        else
+        {
+            *second_angle -= 2 * M_PI;
+        }
+    }
+    return status;
+}
+
+uint8_t unwrap_phase(double* array, uint16_t size)
+{
+    uint8_t status = 0;
+    if (array == 0)     status |= 1;
+    if (size == 0)      status |= 2;
+    
+    for (uint16_t i = 0; i < (size / 2 + 1) - 1; ++i)
+    {
+        unwrap_angle(&array[i], &array[i+1]);
+    }
+    return status;
+}
+
+uint8_t get_ampl_spectrum(  fftw_complex*   fur,
+                            double*         ampl_spectrum,
+                            uint16_t        N)
+{
+    uint8_t status = 0;
+    if (0 == fur)               status |= 1;
+    if (0 == ampl_spectrum)     status |= 2;
+    if (0 == N)                 status |= 4;
+    if (status)                 return status;
+
+    for (uint i = 0; i < N/2 + 1; ++i)
+    {
+        ampl_spectrum[i] = sqrt( ( fur[i][REAL] * fur[i][REAL] ) + ( fur[i][IMAG] * fur[i][IMAG] ) );
+    }
+    return 0;
+}
+
 // this function returns array (via pointer) of phase harmonicas differences of two given real arrays 
 uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of elements in given arrays    (in)
                             double*         	first_array,        //first given array                     (in)
@@ -244,6 +296,8 @@ uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of ele
     fftw_complex    specter_2[len/2 + 1];
     double          phase_spectrum_1[len/2 + 1];
     double          phase_spectrum_2[len/2 + 1];
+    double          ampl_spectrum_1[len/2+1];
+    double          ampl_spectrum_2[len/2+1];
 
     print_msg("Real data direct fft of first signal\n");
     fftw_plan plan_1 = fftw_plan_dft_r2c_1d(len, first_array, specter_1, FFTW_ESTIMATE);
@@ -265,28 +319,17 @@ uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of ele
 
     get_phase_spectrum(specter_1, phase_spectrum_1, len);
     get_phase_spectrum(specter_2, phase_spectrum_2, len);
+    get_ampl_spectrum(specter_1, ampl_spectrum_1, len);
+    get_ampl_spectrum(specter_2, ampl_spectrum_2, len);
     for (uint16_t i = 0; i < len/2+1; i++)
     {
-        //phase_diff[i] = acos(2*specter_1[i][REAL]) - acos(2*specter_2[i][REAL]);
-    	//double a = asin(2*specter_1[i][IMAG];
-    	//double b = asin(2*specter_2[i][IMAG]);
-    	//phase_diff[i] = asin(2*specter_1[i][IMAG]) - asin(2*specter_2[i][IMAG]);
-    	//time_diff[i] = phase_diff[i]/window_size/i;
         phase_diff[i] = phase_spectrum_1[i] - phase_spectrum_2[i];
-        /*
-        if (phase_diff[i] > M_PI)
-        {
-            phase_diff[i] -= 2*M_PI;
-        }
-        if (phase_diff[i] < -M_PI)
-        {
-            phase_diff[i] += 2*M_PI;
-        }
-        //*/
-
     }
+    unwrap_phase(phase_diff, len);
     print_msg("PHASE_DIFF\n");
-    print_real_arr(len/2+1, phase_diff);
+    //print_real_arr(len/2+1, phase_diff);
+    for (int i = 0; i < len/2+1; ++i)
+        printf("%.15f\t%.15f\t%.15f\n", phase_diff[i], phase_spectrum_1[i], phase_spectrum_2[i]);
     
     //fftw_free(specter_1);
     //fftw_free(specter_2);

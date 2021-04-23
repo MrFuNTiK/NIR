@@ -280,6 +280,27 @@ uint8_t get_ampl_spectrum(  fftw_complex*   fur,
     return 0;
 }
 
+uint8_t linear_approx(  double*     x,
+                        double*     y,
+                        double*     a,
+                        uint16_t    N)
+{
+    uint8_t status = 0;
+    double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
+    double numerator = 0.0, denominator = 0.0;
+    for (uint16_t i = 0; i < N/2 + 1; ++N)
+    {
+        sum_x += x[i];
+        sum_x2 += x[i] * x[i];
+        sum_y += y[i];
+        sum_xy += x[i]*y[i];
+    }
+    numerator = (N/2 + 1) * sum_xy - sum_x * sum_y;
+    denominator = (N/2 + 1) * sum_x2 - sum_x * sum_x;
+    *a = numerator / denominator;
+    return status;
+}
+
 // this function returns array (via pointer) of phase harmonicas differences of two given real arrays 
 uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of elements in given arrays    (in)
                             double*         	first_array,        //first given array                     (in)

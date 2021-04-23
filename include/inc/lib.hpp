@@ -52,7 +52,7 @@
 # define pd_funk_NULL_REZ_ARR       1 << 2	        //pointer to result array is 0
 
 
-#define UNWRAPPED                   1 << 7
+# define UNWRAPPED                  1 << 7
 
 
 //MACROS FOR REAL AND IMAGINARY PARTS OF fftw_complex
@@ -144,5 +144,10 @@ uint8_t unwrap_angle(       double*         first_angle,
 
 uint8_t unwrap_phase(       double*         array,
                             uint16_t        size);
+
+uint8_t linear_approx(      double*         x,          // pointer to harmonicas array          (in)
+                            double*         y,          // pointer to mutual phase spectrum     (in)
+                            double*         a,          // pointer to valuse of TDE             (out)
+                            uint16_t        N);         // size of arrays
 
 #endif // _NIR_LIB_

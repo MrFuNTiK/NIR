@@ -15,7 +15,7 @@
 #define TDE_MODE    PHASE_TDE
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-#define SAMLE_DELAY     1
+#define SAMLE_DELAY     2
 
 int main()
 {
@@ -27,18 +27,6 @@ int main()
     double delta_t = 1/static_cast<double>(RATE);                   	//delta_t in sec
     double delay = 0;                               	//result of delay's calculations
 
-
-    /*
-    fftw_complex    input_array[size],      //signal array nad result array
-                    output_array[size],
-                    check[size];
-    //*/
-
-    /*
-    fftw_complex    first_array_complex[size],
-                    second_array_complex[size],
-                    result_array_complex[size];
-    */
 
     double          first_array_real[size],
                     second_array_real[size],
@@ -62,7 +50,7 @@ int main()
     
     
     //for (uint16_t window_num = 0; window_num < num_samples/size; ++window_num)
-    for (uint16_t window_num = 6; window_num < 7; ++window_num)
+    for (uint16_t window_num = 2; window_num < 3; ++window_num)
     {
         for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
         {

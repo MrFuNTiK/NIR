@@ -15,7 +15,7 @@
 #define TDE_MODE    PHASE_TDE
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-#define SAMLE_DELAY     2
+#define SAMLE_DELAY     -1
 
 int main()
 {
@@ -33,6 +33,7 @@ int main()
                     result_array_real[size];
 
 
+/*============================= SIGNAL GENERATION =============================*/
 
 #if (SIGNAL == WAV_SIGNAL)
     /*=================OPEN_WAV_FILE===================*/
@@ -93,6 +94,8 @@ int main()
     //shift_array(size, first_array_real, SAMLE_DELAY);
     print_real_arr(size, first_array_real);
     print_real_arr(size, second_array_real);
+
+/*============================ TDE ESTIMATION ============================*/
 
 #if (TDE_MODE == CORRELATION_TDE)
 

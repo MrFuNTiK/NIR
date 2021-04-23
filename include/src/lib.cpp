@@ -288,7 +288,7 @@ uint8_t linear_approx(  double*     x,
     uint8_t status = 0;
     double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
     double numerator = 0.0, denominator = 0.0;
-    for (uint16_t i = 0; i < N/2 + 1; ++N)
+    for (uint16_t i = 0; i < N; ++i)
     {
         sum_x += x[i];
         sum_x2 += x[i] * x[i];

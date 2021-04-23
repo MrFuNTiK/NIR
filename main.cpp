@@ -15,7 +15,7 @@
 #define TDE_MODE    PHASE_TDE
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-#define SAMLE_DELAY     2
+#define SAMLE_DELAY     -1
 
 int main()
 {
@@ -33,8 +33,9 @@ int main()
                     result_array_real[size];
 
 
+/*============================= SIGNAL GENERATION =============================*/
 
-# if (SIGNAL == WAV_SIGNAL)
+#if (SIGNAL == WAV_SIGNAL)
     /*=================OPEN_WAV_FILE===================*/
     ///*
     AudioFile<double> file;
@@ -58,7 +59,7 @@ int main()
             second_array_real[sample_num]    = file.samples[0][window_num*size + sample_num];
         }
     }
-# elif (SIGNAL == IMP_SIGNAL)
+#elif (SIGNAL == IMP_SIGNAL)
 
 
     ///*=======INITIALISE IMPULSE ARRAYS============*/
@@ -94,6 +95,8 @@ int main()
     print_real_arr(size, first_array_real);
     print_real_arr(size, second_array_real);
 
+/*============================ TDE ESTIMATION ============================*/
+
 #if (TDE_MODE == CORRELATION_TDE)
 
 	/*==============CORRELATION================*/
@@ -108,28 +111,33 @@ int main()
 #elif (TDE_MODE == PHASE_TDE)
 
 	/*==============PHASE ANALISIS================*/
-    double phase_diff[size/2+1], time_diff[size/2+1];
+    double phase_diff[size/2+1], time_diff[size/2+1], harmonicas[size/2+1];
+    double lin_delay = 0;
     status = phase_delay_r2c(size, first_array_real, second_array_real, phase_diff);
     assert(status == 0);
     for(uint16_t i = 0; i < size/2+1; i++)
     {
+        harmonicas[i] = 2 * M_PI*i/window_size;
         double frequancy = 0;
         time_diff[i] = phase_diff[i]*window_size/2/M_PI/i;
         if (i > 0)
         {
-            frequancy = i/window_size;
             delay += time_diff[i];
         }
     }
+    linear_approx(harmonicas, phase_diff, &lin_delay, size/2+1);
     print_msg("TIME ARRAY:\n");
     print_real_arr(size/2+1, time_diff);
     delay /= size/2;
     //delay = time_diff[1];
     printf("Time avg delay:\n%.15f\n", delay);
+    printf("Lin_Appr delay:\n%.15f\n", lin_delay);
     delay = 0;
     //get_pos_spectre(size, first_array);
     //print_complex_arr(size, first_array_complex);
+
 #endif // TDE_MODE
+
     printf("Finish");
     return 0;
 }

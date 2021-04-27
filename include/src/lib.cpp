@@ -231,10 +231,10 @@ uint8_t get_phase_spectrum( fftw_complex*   fur,                // result of fft
 
 uint8_t unwrap_angle(double* first_angle, double* second_angle)
 {
-    uint8_t status = 0;
+    uint8_t status = SUCCESS;
     if (first_angle == 0 || second_angle == 0)
     {
-        return 1;
+        return ua_funk_NULL_INPUT_PTR;
     }
     while (fabs(*first_angle - *second_angle) > M_PI)
     {
@@ -253,12 +253,13 @@ uint8_t unwrap_angle(double* first_angle, double* second_angle)
 uint8_t unwrap_phase(double* array, uint16_t size)
 {
     uint8_t status = 0;
-    if (array == 0)     status |= 1;
-    if (size == 0)      status |= 2;
+    if (array == 0)     status |= up_func_NULL_INPUT_ARR;
+    if (size == 0)      status |= up_func_NULL_ARR_LEN;
     
     for (uint16_t i = 0; i < (size / 2 + 1) - 1; ++i)
     {
-        unwrap_angle(&array[i], &array[i+1]);
+        status = unwrap_angle(&array[i], &array[i+1]);
+        if (status)     return up_func_UNABLE_UNWR_ANGLE;
     }
     return status;
 }
@@ -285,7 +286,13 @@ uint8_t linear_approx(  double*     x,
                         double*     a,
                         uint16_t    N)
 {
-    uint8_t status = 0;
+    uint8_t status = SUCCESS;
+    if (!x)         status |= la_func_NULL_HARMOINC_PTR;
+    if (!y)         status |= la_func_NULL_PHASE_PTR;
+    if (!a)         status |= la_func_NULL_COEF_PTR;
+    if (0 == N)     status |= la_func_NULL_SIZE;
+    if (status)     return status;
+    
     double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
     double numerator = 0.0, denominator = 0.0;
     for (uint16_t i = 0; i < N; ++i)

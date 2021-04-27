@@ -1,10 +1,7 @@
 #include "lib.hpp"
 #include <cstdint>
 
-// this function gets compex array and returns complex conjugate with input
-// new array will be written into input
-uint8_t complex_conj(   uint16_t        len,        //length of array       (in)
-                        fftw_complex*   array)      //ptr to array          (in/out)
+uint8_t complex_conj(uint16_t len, fftw_complex* array)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -20,10 +17,7 @@ uint8_t complex_conj(   uint16_t        len,        //length of array       (in)
     return SUCCESS;
 }
 
-// functions divides elements of array by given number
-uint8_t normalize_array(    uint16_t    len,        //ammount of elements of array  (in)
-                            uint16_t    coef,       //normalisation coef            (in)
-                            fftw_complex* array)    //array                         (in/out)
+uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -40,11 +34,7 @@ uint8_t normalize_array(    uint16_t    len,        //ammount of elements of arr
     return SUCCESS;
 }
 
-// this function returns correlation function for 2 real arrays
-uint8_t correlation(    uint16_t        len,        //size of arrays        (in)
-                        double*         first,      //first array/signal    (in)
-                        double*         second,     //second array/signal   (in)
-                        double*         rez)        //result array          (out)
+uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -111,10 +101,7 @@ uint8_t correlation(    uint16_t        len,        //size of arrays        (in)
     return SUCCESS;
 }
 
-// functiom swaps two given elements
-uint8_t swap(   void*       first,      //first data to swap        (in/out)
-                void*       second,     //second data to swap       (in/out)
-                uint8_t     size)       //size of data              (in)
+uint8_t swap(void* first, void* second, uint8_t size)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -136,10 +123,7 @@ uint8_t swap(   void*       first,      //first data to swap        (in/out)
     return SUCCESS;
 }
 
-// function shifts right given array by given number of elements
-uint8_t shift_array(    uint16_t    len,        //ammount of elements in array      (in)
-                        double*     array,      //array                             (in/out)
-                        uint16_t    shift)      //number of shift                   (in)
+uint8_t shift_array(uint16_t len, double* array, uint16_t shift)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -159,13 +143,7 @@ uint8_t shift_array(    uint16_t    len,        //ammount of elements in array  
     return SUCCESS;
 }
 
-// this function returns value of delay between two signals in seconds
-// delay is positive when the first signal outpaces the second one
-// delay is negative when the first signal lags behind the second one
-uint8_t correl_delay_value( uint16_t        len,        //size of array         (in)
-                            double*         array,      //pointer to array      (in)
-                            double          delta_t,    //delta_t in seconds    (in)
-                            double*         delay)      //value of delay        (out)
+uint8_t correl_delay_value(uint16_t len, double* array, double delta_t, double* delay)      //value of delay        (out)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;
@@ -191,10 +169,7 @@ uint8_t correl_delay_value( uint16_t        len,        //size of array         
     return SUCCESS;
 }
 
-// this function returns real phase spectrum for given complex fourier array
-uint8_t get_phase_spectrum( fftw_complex*   fur,                // result of fft                (in)
-                            double*         phase_spectrum,     // array for phase spectrum     (out)
-                            uint16_t        N)                  // size if signal (N/2 - 1)     (in)
+uint8_t get_phase_spectrum(fftw_complex* fur, double* phase_spectrum, uint16_t N)                  // size if signal (N/2 - 1)     (in)
 {
     for (uint i = 0; i < N/2 + 1; ++i)
     {
@@ -264,9 +239,7 @@ uint8_t unwrap_phase(double* array, uint16_t size)
     return status;
 }
 
-uint8_t get_ampl_spectrum(  fftw_complex*   fur,
-                            double*         ampl_spectrum,
-                            uint16_t        N)
+uint8_t get_ampl_spectrum(fftw_complex* fur, double* ampl_spectrum, uint16_t N)
 {
     uint8_t status = 0;
     if (0 == fur)               status |= 1;
@@ -281,10 +254,7 @@ uint8_t get_ampl_spectrum(  fftw_complex*   fur,
     return 0;
 }
 
-uint8_t linear_approx(  double*     x,
-                        double*     y,
-                        double*     a,
-                        uint16_t    N)
+uint8_t linear_approx(double* x, double* y, double* a, uint16_t N)
 {
     uint8_t status = SUCCESS;
     if (!x)         status |= la_func_NULL_HARMOINC_PTR;
@@ -308,11 +278,7 @@ uint8_t linear_approx(  double*     x,
     return status;
 }
 
-// this function returns array (via pointer) of phase harmonicas differences of two given real arrays 
-uint8_t phase_delay_r2c(    uint16_t        	len,                //amount of elements in given arrays    (in)
-                            double*         	first_array,        //first given array                     (in)
-                            double*         	second_array,       //second given array                    (in)
-			                double*		        phase_diff)         //array of phase differences            (out)
+uint8_t phase_delay_r2c(uint16_t len, double* first_array, double* second_array, double* phase_diff)
 {
     //DATA VALIDATION BLOCK:
     uint8_t status = SUCCESS;

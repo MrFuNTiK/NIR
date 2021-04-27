@@ -1,3 +1,6 @@
+///@file main.hpp
+///@brief This file contains definitions that a needed for conditional compilation
+
 #ifndef MAIN_HPP
 # define MAIN_HPP
 

@@ -1,12 +1,10 @@
 #include "fftw3.h"
 #include "cstdint"
-#include "stdlib.h"
 #include "cmath"
 #include "cstdio"
 #include "cassert"
 #include "cfloat"
-#include <vector>
-#include <complex>
+
 #include "AudioFile.h"
 #include "lib.hpp"
 #include "main.hpp"

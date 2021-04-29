@@ -4,10 +4,10 @@
 uint8_t complex_conj(uint16_t len, fftw_complex* array)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)       status |= cc_func_ZERO_LEN;
-    if (!array)         status |= cc_func_NULL_ARR_PTR;
-    if (status)         return status;
+    uint8_t errors = SUCCESS;
+    if (len == 0)       errors |= cc_func_ZERO_LEN;
+    if (!array)         errors |= cc_func_NULL_ARR_PTR;
+    if (errors)         return errors;
 
     //FUNCTION'S BODY:
     for (uint16_t i = 0; i < len; i++)
@@ -20,10 +20,10 @@ uint8_t complex_conj(uint16_t len, fftw_complex* array)
 uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)       status |= na_func_ZERO_LEN;
-    if (!array)         status |= na_func_NULL_ARR_PTR;
-    if (status)         return status;
+    uint8_t errors = SUCCESS;
+    if (len == 0)       errors |= na_func_ZERO_LEN;
+    if (!array)         errors |= na_func_NULL_ARR_PTR;
+    if (errors)         return errors;
 
     //FUNCTION'S BODY:
     for (uint16_t i = 0; i < len; i++)
@@ -37,11 +37,11 @@ uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array)
 uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)               status |= corr_func_ZERO_LEN;
-    if (!first || !second)      status |= corr_func_NULL_INPUT_ARR;
-    if (!rez)                   status |= corr_func_NULL_REZ_ARR;
-    if (status)                 return status;
+    uint8_t errors = SUCCESS;
+    if (len == 0)               errors |= corr_func_ZERO_LEN;
+    if (!first || !second)      errors |= corr_func_NULL_INPUT_ARR;
+    if (!rez)                   errors |= corr_func_NULL_REZ_ARR;
+    if (errors)                 return errors;
 
     //FUNCTION'S BODY:
 
@@ -104,10 +104,10 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
 uint8_t swap(void* first, void* second, uint8_t size)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if(!first || !second)       status |= swap_func_NULL_INPUT_PTR;
-    if(size == 0)               status |= swap_func_ZERO_LEN;
-    if(status)                  return status;
+    uint8_t errors = SUCCESS;
+    if(!first || !second)       errors |= swap_func_NULL_INPUT_PTR;
+    if(size == 0)               errors |= swap_func_ZERO_LEN;
+    if(errors)                  return errors;
 
 
     //FUNCTION'S BODY:
@@ -126,10 +126,10 @@ uint8_t swap(void* first, void* second, uint8_t size)
 uint8_t shift_array(uint16_t len, double* array, uint16_t shift)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)           status |= sa_func_ZERO_LEN;
-    if (!array)             status |= sa_func_NULL_INPUT_ARR;
-    if (status)             return status;
+    uint8_t errors = SUCCESS;
+    if (len == 0)           errors |= sa_func_ZERO_LEN;
+    if (!array)             errors |= sa_func_NULL_INPUT_ARR;
+    if (errors)             return errors;
 
 
     //FUCNTION'S BODY:
@@ -146,12 +146,12 @@ uint8_t shift_array(uint16_t len, double* array, uint16_t shift)
 uint8_t correl_delay_value(uint16_t len, double* array, double delta_t, double* delay)      //value of delay        (out)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)       status |= cdv_func_ZERO_LEN;
-    if (!array)         status |= cdv_func_NULL_INPUT_ARR;
-    if (delta_t == 0)   status |= cdv_func_ZERO_DELTA;
-    if (!delay)         status |= cdv_func_NULL_DELAY_PTR;
-    if (status)         return status;
+    uint8_t errors = SUCCESS;
+    if (len == 0)       errors |= cdv_func_ZERO_LEN;
+    if (!array)         errors |= cdv_func_NULL_INPUT_ARR;
+    if (delta_t == 0)   errors |= cdv_func_ZERO_DELTA;
+    if (!delay)         errors |= cdv_func_NULL_DELAY_PTR;
+    if (errors)         return errors;
 
 
     //FUNCTION'S BODY
@@ -169,9 +169,15 @@ uint8_t correl_delay_value(uint16_t len, double* array, double delta_t, double* 
     return SUCCESS;
 }
 
-uint8_t get_phase_spectrum(fftw_complex* fur, double* phase_spectrum, uint16_t N)                  // size if signal (N/2 - 1)     (in)
+uint8_t get_phase_spectrum(fftw_complex* fur, double* phase_spectrum, uint16_t N)
 {
-    for (uint i = 0; i < N/2 + 1; ++i)
+    uint8_t errors = SUCCESS;
+    if (fur == 0)               errors |= gps_func_NULL_FUR_ARR;
+    if (phase_spectrum == 0)    errors |= gps_func_NULL_PHASE_ARR;
+    if (N == 0)                 errors |= gps_func_ZERO_LEN;
+    if (errors)                 return errors;
+    
+    for (uint16_t i = 0; i < N/2 + 1; ++i)
     {
         if (fur[i][REAL] > 0)
         {
@@ -206,7 +212,7 @@ uint8_t get_phase_spectrum(fftw_complex* fur, double* phase_spectrum, uint16_t N
 
 uint8_t unwrap_angle(double* first_angle, double* second_angle)
 {
-    uint8_t status = SUCCESS;
+    uint8_t errors = SUCCESS;
     if (first_angle == 0 || second_angle == 0)
     {
         return ua_funk_NULL_INPUT_PTR;
@@ -222,30 +228,30 @@ uint8_t unwrap_angle(double* first_angle, double* second_angle)
             *second_angle -= 2 * M_PI;
         }
     }
-    return status;
+    return errors;
 }
 
 uint8_t unwrap_phase(double* array, uint16_t size)
 {
-    uint8_t status = 0;
-    if (array == 0)     status |= up_func_NULL_INPUT_ARR;
-    if (size == 0)      status |= up_func_NULL_ARR_LEN;
+    uint8_t errors = 0;
+    if (array == 0)     errors |= up_func_NULL_INPUT_ARR;
+    if (size == 0)      errors |= up_func_NULL_ARR_LEN;
     
     for (uint16_t i = 0; i < (size / 2 + 1) - 1; ++i)
     {
-        status = unwrap_angle(&array[i], &array[i+1]);
-        if (status)     return up_func_UNABLE_UNWR_ANGLE;
+        errors = unwrap_angle(&array[i], &array[i+1]);
+        if (errors)     return up_func_UNABLE_UNWR_ANGLE;
     }
-    return status;
+    return errors;
 }
 
 uint8_t get_ampl_spectrum(fftw_complex* fur, double* ampl_spectrum, uint16_t N)
 {
-    uint8_t status = 0;
-    if (0 == fur)               status |= 1;
-    if (0 == ampl_spectrum)     status |= 2;
-    if (0 == N)                 status |= 4;
-    if (status)                 return status;
+    uint8_t errors = 0;
+    if (0 == fur)               errors |= 1;
+    if (0 == ampl_spectrum)     errors |= 2;
+    if (0 == N)                 errors |= 4;
+    if (errors)                 return errors;
 
     for (uint i = 0; i < N/2 + 1; ++i)
     {
@@ -256,12 +262,12 @@ uint8_t get_ampl_spectrum(fftw_complex* fur, double* ampl_spectrum, uint16_t N)
 
 uint8_t linear_approx(double* x, double* y, double* a, uint16_t N)
 {
-    uint8_t status = SUCCESS;
-    if (!x)         status |= la_func_NULL_HARMOINC_PTR;
-    if (!y)         status |= la_func_NULL_PHASE_PTR;
-    if (!a)         status |= la_func_NULL_COEF_PTR;
-    if (0 == N)     status |= la_func_NULL_SIZE;
-    if (status)     return status;
+    uint8_t errors = SUCCESS;
+    if (!x)         errors |= la_func_NULL_HARMOINC_PTR;
+    if (!y)         errors |= la_func_NULL_PHASE_PTR;
+    if (!a)         errors |= la_func_NULL_COEF_PTR;
+    if (0 == N)     errors |= la_func_NULL_SIZE;
+    if (errors)     return errors;
     
     double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
     double numerator = 0.0, denominator = 0.0;
@@ -275,16 +281,16 @@ uint8_t linear_approx(double* x, double* y, double* a, uint16_t N)
     numerator = (N/2 + 1) * sum_xy - sum_x * sum_y;
     denominator = (N/2 + 1) * sum_x2 - sum_x * sum_x;
     *a = numerator / denominator;
-    return status;
+    return errors;
 }
 
 uint8_t phase_delay_r2c(uint16_t len, double* first_array, double* second_array, double* phase_diff)
 {
     //DATA VALIDATION BLOCK:
-    uint8_t status = SUCCESS;
-    if (len == 0)                           status |= pd_funk_ZERO_LEN;
-    if (!first_array || !second_array)      status |= pd_funk_NULL_INPUT_ARR;
-    if (!phase_diff)                        status |= pd_funk_NULL_REZ_ARR;
+    uint8_t errors = SUCCESS;
+    if (len == 0)                           errors |= pd_funk_ZERO_LEN;
+    if (!first_array || !second_array)      errors |= pd_funk_NULL_INPUT_ARR;
+    if (!phase_diff)                        errors |= pd_funk_NULL_REZ_ARR;
 
     fftw_complex    specter_1[len/2 + 1];
     fftw_complex    specter_2[len/2 + 1];

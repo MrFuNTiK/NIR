@@ -6,13 +6,10 @@
 
 # include "fftw3.h"
 # include "cstdint"
-# include "stdlib.h"
 # include "cmath"
 # include "cstdio"
 # include "cassert"
 # include "cfloat"
-# include <vector>
-# include <complex>
 
 # define DEBUG_ARR_REAL
 //# define DEBUG_ARR_IMAG
@@ -48,6 +45,11 @@
 # define cdv_func_NULL_INPUT_ARR    1 << 1	        // pointer to input array is 0
 # define cdv_func_ZERO_DELTA        1 << 2	        // sample time equals zero
 # define cdv_func_NULL_DELAY_PTR    1 << 3	        // pointer to result is 0
+
+// ERROR CODES FOR FUNCTION get_phase_spectrum()
+# define gps_func_NULL_FUR_ARR      1 << 0          // pointer to Fourier image is 0
+# define gps_func_NULL_PHASE_ARR    1 << 1          // pointer to phase spectrum is 0
+# define gps_func_ZERO_LEN          1 << 2          // length of arrays is 0
 
 // ERROR CODES FOR FUNCTION phase_delay()
 # define pd_funk_ZERO_LEN           1 << 0        	// length of input array equals zero

@@ -34,7 +34,6 @@
 
 // ERROR CODES FOR FUNCTION swap()
 # define swap_func_NULL_INPUT_PTR   1 << 0	        // pointer to at least one of input data to swap is 0
-# define swap_func_ZERO_LEN         1 << 1	        // size of data equals zero
 
 // ERROR CODES FOR FUNCTION shift_array()
 # define sa_func_ZERO_LEN           1 << 0	        // length of input array equals zero
@@ -131,9 +130,8 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez);
 ///@brief Functiom swaps two given elements.
 ///@param first[in/out]     Pointer to the first data to swap
 ///@param second[in/out]    Pointer to the secnod data to swap
-///@param size[in]          Size of data in bytes
 ///@return                  Error-success code
-uint8_t swap(void* first, void* second, uint8_t size);
+template <typename T> uint8_t swap(T* first, T* second);
 
 ///@brief Function shifts right given array by given number of elements
 ///@param len[in]       Ammount of elements in array

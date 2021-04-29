@@ -28,7 +28,7 @@ int main()
 
     double          first_array_real[size],
                     second_array_real[size],
-                    result_array_real[size];
+                    result_array_real[size];            // used for correlation TDE
 
 
 /*============================= SIGNAL GENERATION =============================*/
@@ -57,10 +57,9 @@ int main()
             second_array_real[sample_num]    = file.samples[0][window_num*size + sample_num];
         }
     }
+
 #elif (SIGNAL == IMP_SIGNAL)
-
-
-    ///*=======INITIALISE IMPULSE ARRAYS============*/
+    /*=======INITIALISE IMPULSE ARRAYS============*/
     for (uint16_t i = 0; i < size; i++)
     {
 

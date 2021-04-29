@@ -101,25 +101,18 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     return SUCCESS;
 }
 
-uint8_t swap(void* first, void* second, uint8_t size)
+template <typename T> uint8_t swap(T* first, T* second)
 {
     //DATA VALIDATION BLOCK:
     uint8_t errors = SUCCESS;
     if(!first || !second)       errors |= swap_func_NULL_INPUT_PTR;
-    if(size == 0)               errors |= swap_func_ZERO_LEN;
     if(errors)                  return errors;
 
 
     //FUNCTION'S BODY:
-    uint8_t* first_ = (uint8_t*)first;
-    uint8_t* second_ = (uint8_t*)second;
-    uint8_t tmp = 0;
-    for(uint8_t i = 0; i < size; i++)
-    {
-        tmp = first_[i];
-        first_[i] = second_[i];
-        second_[i] = tmp;
-    }
+    T temp(*first) ;
+    *first = *second ;
+    *second = temp ;
     return SUCCESS;
 }
 
@@ -137,7 +130,7 @@ uint8_t shift_array(uint16_t len, double* array, uint16_t shift)
     {
         for (uint16_t i = 0; i < len-1; i++)
         {
-            swap(&array[i], &array[i+1], sizeof(array[i]));
+            swap<double>(&array[i], &array[i+1]);
         }
     }
     return SUCCESS;
@@ -176,7 +169,7 @@ uint8_t get_phase_spectrum(fftw_complex* fur, double* phase_spectrum, uint16_t N
     if (phase_spectrum == 0)    errors |= gps_func_NULL_PHASE_ARR;
     if (N == 0)                 errors |= gps_func_ZERO_LEN;
     if (errors)                 return errors;
-    
+
     for (uint16_t i = 0; i < N/2 + 1; ++i)
     {
         if (fur[i][REAL] > 0)

@@ -10,7 +10,7 @@
 #include "main.hpp"
 
 #define SIGNAL      WAV_SIGNAL
-#define TDE_MODE    PHASE_TDE
+#define TDE_MODE    CORRELATION_TDE
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
 #define SAMLE_DELAY     -1
@@ -86,6 +86,9 @@ int main()
         second_array_real[i] = 	first_array_real[i];
     }
 
+#else
+    printf("Error choosing signal.\nAborting.\n");
+    return 0;
 #endif // SIGNAL
 
     //shift_array(size, first_array_real, SAMLE_DELAY);
@@ -133,8 +136,11 @@ int main()
     //get_pos_spectre(size, first_array);
     //print_complex_arr(size, first_array_complex);
 
+#else
+    printf("Error choosing TDE calculation method.\nAborting.\n");
+    return 0;
 #endif // TDE_MODE
 
-    printf("Finish");
+    printf("Finish\n");
     return 0;
 }

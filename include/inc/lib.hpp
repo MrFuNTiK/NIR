@@ -20,54 +20,54 @@
 # define SUCCESS                    0		        // universal success code for all functions
 
 // ERROR CODES FOR FUNCTION complex_conj()
-# define cc_func_ZERO_LEN           1 << 0	        // length of array equals zero
-# define cc_func_NULL_ARR_PTR       1 << 1	        // pointer to input array is 0
+# define cc_func_ZERO_LEN           ( 1 << 0 )	        // length of array equals zero
+# define cc_func_NULL_ARR_PTR       ( 1 << 1 )	        // pointer to input array is 0
 
 // ERROR CODES FOR FUNCTION normalize_array()
-# define na_func_ZERO_LEN           1 << 0        	// length of array equals zero
-# define na_func_NULL_ARR_PTR       1 << 1        	// pointer to input array is 0
+# define na_func_ZERO_LEN           ( 1 << 0 )        	// length of array equals zero
+# define na_func_NULL_ARR_PTR       ( 1 << 1 )        	// pointer to input array is 0
 
 // ERROR CODES FOR FUNCTION correlation()
-# define corr_func_ZERO_LEN         1 << 0        	// length of input arrays equals zero
-# define corr_func_NULL_INPUT_ARR   1 << 1        	// pointer to at least one of input arrays is 0
-# define corr_func_NULL_REZ_ARR     1 << 2        	// pointer to result array is 0
+# define corr_func_ZERO_LEN         ( 1 << 0 )        	// length of input arrays equals zero
+# define corr_func_NULL_INPUT_ARR   ( 1 << 1 )        	// pointer to at least one of input arrays is 0
+# define corr_func_NULL_REZ_ARR     ( 1 << 2 )        	// pointer to result array is 0
 
 // ERROR CODES FOR FUNCTION swap()
-# define swap_func_NULL_INPUT_PTR   1 << 0	        // pointer to at least one of input data to swap is 0
+# define swap_func_NULL_INPUT_PTR   ( 1 << 0 )	        // pointer to at least one of input data to swap is 0
 
 // ERROR CODES FOR FUNCTION shift_array()
-# define sa_func_ZERO_LEN           1 << 0	        // length of input array equals zero
-# define sa_func_NULL_INPUT_ARR     1 << 1	        // pointer to input array is 0
+# define sa_func_ZERO_LEN           ( 1 << 0 )	        // length of input array equals zero
+# define sa_func_NULL_INPUT_ARR     ( 1 << 1 )	        // pointer to input array is 0
 
 // ERROR CODE FOR FUNCTION correl_delay_value()
-# define cdv_func_ZERO_LEN          1 << 0	        // length of input array equals zero
-# define cdv_func_NULL_INPUT_ARR    1 << 1	        // pointer to input array is 0
-# define cdv_func_ZERO_DELTA        1 << 2	        // sample time equals zero
-# define cdv_func_NULL_DELAY_PTR    1 << 3	        // pointer to result is 0
+# define cdv_func_ZERO_LEN          ( 1 << 0 )	        // length of input array equals zero
+# define cdv_func_NULL_INPUT_ARR    ( 1 << 1 )	        // pointer to input array is 0
+# define cdv_func_ZERO_DELTA        ( 1 << 2 )	        // sample time equals zero
+# define cdv_func_NULL_DELAY_PTR    ( 1 << 3 )	        // pointer to result is 0
 
 // ERROR CODES FOR FUNCTION get_phase_spectrum()
-# define gps_func_NULL_FUR_ARR      1 << 0          // pointer to Fourier image is 0
-# define gps_func_NULL_PHASE_ARR    1 << 1          // pointer to phase spectrum is 0
-# define gps_func_ZERO_LEN          1 << 2          // length of arrays is 0
+# define gps_func_NULL_FUR_ARR      ( 1 << 0 )          // pointer to Fourier image is 0
+# define gps_func_NULL_PHASE_ARR    ( 1 << 1 )          // pointer to phase spectrum is 0
+# define gps_func_ZERO_LEN          ( 1 << 2 )          // length of arrays is 0
 
 // ERROR CODES FOR FUNCTION phase_delay()
-# define pd_funk_ZERO_LEN           1 << 0        	// length of input array equals zero
-# define pd_funk_NULL_INPUT_ARR     1 << 1	        // pointer to input array is 0
-# define pd_funk_NULL_REZ_ARR       1 << 2	        // pointer to result array is 0
+# define pd_funk_ZERO_LEN           ( 1 << 0 )        	// length of input array equals zero
+# define pd_funk_NULL_INPUT_ARR     ( 1 << 1 )	        // pointer to input array is 0
+# define pd_funk_NULL_REZ_ARR       ( 1 << 2 )	        // pointer to result array is 0
 
 // ERROR CODES FOR FUNCTION unwrap_angle()
-# define ua_funk_NULL_INPUT_PTR     1 << 0          // at least one of input pointers is 0
+# define ua_funk_NULL_INPUT_PTR     ( 1 << 0 )          // at least one of input pointers is 0
 
 // ERROR CODES FOR FUNCTION unwrap_phase()
-# define up_func_NULL_INPUT_ARR     1 << 0          // pointer to input array is 0
-# define up_func_NULL_ARR_LEN       1 << 1          // length of input array is 0
-# define up_func_UNABLE_UNWR_ANGLE  1 << 2          // unable to unwrap angle
+# define up_func_NULL_INPUT_ARR     ( 1 << 0 )          // pointer to input array is 0
+# define up_func_NULL_ARR_LEN       ( 1 << 1 )          // length of input array is 0
+# define up_func_UNABLE_UNWR_ANGLE  ( 1 << 2 )          // unable to unwrap angle
 
 // ERROR CODES FOR FUCNTION linear_approx()
-# define la_func_NULL_HARMOINC_PTR  1 << 0          // pointer to harmonicas array is 0 (x)
-# define la_func_NULL_PHASE_PTR     1 << 1          // pointer to phase spectrum array is 0 (y)
-# define la_func_NULL_COEF_PTR      1 << 2          // pointer to slope ratio coef (TDE value) is 0 (a)
-# define la_func_NULL_SIZE          1 << 3          // size of arrays is 0
+# define la_func_NULL_HARMOINC_PTR  ( 1 << 0 )          // pointer to harmonicas array is 0 (x)
+# define la_func_NULL_PHASE_PTR     ( 1 << 1 )          // pointer to phase spectrum array is 0 (y)
+# define la_func_NULL_COEF_PTR      ( 1 << 2 )          // pointer to slope ratio coef (TDE value) is 0 (a)
+# define la_func_NULL_SIZE          ( 1 << 3 )          // size of arrays is 0
 
 
 //MACROS FOR REAL AND IMAGINARY PARTS OF fftw_complex

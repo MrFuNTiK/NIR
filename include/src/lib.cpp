@@ -92,10 +92,6 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     fftw_destroy_plan(plan3);
     //print_real_arr(len, rez);                //print
 
-    //fftw_destroy_plan(plan1);
-    //fftw_destroy_plan(plan2);
-    //fftw_destroy_plan(plan3);
-
     //fftw_free(specter_1);
     //fftw_free(specter_2);
     return SUCCESS;
@@ -295,7 +291,7 @@ uint8_t phase_delay_r2c(uint16_t len, double* first_array, double* second_array,
     print_msg("Real data direct fft of first signal\n");
     fftw_plan plan_1 = fftw_plan_dft_r2c_1d(len, first_array, specter_1, FFTW_ESTIMATE);
     fftw_execute(plan_1);
-    //fftw_destroy_plan(plan_1);
+    fftw_destroy_plan(plan_1);
     print_complex_arr(len/2+1, specter_1);
     //normalize_array(len/2+1, len, specter_1);
     //print_complex_arr(len/2+1, specter_1);
@@ -305,7 +301,7 @@ uint8_t phase_delay_r2c(uint16_t len, double* first_array, double* second_array,
     print_msg("Real data direct fft of second signal\n");
     fftw_plan plan_2 = fftw_plan_dft_r2c_1d(len, second_array, specter_2, FFTW_ESTIMATE);
     fftw_execute(plan_2);
-    //fftw_destroy_plan(plan_2);
+    fftw_destroy_plan(plan_2);
     print_complex_arr(len/2+1, specter_2);
     //ormalize_array(len/2+1, len, specter_2);
     //print_complex_arr(len/2+1, specter_2);
@@ -322,13 +318,9 @@ uint8_t phase_delay_r2c(uint16_t len, double* first_array, double* second_array,
     print_msg("PHASE_DIFF\n");
     //print_real_arr(len/2+1, phase_diff);
     for (int i = 0; i < len/2+1; ++i)
+    {
         printf("%.15f\t%.15f\t%.15f\n", phase_diff[i], phase_spectrum_1[i], phase_spectrum_2[i]);
-    
-    //fftw_free(specter_1);
-    //fftw_free(specter_2);
-
-    //fftw_destroy_plan(plan_1);
-    //fftw_destroy_plan(plan_2);
+    }
 
     return SUCCESS;
 }

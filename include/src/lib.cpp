@@ -64,6 +64,8 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     ///*
     fftw_complex* specter_1 = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(len/2+1));
     fftw_complex* specter_2 = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(len/2+1));
+    double* ampl_spectrum_1 = new double[len/2+1];
+    double* ampl_spectrum_2 = new double[len/2+1];
     //*/
     /*
     fftw_complex specter_1[len/2+1];
@@ -78,6 +80,7 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     print_complex_arr(len/2+1, specter_1);              //print
     normalize_complex_array(len/2+1, len, specter_1);
     print_complex_arr(len/2+1, specter_1);              //print
+    get_ampl_spectrum(specter_1, ampl_spectrum_1, len);
 
 
     //get forward fft of second array and get complex conjugate with it
@@ -88,6 +91,7 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     //print_complex_arr(len/2+1, specter_2);              //print
     normalize_complex_array(len/2+1, len, specter_2);
     //print_complex_arr(len, specter_2);                  //print
+    get_ampl_spectrum(specter_2, ampl_spectrum_2, len);
     complex_conj(len/2+1, specter_2);
 
 
@@ -99,6 +103,12 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
         specter_1[i][IMAG] = specter_1[i][REAL]*specter_2[i][IMAG] + specter_1[i][IMAG]*specter_2[i][REAL];
     }
     print_complex_arr(len, specter_1);
+    //Division by amplitude specters (PHAT weightinh function)
+    for (uint16_t i = 0; i < len/2+1; ++i)
+    {
+        specter_1[i][REAL] /= ampl_spectrum_1[i] * ampl_spectrum_2[i];
+        specter_1[i][IMAG] /= ampl_spectrum_1[i] * ampl_spectrum_2[i];
+    }
 
 
     //backward fft of result array
@@ -110,6 +120,8 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
 
     //fftw_free(specter_1);
     //fftw_free(specter_2);
+    delete ampl_spectrum_1;
+    delete ampl_spectrum_2;
     return SUCCESS;
 }
 

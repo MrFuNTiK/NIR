@@ -9,14 +9,14 @@
 #include "lib.hpp"
 #include "main.hpp"
 
-#define SAMPLE_DELAY    5
+#define SAMPLE_DELAY    -1
 
 int main()
 {
     uint8_t status = 0;
     uint16_t RATE = 44100;		//sampling frequancy(Hz)
     uint16_t size = 2048;       //size of window/arrays (samples)
-    uint16_t WINDOW_AVRG_NUM = 6;
+    uint16_t WINDOW_AVRG_NUM = 1;
     double window_size = static_cast<double>(size)/static_cast<double>(RATE);		//size of one window(sec)
 
     double delta_t = 1/static_cast<double>(RATE);       //delta_t in sec
@@ -109,7 +109,7 @@ int main()
         status = correlation(size, first_array_real[0], second_array_real[0], result_array_real[0]);
         assert(status == SUCCESS);
         shift_array(size, result_array_real[0], size/2);
-        print_real_arr(size, result_array_real[0]);
+        //print_real_arr(size, result_array_real[0]);
     }
     for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
     {
@@ -119,6 +119,7 @@ int main()
         }
     }
     normalize_real_array(size, WINDOW_AVRG_NUM, result_array_real[0]);
+    print_real_arr(size, result_array_real[0]);
     status = correl_delay_value(size, result_array_real[0], delta_t, &delay);
     assert(status == 0);
     printf("Time delay:\t%.15f\n", delay);

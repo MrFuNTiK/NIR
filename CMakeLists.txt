@@ -4,8 +4,8 @@ project(FFTW)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_compile_definitions(SIGNAL=1) #1 - read from file, 2 - sin signal, 3 imp
-add_compile_definitions(SAMPLE_DELAY=-1)
+add_compile_definitions(SIGNAL=WAV_SIGNAL) #defenitions of signal's types in include/inc/main.hpp
+add_compile_definitions(WAV_FILE_PATH="/home/kirill/Study/NIR/4.wav")
 
 add_executable(phase ${CMAKE_SOURCE_DIR}/source/phase.cpp)
 target_compile_options(phase PRIVATE -I ${CMAKE_SOURCE_DIR}/include/inc)

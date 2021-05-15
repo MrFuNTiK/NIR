@@ -17,7 +17,7 @@ uint8_t complex_conj(uint16_t len, fftw_complex* array)
     return SUCCESS;
 }
 
-uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array)
+uint8_t normalize_complex_array(uint16_t len, uint16_t coef, fftw_complex* array)
 {
     //DATA VALIDATION BLOCK:
     uint8_t errors = SUCCESS;
@@ -30,6 +30,22 @@ uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array)
     {
         array[i][REAL] /= coef;
         array[i][IMAG] /= coef;
+    }
+    return SUCCESS;
+}
+
+uint8_t normalize_real_array(uint16_t len, uint16_t coef, double* array)
+{
+    //DATA VALIDATION BLOCK:
+    uint8_t errors = SUCCESS;
+    if (len == 0)       errors |= na_func_ZERO_LEN;
+    if (!array)         errors |= na_func_NULL_ARR_PTR;
+    if (errors)         return errors;
+
+    //FUNCTION'S BODY:
+    for (uint16_t i = 0; i < len; i++)
+    {
+        array[i] /= coef;
     }
     return SUCCESS;
 }
@@ -60,7 +76,7 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     fftw_execute(plan1);
     fftw_destroy_plan(plan1);
     print_complex_arr(len/2+1, specter_1);              //print
-    normalize_array(len/2+1, len, specter_1);
+    normalize_complex_array(len/2+1, len, specter_1);
     print_complex_arr(len/2+1, specter_1);              //print
 
 
@@ -70,7 +86,7 @@ uint8_t correlation(uint16_t len, double* first, double* second, double* rez)
     fftw_execute(plan2);
     fftw_destroy_plan(plan2);
     //print_complex_arr(len/2+1, specter_2);              //print
-    normalize_array(len/2+1, len, specter_2);
+    normalize_complex_array(len/2+1, len, specter_2);
     //print_complex_arr(len, specter_2);                  //print
     complex_conj(len/2+1, specter_2);
 

@@ -112,12 +112,19 @@
 ///@return              Error-success code
 uint8_t complex_conj(uint16_t len, fftw_complex* array);
 
-///@brief Functions divides elements of array by given number.
+///@brief Functions normalizes given complex array by given coefficient.
 ///@param len[in]       Ammount of elements of array
 ///@param coef[in]      Normalisation coef
 ///@param array[in/out] Pointer to array to normalize
 ///@return              Error-success code
-uint8_t normalize_array(uint16_t len, uint16_t coef, fftw_complex* array); 
+uint8_t normalize_complex_array(uint16_t len, uint16_t coef, fftw_complex* array); 
+
+///@brief Functions normalizes given real array by given coefficient.
+///@param len[in]       Ammount of elements of array
+///@param coef[in]      Normalisation coef
+///@param array[in/out] Pointer to array to normalize
+///@return              Error-success code
+uint8_t normalize_real_array(uint16_t len, uint16_t coef, double* array);
 
 ///@brief This function returns correlation function for 2 real arrays.
 ///@param len[in]       Size of arrays

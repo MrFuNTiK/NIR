@@ -9,9 +9,6 @@
 #include "lib.hpp"
 #include "main.hpp"
 
-#define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-//#define SAMPLE_DELAY     -1
-
 int main()
 {
     uint8_t status = 0;
@@ -19,7 +16,7 @@ int main()
     uint16_t size = 2048;       //size of window/arrays (samples)
     double window_size = static_cast<double>(size)/static_cast<double>(RATE);		//size of one window(sec)
 
-    double delta_t = 1/static_cast<double>(RATE);                   	//delta_t in sec
+    double delta_t = 1/static_cast<double>(RATE);       //delta_t in sec
     double delay = 0;                               	//result of delay's calculations
 
 

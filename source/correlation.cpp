@@ -9,25 +9,33 @@
 #include "lib.hpp"
 #include "main.hpp"
 
-//#define SIGNAL      WAV_SIGNAL
-
-#define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-//#define SAMPLE_DELAY     -1
+#define SAMPLE_DELAY    5
 
 int main()
 {
     uint8_t status = 0;
     uint16_t RATE = 44100;		//sampling frequancy(Hz)
     uint16_t size = 2048;       //size of window/arrays (samples)
+    uint16_t WINDOW_AVRG_NUM = 6;
     double window_size = static_cast<double>(size)/static_cast<double>(RATE);		//size of one window(sec)
 
-    double delta_t = 1/static_cast<double>(RATE);                   	//delta_t in sec
-    double delay = 0;                               	//result of delay's calculations
+    double delta_t = 1/static_cast<double>(RATE);       //delta_t in sec
+    double delay = 0;                                   //result of delay's calculations
 
+    // [WINDOW_AWRG_NUM][size]
+    double          **first_array_real,
+                    **second_array_real,
+                    **result_array_real;            // used for correlation TDE
 
-    double          first_array_real[size],
-                    second_array_real[size],
-                    result_array_real[size];            // used for correlation TDE
+    first_array_real = new double*[WINDOW_AVRG_NUM];
+    second_array_real = new double*[WINDOW_AVRG_NUM];
+    result_array_real = new double*[WINDOW_AVRG_NUM];
+    for (int i = 0; i < WINDOW_AVRG_NUM; ++i)
+    {
+        first_array_real[i] = new double[size];
+        second_array_real[i] = new double[size];
+        result_array_real[i] = new double[size];
+    }
 
 
 /*============================= SIGNAL GENERATION =============================*/
@@ -48,12 +56,12 @@ int main()
     
     
     //for (uint16_t window_num = 0; window_num < num_samples/size; ++window_num)
-    for (uint16_t window_num = 2; window_num < 3; ++window_num)
+    for (uint16_t window_num = 2; window_num < 2 + WINDOW_AVRG_NUM; ++window_num)
     {
         for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
         {
-            first_array_real[sample_num]     = file.samples[0][window_num*size + sample_num + SAMPLE_DELAY];
-            second_array_real[sample_num]    = file.samples[0][window_num*size + sample_num];
+            first_array_real[window_num-2][sample_num]     = file.samples[0][window_num*size + sample_num + SAMPLE_DELAY];
+            second_array_real[window_num-2][sample_num]    = file.samples[0][window_num*size + sample_num];
         }
     }
 
@@ -91,20 +99,43 @@ int main()
 #endif // SIGNAL
 
     //shift_array(size, first_array_real, SAMPLE_DELAY);
-    print_real_arr(size, first_array_real);
-    print_real_arr(size, second_array_real);
+    print_real_arr(size, first_array_real[0]);
+    print_real_arr(size, second_array_real[0]);
 
 /*============================ TDE ESTIMATION ============================*/
 
-    status = correlation(size, first_array_real, second_array_real, result_array_real);
-    assert(status == SUCCESS);
-    shift_array(size, result_array_real, size/2);
-    print_real_arr(size, result_array_real);
-    status = correl_delay_value(size, result_array_real, delta_t, &delay);
+    for (uint16_t window_num = 0; window_num < WINDOW_AVRG_NUM; ++window_num)
+    {
+        status = correlation(size, first_array_real[0], second_array_real[0], result_array_real[0]);
+        assert(status == SUCCESS);
+        shift_array(size, result_array_real[0], size/2);
+        print_real_arr(size, result_array_real[0]);
+    }
+    for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
+    {
+        for (uint16_t window_num = 0; window_num < WINDOW_AVRG_NUM; ++window_num)
+        {
+            result_array_real[0][sample_num] += result_array_real[window_num][sample_num];
+        }
+    }
+    normalize_real_array(size, WINDOW_AVRG_NUM, result_array_real[0]);
+    status = correl_delay_value(size, result_array_real[0], delta_t, &delay);
     assert(status == 0);
     printf("Time delay:\t%.15f\n", delay);
 
 
+/*================================ EXITING ===============================*/
+
+
+    for (int i = 0; i < WINDOW_AVRG_NUM; ++i)
+    {
+        delete first_array_real[i];
+        delete second_array_real[i];
+        delete result_array_real[i];
+    }
+    delete first_array_real;
+    delete second_array_real;
+    delete result_array_real;
 
     printf("Finish\n");
     return 0;

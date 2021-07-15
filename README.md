@@ -5,7 +5,7 @@
 Main purpose of these programms is researching and  comparison of GCC(BCC) and GPS(BPS) TDE methods in relations to voice.
 
 # Source code structure
-- core - contains so,e specific functions, eg. calculating GPS and amplitude spectrums from fourier images.
+- core - contains some specific functions, eg. calculating GPS and amplitude spectrums from fourier images.
 - fft - object-wrapper for fftw3 library that provides direct and reverse fourier transform.
 - GCC - class that implements TDE via GCC(BPS) method.
 - GPS - class that implements TDE via GPS(BPS) method.

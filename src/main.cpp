@@ -2,10 +2,11 @@
 #include <iostream>
 
 #include "AudioFile.h"
+#include "main.hpp"
 #include "GPS_class.hpp"
+#include "GCC_class.hpp"
 
-#define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
-#define DELAY           -5
+#define TDE_MODE    GCC_TDE
 
 int main()
 {
@@ -13,6 +14,7 @@ int main()
     uint16_t avrg_window_num = 1;
     uint16_t size = 1 << 10;
     double tde = 0;
+    double true_delay = SAMPLE_DELAY / static_cast<double>(sample_rate);
 
     auto first_array = new double*[avrg_window_num];
     auto second_array = new double*[avrg_window_num];
@@ -31,18 +33,21 @@ int main()
     {
         for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
         {
-            first_array[window_num-3][sample_num]       = file.samples[0][window_num*size + sample_num + DELAY];
+            first_array[window_num-3][sample_num]       = file.samples[0][window_num*size + sample_num + SAMPLE_DELAY];
             second_array[window_num-3][sample_num]      = file.samples[0][window_num*size + sample_num];
         }
     }
 
-
-    GPS phase_tde(avrg_window_num, size, sample_rate);
-    phase_tde.set_arrays(first_array, second_array);
-    phase_tde.execute();
-    phase_tde.calculate_tde();
-    tde = phase_tde.get_tde();
-    std::cout << "PHASE_TDE:    " << tde << std::endl;
+#if(TDE_MODE == GCC_TDE)
+    GCC tde_calc(avrg_window_num, size, sample_rate);
+#elif(TDE_MODE == GPS_TDE)
+    GPS tde_calc(avrg_window_num, size, sample_rate);
+#endif
+    tde_calc.set_arrays(first_array, second_array);
+    tde_calc.execute();
+    tde_calc.calculate_tde();
+    tde = tde_calc.get_tde();
+    std::cout << "TDE:    " << tde << std::endl;
 
 
     for (uint16_t i = 0; i < avrg_window_num; ++i)

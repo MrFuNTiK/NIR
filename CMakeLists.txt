@@ -1,23 +1,36 @@
+project(CORRELATION)
+
 cmake_minimum_required(VERSION 3.16)
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-project(FFTW)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+#add_compile_definitions(WAV_FILE_PATH="/home/kirill/Study/NIR/4.wav")
 
-set(CMAKE_CXX_STANDARD 11)
+#find_library(FFTW3 fftw3.a)
+#message(STATUS ${FFTW3})
 
-add_compile_definitions(SIGNAL=WAV_SIGNAL) #defenitions of signal's types in include/inc/main.hpp
-add_compile_definitions(WAV_FILE_PATH="/home/kirill/Study/NIR/4.wav")
+add_library(core OBJECT ${CMAKE_SOURCE_DIR}/core/core.cpp)
 
-add_executable(phase ${CMAKE_SOURCE_DIR}/source/phase.cpp)
-target_compile_options(phase PRIVATE -I ${CMAKE_SOURCE_DIR}/include/inc)
+add_library(fft OBJECT
+            ${CMAKE_SOURCE_DIR}/fft/fft_forward_class.cpp
+            ${CMAKE_SOURCE_DIR}/fft/fft_reverse_class.cpp)
+target_include_directories(fft PRIVATE ${CMAKE_SOURCE_DIR}/core)
+#target_link_libraries(fft fftw3)
 
-add_executable(correlation ${CMAKE_SOURCE_DIR}/source/correlation.cpp)
-target_compile_options(correlation PRIVATE -I ${CMAKE_SOURCE_DIR}/include/inc)
+add_library(correlation_lib OBJECT
+            ${CMAKE_SOURCE_DIR}/correlation/correlation_class.cpp)
+target_include_directories(correlation_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
+                                                    ${CMAKE_SOURCE_DIR}/core)
 
-add_library(lib
-        OBJECT
-        ${CMAKE_SOURCE_DIR}/include/inc/lib.hpp
-        ${CMAKE_SOURCE_DIR}/include/src/lib.cpp)
-target_compile_options(lib PRIVATE -I ${CMAKE_SOURCE_DIR}/include/inc)
+add_library(phase_lib OBJECT
+            ${CMAKE_SOURCE_DIR}/phase/phase_class.cpp)
+target_include_directories(phase_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
+                                                ${CMAKE_SOURCE_DIR}/core)
 
-target_link_libraries(phase lib fftw3)
-target_link_libraries(correlation lib fftw3)
+#target_link_libraries(correlation_lib fft)
+
+add_executable(correlation ${CMAKE_SOURCE_DIR}/src/correlation.cpp)
+target_include_directories(correlation PRIVATE ${CMAKE_SOURCE_DIR}/correlation)
+target_link_libraries(correlation correlation_lib core fft fftw3)
+
+add_executable(phase ${CMAKE_SOURCE_DIR}/src/phase.cpp)
+target_include_directories(phase PRIVATE ${CMAKE_SOURCE_DIR}/phase)
+target_link_libraries(phase phase_lib core fft fftw3)

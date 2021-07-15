@@ -1,4 +1,5 @@
 build/
+bin/
 *.txt
 *.sh
 .vscode

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "AudioFile.h"
-#include "phase_class.hpp"
+#include "GPS_class.hpp"
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
 #define DELAY           -5
@@ -37,7 +37,7 @@ int main()
     }
 
 
-    phase phase_tde(avrg_window_num, size, sample_rate);
+    GPS phase_tde(avrg_window_num, size, sample_rate);
     phase_tde.set_arrays(first_array, second_array);
     phase_tde.execute();
     phase_tde.calculate_tde();

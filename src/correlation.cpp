@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "AudioFile.h"
-#include "correllation_class.hpp"
+#include "GCC_class.hpp"
 
 #define WAV_FILE_PATH   "/home/kirill/Study/NIR/4.wav"
 #define DELAY           -5
@@ -44,7 +44,7 @@ int main()
     }
      //*/
 
-    correlation corr_tde(avrg_window_num, size, sample_rate);
+    GCC corr_tde(avrg_window_num, size, sample_rate);
     corr_tde.set_arrays(first_array, second_array);
     corr_tde.execute();
     corr_tde.calculate_tde();

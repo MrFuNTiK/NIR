@@ -4,8 +4,6 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 #add_compile_definitions(WAV_FILE_PATH="/home/kirill/Study/NIR/4.wav")
 
-#find_library(FFTW3 fftw3.a)
-#message(STATUS ${FFTW3})
 
 add_library(core OBJECT ${CMAKE_SOURCE_DIR}/core/core.cpp)
 
@@ -15,22 +13,20 @@ add_library(fft OBJECT
 target_include_directories(fft PRIVATE ${CMAKE_SOURCE_DIR}/core)
 #target_link_libraries(fft fftw3)
 
-add_library(correlation_lib OBJECT
-            ${CMAKE_SOURCE_DIR}/correlation/correlation_class.cpp)
-target_include_directories(correlation_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
-                                                    ${CMAKE_SOURCE_DIR}/core)
+add_library(GCC_lib OBJECT
+            ${CMAKE_SOURCE_DIR}/GCC/GCC_class.cpp)
+target_include_directories(GCC_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
+                                            ${CMAKE_SOURCE_DIR}/core)
 
-add_library(phase_lib OBJECT
-            ${CMAKE_SOURCE_DIR}/phase/phase_class.cpp)
-target_include_directories(phase_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
+add_library(GPS_lib OBJECT
+            ${CMAKE_SOURCE_DIR}/GPS/GPS_class.cpp)
+target_include_directories(GPS_lib PRIVATE  ${CMAKE_SOURCE_DIR}/fft
                                                 ${CMAKE_SOURCE_DIR}/core)
 
-#target_link_libraries(correlation_lib fft)
-
 add_executable(correlation ${CMAKE_SOURCE_DIR}/src/correlation.cpp)
-target_include_directories(correlation PRIVATE ${CMAKE_SOURCE_DIR}/correlation)
-target_link_libraries(correlation correlation_lib core fft fftw3)
+target_include_directories(correlation PRIVATE ${CMAKE_SOURCE_DIR}/GCC)
+target_link_libraries(correlation GCC_lib core fft fftw3)
 
 add_executable(phase ${CMAKE_SOURCE_DIR}/src/phase.cpp)
-target_include_directories(phase PRIVATE ${CMAKE_SOURCE_DIR}/phase)
-target_link_libraries(phase phase_lib core fft fftw3)
+target_include_directories(phase PRIVATE ${CMAKE_SOURCE_DIR}/GPS)
+target_link_libraries(phase GPS_lib core fft fftw3)

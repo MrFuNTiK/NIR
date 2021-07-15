@@ -4,12 +4,12 @@
 #include <iostream>
 #include <cmath>
 
-#include "phase_class.hpp"
+#include "GPS_class.hpp"
 #include "fft_forward_class.hpp"
 #include "fft_reverse_class.hpp"
 #include "core.hpp"
 
-phase::phase(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
+GPS::GPS(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
     avrg_win_num(_avrg_win_num),
     size(_size),
     sample_rate(_rate),
@@ -32,7 +32,7 @@ phase::phase(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
     cross_phase_spectrum = new double[size/2+1];
 }
 
-phase::~phase()
+GPS::~GPS()
 {
     for (uint16_t i = 0; i < avrg_win_num; ++i)
     {
@@ -50,7 +50,7 @@ phase::~phase()
     delete[] cross_phase_spectrum;
 }
 
-void phase::set_arrays(double **_first, double **_second)
+void GPS::set_arrays(double **_first, double **_second)
 {
     for (uint16_t i = 0; i < avrg_win_num; ++i)
     {
@@ -59,7 +59,7 @@ void phase::set_arrays(double **_first, double **_second)
     }
 }
 
-void phase::get_mul()
+void GPS::get_mul()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -68,7 +68,7 @@ void phase::get_mul()
     }
 }
 
-void phase::clear_sum()
+void GPS::clear_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -77,7 +77,7 @@ void phase::clear_sum()
     }
 }
 
-void phase::add_mul_to_sum()
+void GPS::add_mul_to_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -86,7 +86,7 @@ void phase::add_mul_to_sum()
     }
 }
 
-void phase::normalize_sum()
+void GPS::normalize_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -95,7 +95,7 @@ void phase::normalize_sum()
     }
 }
 
-void phase::execute()
+void GPS::execute()
 {
     fft_forward forward_1(size);
     fft_forward forward_2(size);
@@ -124,7 +124,7 @@ void phase::execute()
     clear_sum();
 }
 
-void phase::calculate_tde()
+void GPS::calculate_tde()
 {
     double numerator_sum = 0, divider_sum = 0;
     //std::cout << "HARMONICAS\tCROSS_PHASE\n";
@@ -143,7 +143,7 @@ void phase::calculate_tde()
     tde = -1 * numerator_sum / divider_sum;
 }
 
-double phase::get_tde()
+double GPS::get_tde()
 {
     return tde;
 }

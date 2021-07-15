@@ -1,22 +1,19 @@
-#ifndef CORRELATION_CLASS_HPP
-# define CORRELATION_CLASS_HPP
+#ifndef CORRELATION_PHASE_CLASS_H
+#define CORRELATION_PHASE_CLASS_H
 
-# include <fftw3.h>
-# include <cstdint>
+#include <fftw3.h>
+#include <cstdint>
 
-//#include "tde_class.hpp"
-//#include "../tde/tde_class.hpp"
-//#include "../tde/tde_class.hpp"
+#define BOTTOM_FREQ_BOUND   300
+#define UPPER_FREQ_BOUND    3400
 
-
-class correlation //: public tde_class
+class GPS
 {
 public:
-    correlation(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate);
-    ~correlation();
+    GPS(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate);
+    ~GPS();
 
     void set_arrays(double** _first, double** _second);
-    void get_corr_func(double* _corr);
     void execute();
     void calculate_tde();
     double get_tde();
@@ -28,19 +25,18 @@ private:
     double tde;
     double** first_array;
     double** second_array;
-    double* corr_func;
 
     fftw_complex* fur_1;
     fftw_complex* fur_2;
     fftw_complex* fur_1_2;
     fftw_complex* fur_1_2_sum;
 
-private:
+    double* cross_phase_spectrum;
+
     void get_mul();
     void clear_sum();
     void add_mul_to_sum();
     void normalize_sum();
-    void shift_corr_func();
 };
 
-#endif // CORRELATION_CLASS_HPP
+#endif //CORRELATION_PHASE_CLASS_H

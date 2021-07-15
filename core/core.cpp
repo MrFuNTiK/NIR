@@ -2,7 +2,7 @@
 #include <cmath>
 
 #include "core.hpp"
-#include "../phase/phase_class.hpp"
+//#include "GPS_class.hpp"
 
 
 void get_phase_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum)

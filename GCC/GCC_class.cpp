@@ -3,13 +3,13 @@
 #include <cstring>
 #include <iostream>
 
-#include "correllation_class.hpp"
+#include "GCC_class.hpp"
 #include "fft_forward_class.hpp"
 #include "fft_reverse_class.hpp"
 #include "core.hpp"
 
 
-correlation::correlation(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
+GCC::GCC(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
     avrg_win_num(_avrg_win_num),
     size(_size),
     sample_rate(_rate),
@@ -33,7 +33,7 @@ correlation::correlation(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate)
     clear_sum();
 }
 
-correlation::~correlation()
+GCC::~GCC()
 {
     for (uint16_t i = 0; i < avrg_win_num; ++i)
     {
@@ -51,7 +51,7 @@ correlation::~correlation()
     fftw_free(fur_1_2_sum);
 }
 
-void correlation::set_arrays(double** _first, double** _second)
+void GCC::set_arrays(double** _first, double** _second)
 {
     for (uint16_t i = 0; i < avrg_win_num; ++i)
     {
@@ -60,12 +60,12 @@ void correlation::set_arrays(double** _first, double** _second)
     }
 }
 
-void correlation::get_corr_func(double* _corr)
+void GCC::get_corr_func(double* _corr)
 {
     memcpy(_corr, corr_func, sizeof(double)*size);
 }
 
-void correlation::get_mul()
+void GCC::get_mul()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -74,7 +74,7 @@ void correlation::get_mul()
     }
 }
 
-void correlation::clear_sum()
+void GCC::clear_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -83,7 +83,7 @@ void correlation::clear_sum()
     }
 }
 
-void correlation::add_mul_to_sum()
+void GCC::add_mul_to_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -92,7 +92,7 @@ void correlation::add_mul_to_sum()
     }
 }
 
-void correlation::normalize_sum()
+void GCC::normalize_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -101,7 +101,7 @@ void correlation::normalize_sum()
     }
 }
 
-void correlation::shift_corr_func()
+void GCC::shift_corr_func()
 {
     for (uint16_t i = 0; i < size/2; ++i)
     {
@@ -112,7 +112,7 @@ void correlation::shift_corr_func()
     }
 }
 
-void correlation::execute()
+void GCC::execute()
 {
     fft_forward forward_1(size);
     fft_forward forward_2(size);
@@ -143,7 +143,7 @@ void correlation::execute()
     clear_sum();
 }
 
-void correlation::calculate_tde()
+void GCC::calculate_tde()
 {
     double corr_max = corr_func[0];
     int16_t num_max = 0;
@@ -159,7 +159,7 @@ void correlation::calculate_tde()
     tde = num_max/static_cast<double>(sample_rate);
 }
 
-double correlation::get_tde()
+double GCC::get_tde()
 {
     return tde;
 }

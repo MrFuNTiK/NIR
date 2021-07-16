@@ -7,8 +7,9 @@ Main purpose of these programms is researching and  comparison of GCC(BCC) and G
 # Source code structure
 - core - contains some specific functions, eg. calculating GPS and amplitude spectrums from fourier images.
 - fft - object-wrapper for fftw3 library that provides direct and reverse fourier transform.
-- GCC - class that implements TDE via GCC(BPS) method.
-- GPS - class that implements TDE via GPS(BPS) method.
+- TDE - parent class with public TDE intarface.
+- GCC - child class of TDE that implements GCC(BPS) TDE method.
+- GPS - child class of TDE that implements GPS(BPS) TDE method.
 - src - testing of functionality of GCC and GPS.
 
 # Future develop

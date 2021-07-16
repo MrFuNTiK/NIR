@@ -5,8 +5,9 @@
 #include "main.hpp"
 #include "GPS_class.hpp"
 #include "GCC_class.hpp"
+#include "TDE_class.hpp"
 
-#define TDE_MODE    GCC_TDE
+#define TDE_MODE    GPS_TDE
 
 int main()
 {
@@ -39,16 +40,17 @@ int main()
     }
 
 #if(TDE_MODE == GCC_TDE)
-    GCC tde_calc(avrg_window_num, size, sample_rate);
+    TDE* tde_calc = new GCC(avrg_window_num, size, sample_rate);
 #elif(TDE_MODE == GPS_TDE)
-    GPS tde_calc(avrg_window_num, size, sample_rate);
+    TDE* tde_calc = new GPS(avrg_window_num, size, sample_rate);
 #endif
-    tde_calc.set_arrays(first_array, second_array);
-    tde_calc.execute();
-    tde_calc.calculate_tde();
-    tde = tde_calc.get_tde();
+    tde_calc->set_arrays(first_array, second_array);
+    tde_calc->execute();
+    tde_calc->calculate_tde();
+    tde = tde_calc->get_tde();
     std::cout << "TDE:    " << tde << std::endl;
 
+    delete tde_calc;
 
     for (uint16_t i = 0; i < avrg_window_num; ++i)
     {

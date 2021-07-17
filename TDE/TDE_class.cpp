@@ -38,6 +38,8 @@ TDE::~TDE()
     fftw_free(fur_2);
     fftw_free(fur_1_2);
     fftw_free(fur_1_2_sum);
+
+    fftw_cleanup();
 }
 
 void TDE::set_arrays(double** _first, double** _second)

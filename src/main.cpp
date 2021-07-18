@@ -7,7 +7,7 @@
 #include "GCC_class.hpp"
 #include "TDE_class.hpp"
 
-#define TDE_MODE    GPS_TDE
+#define TDE_MODE    GCC_TDE
 
 int main()
 {

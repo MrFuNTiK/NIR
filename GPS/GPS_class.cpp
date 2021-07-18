@@ -67,3 +67,8 @@ void GPS::calculate_tde()
     }
     tde = -1 * numerator_sum / divider_sum;
 }
+
+void GPS::apply_weight_func(double* weight_func)
+{
+    (void*)weight_func;
+}

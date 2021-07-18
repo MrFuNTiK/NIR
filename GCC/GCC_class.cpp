@@ -13,11 +13,13 @@ GCC::GCC(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
     TDE(_avrg_win_num, _size, _rate)
 {
     corr_func = new double[size];
+    PHAT_func = new double[size/2+1];
 }
 
 GCC::~GCC()
 {
     delete[] corr_func;
+    delete[] PHAT_func;
 }
 
 void GCC::get_corr_func(double* _corr)
@@ -33,6 +35,15 @@ void GCC::shift_corr_func()
         {
             swap<double>(&corr_func[j], &corr_func[j+1]);
         }
+    }
+}
+
+void GCC::apply_weight_func(double* weight_func)
+{
+    for (uint16_t i = 0; i < size/2+1; ++i)
+    {
+        fur_1_2_sum[i][REAL] /= weight_func[i];
+        fur_1_2_sum[i][IMAG] /= weight_func[i];
     }
 }
 
@@ -59,6 +70,8 @@ void GCC::execute()
     }
 
     normalize_sum();
+    get_ampl_spectrum(size/2+1, fur_1_2_sum, PHAT_func);
+    apply_weight_func(PHAT_func);
 
     reverse.set_fourier_image(fur_1_2_sum);
     reverse.execute();
@@ -73,6 +86,7 @@ void GCC::calculate_tde()
     int16_t num_max = 0;
     for (uint16_t i = 1; i < size; ++i)
     {
+        std::cout << corr_func[i] << std::endl;
         if (corr_func[i] > corr_max)
         {
             corr_max = corr_func[i];

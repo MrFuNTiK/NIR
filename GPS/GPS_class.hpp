@@ -20,6 +20,9 @@ public:
 
 private:
     double* cross_phase_spectrum;
+
+private:
+    void apply_weight_func(double* weight_func) override;
 };
 
 #endif //CORRELATION_PHASE_CLASS_H

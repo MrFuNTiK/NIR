@@ -2,8 +2,14 @@
 #include <cmath>
 
 #include "core.hpp"
-//#include "GPS_class.hpp"
 
+void get_ampl_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum)
+{
+    for (uint16_t i = 0; i < size; ++i)
+    {
+        spectrum[i] = sqrt(fourier_image[i][REAL]*fourier_image[i][REAL] + fourier_image[i][IMAG]*fourier_image[i][IMAG]);
+    }
+}
 
 void get_phase_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum)
 {

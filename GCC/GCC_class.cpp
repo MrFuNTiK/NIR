@@ -38,7 +38,7 @@ void GCC::shift_corr_func()
     }
 }
 
-void GCC::apply_weight_func(double* weight_func)
+void GCC::apply_PHAT_func(double* weight_func)
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -71,7 +71,7 @@ void GCC::execute()
 
     normalize_sum();
     get_ampl_spectrum(size/2+1, fur_1_2_sum, PHAT_func);
-    apply_weight_func(PHAT_func);
+    apply_PHAT_func(PHAT_func);
 
     reverse.set_fourier_image(fur_1_2_sum);
     reverse.execute();

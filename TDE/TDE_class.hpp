@@ -33,7 +33,6 @@ protected:
     void clear_sum();
     void add_mul_to_sum();
     void normalize_sum();
-    virtual void apply_weight_func(double* weight_func) = 0;
 };
 
 #endif // TDE_CLASS_HPP

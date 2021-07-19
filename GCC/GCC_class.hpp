@@ -23,7 +23,7 @@ private:
 
 private:
     void shift_corr_func();
-    void apply_weight_func(double* weight_func) override;
+    void apply_PHAT_func(double* weight_func);
 };
 
 #endif // CORRELATION_CLASS_HPP

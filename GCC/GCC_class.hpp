@@ -19,9 +19,11 @@ public:
 
 private:
     double* corr_func;
+    double* PHAT_func;
 
 private:
     void shift_corr_func();
+    void apply_PHAT_func(double* weight_func);
 };
 
 #endif // CORRELATION_CLASS_HPP

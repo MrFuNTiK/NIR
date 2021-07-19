@@ -18,6 +18,14 @@ uint8_t swap(T* first, T*second)
     return 0;
 }
 
+/// @brief Function calculates amplitude spectrum of given fourier image of signal and writes it to given pointer.
+/// Memory for spectrum should be allocated before call of this function.
+///
+/// @param size             - amount of complex elements in given fourier image
+/// @param fourier_image    - given fourier image of signal
+/// @param spectrum         - pointer where GPS spectrum will be written
+void get_ampl_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum);
+
 /// @brief Function calculates phase spectrum of given fourier image of signal and writes it to given pointer.
 /// Memory for spectrum should be allocated before call of this function.
 ///

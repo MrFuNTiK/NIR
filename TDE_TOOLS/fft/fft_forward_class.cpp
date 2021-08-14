@@ -59,9 +59,12 @@ void fft_forward::set_real(double* _real)
 
 void fft_forward::get_fourier_image(fftw_complex* _fourier)
 {
+    /*
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
         _fourier[i][REAL] = fourier_image[i][REAL];
         _fourier[i][IMAG] = fourier_image[i][IMAG];
     }
+    */
+    memcpy(_fourier, fourier_image, sizeof(fftw_complex)*(size/2+1));
 }

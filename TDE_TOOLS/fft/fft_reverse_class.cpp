@@ -27,11 +27,14 @@ void fft_reverse::execute()
 
 void fft_reverse::set_fourier_image(fftw_complex* _fourier)
 {
+    /*
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
         fourier_image[i][REAL] = _fourier[i][REAL];
         fourier_image[i][IMAG] = _fourier[i][IMAG];
     }
+    */
+    memcpy(fourier_image, _fourier, sizeof(fftw_complex)*(size/2+1));
 }
 
 void fft_reverse::get_real(double* _real)

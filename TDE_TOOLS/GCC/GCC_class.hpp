@@ -5,23 +5,27 @@
 # include <cstdint>
 
 # include "TDE_class.hpp"
+# include "../fft/fft_forward_class.hpp"
+# include "../fft/fft_reverse_class.hpp"
 
 
 class GCC : public TDE
 {
 public:
-    GCC(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate);
+    GCC(uint16_t _size, uint16_t _rate);
     ~GCC();
 
     void get_corr_func(double* _corr);
-    void execute() override;
-    void calculate_tde() override;
+    void update(double* first_, double* second_) override;
+    void conclude() override;
 
 private:
     double* corr_func;
     double* PHAT_func;
 
 private:
+    fft_forward forward;
+    fft_reverse reverse;
     void shift_corr_func();
     void apply_PHAT_func(double* weight_func);
 };

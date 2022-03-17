@@ -9,8 +9,10 @@
 #include "core.hpp"
 
 
-GCC::GCC(uint16_t _avrg_win_num, uint16_t _size, uint16_t _rate) :
-    TDE(_avrg_win_num, _size, _rate)
+GCC::GCC(uint16_t _size, uint16_t _rate) :
+    TDE(_size, _rate),
+    forward(_size),
+    reverse(_size)
 {
     corr_func = new double[size];
     PHAT_func = new double[size/2+1];
@@ -47,28 +49,23 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::execute()
+void GCC::update(double* first_, double* second_)
 {
-    fft_forward forward_1(size);
-    fft_forward forward_2(size);
-    fft_reverse reverse(size);
+    forward.set_real(first_);
+    forward.execute();
+    forward.get_fourier_image(fur_1);
 
-    for (uint16_t i = 0; i < avrg_win_num; ++i)
-    {
-        forward_1.set_real(first_array[i]);
-        forward_2.set_real(second_array[i]);
+    forward.set_real(second_);
+    forward.execute();
+    forward.conjugate();
+    forward.get_fourier_image(fur_2);
 
-        forward_1.execute();
-        forward_2.execute();
-        forward_1.conjugate();
+    get_mul();
+    add_mul_to_sum();
+}
 
-        forward_1.get_fourier_image(fur_1);
-        forward_2.get_fourier_image(fur_2);
-
-        get_mul();
-        add_mul_to_sum();
-    }
-
+void GCC::conclude()
+{
     normalize_sum();
     get_ampl_spectrum(size/2+1, fur_1_2_sum, PHAT_func);
     apply_PHAT_func(PHAT_func);
@@ -78,10 +75,8 @@ void GCC::execute()
     reverse.get_real(corr_func);
     shift_corr_func();
     clear_sum();
-}
 
-void GCC::calculate_tde()
-{
+
     double corr_max = corr_func[0];
     int16_t num_max = 0;
     for (uint16_t i = 1; i < size; ++i)
@@ -93,6 +88,6 @@ void GCC::calculate_tde()
             num_max = static_cast<int>(i);
         }
     }
-    num_max -= 512;
+    num_max -= size/2;
     tde = num_max/static_cast<double>(sample_rate);
 }

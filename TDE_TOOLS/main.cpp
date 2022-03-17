@@ -12,10 +12,16 @@
 int main()
 {
     uint16_t sample_rate = 44100;
-    uint16_t avrg_window_num = 1;
+    uint16_t avrg_window_num = 5;
     uint16_t size = 1 << 10;
     double tde = 0;
     double true_delay = SAMPLE_DELAY / static_cast<double>(sample_rate);
+
+#if(TDE_MODE == GCC_TDE)
+    TDE* tde_calc = new GCC(size, sample_rate);
+#elif(TDE_MODE == GPS_TDE)
+    TDE* tde_calc = new GPS(size, sample_rate);
+#endif
 
     auto first_array = new double*[avrg_window_num];
     auto second_array = new double*[avrg_window_num];
@@ -37,16 +43,10 @@ int main()
             first_array[window_num-3][sample_num]       = file.samples[0][window_num*size + sample_num + SAMPLE_DELAY];
             second_array[window_num-3][sample_num]      = file.samples[0][window_num*size + sample_num];
         }
+        tde_calc->update(first_array[window_num-3], second_array[window_num-3]);
     }
 
-#if(TDE_MODE == GCC_TDE)
-    TDE* tde_calc = new GCC(avrg_window_num, size, sample_rate);
-#elif(TDE_MODE == GPS_TDE)
-    TDE* tde_calc = new GPS(avrg_window_num, size, sample_rate);
-#endif
-    tde_calc->set_arrays(first_array, second_array);
-    tde_calc->execute();
-    tde_calc->calculate_tde();
+    tde_calc->conclude();
     tde = tde_calc->get_tde();
     std::cout << "TDE:    " << tde << std::endl;
 

@@ -12,7 +12,7 @@
 class GCC : public TDE
 {
 public:
-    GCC(uint16_t _size, uint16_t _rate);
+    GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     ~GCC();
 
     void get_corr_func(double* _corr);

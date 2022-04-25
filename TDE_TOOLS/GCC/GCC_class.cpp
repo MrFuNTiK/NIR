@@ -9,8 +9,8 @@
 #include "core.hpp"
 
 
-GCC::GCC(uint16_t _size, uint16_t _rate) :
-    TDE(_size, _rate),
+GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
+    TDE(_size, _rate, _w_func),
     forward(_size),
     reverse(_size)
 {
@@ -57,31 +57,58 @@ void GCC::update(double* first_, double* second_)
 
     forward.set_real(second_);
     forward.execute();
-    forward.conjugate();
     forward.get_fourier_image(fur_2);
 
-    get_mul();
+    make_mul_with_conj();
     add_mul_to_sum();
+
+    get_ampl_spectrum(size/2+1, fur_1, ampl1);
+    get_ampl_spectrum(size/2+1, fur_2, ampl2);
+
+    for( uint32_t i = 0; i < size/2+1; ++i )
+    {
+        ampl1_sum[i] += ampl1[i] * ampl1[i];
+        ampl2_sum[i] += ampl2[i] * ampl2[i];
+    }
+
+    ++update_count;
 }
 
 void GCC::conclude()
 {
     normalize_sum();
-    get_ampl_spectrum(size/2+1, fur_1_2_sum, PHAT_func);
-    apply_PHAT_func(PHAT_func);
+
+    double w_func_numerator[size/2+1] = { 0 }, w_func_denominator[size/2+1] = { 0 };
+    switch (w_func)
+    {
+    case COHERENCE:
+    {
+        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator);
+        for( uint16_t i = 0; i < size/2+1; ++i )
+        {
+            w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
+            w_func_numerator[i] *= w_func_numerator[i];
+            fur_1_2_sum[i][REAL] *= w_func_numerator[i] / w_func_denominator[i];
+            fur_1_2_sum[i][IMAG] *= w_func_numerator[i] / w_func_denominator[i];
+        }
+    }
+    case NONE:
+    {
+
+    }
+    }
 
     reverse.set_fourier_image(fur_1_2_sum);
     reverse.execute();
     reverse.get_real(corr_func);
     shift_corr_func();
-    clear_sum();
+    clear_inner();
 
 
     double corr_max = corr_func[0];
     int16_t num_max = 0;
     for (uint16_t i = 1; i < size; ++i)
     {
-        std::cout << corr_func[i] << std::endl;
         if (corr_func[i] > corr_max)
         {
             corr_max = corr_func[i];
@@ -90,4 +117,6 @@ void GCC::conclude()
     }
     num_max -= size/2;
     tde = num_max/static_cast<double>(sample_rate);
+
+    update_count = 0;
 }

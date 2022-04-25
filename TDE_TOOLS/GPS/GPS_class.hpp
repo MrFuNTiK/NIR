@@ -13,7 +13,7 @@
 class GPS : public TDE
 {
 public:
-    GPS(uint16_t _size, uint16_t _rate);
+    GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     ~GPS();
 
     void update(double* _first, double* _second) override;

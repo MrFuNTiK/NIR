@@ -2,16 +2,23 @@
 #include "TDE_class.hpp"
 #include "core.hpp"
 
-TDE::TDE(uint16_t _size, uint16_t _rate) :
+TDE::TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     size(_size),
     sample_rate(_rate),
+    w_func(_w_func),
+    update_count(0),
     tde(0)
 {
     fur_1           = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     fur_2           = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     fur_1_2         = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     fur_1_2_sum     = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
-    clear_sum();
+
+    ampl1           = new double[size/2+1];
+    ampl2           = new double[size/2+1];
+    ampl1_sum       = new double[size/2+1];
+    ampl2_sum       = new double[size/2+1];
+    clear_inner();
 }
 
 TDE::~TDE()
@@ -21,10 +28,15 @@ TDE::~TDE()
     fftw_free(fur_1_2);
     fftw_free(fur_1_2_sum);
 
+    delete[] ampl1;
+    delete[] ampl2;
+    delete[] ampl1_sum;
+    delete[] ampl2_sum;
+
     fftw_cleanup();
 }
 
-void TDE::get_mul()
+void TDE::make_mul()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -33,13 +45,20 @@ void TDE::get_mul()
     }
 }
 
-void TDE::clear_sum()
+void TDE::make_mul_with_conj()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fur_1_2_sum[i][REAL] = 0;
-        fur_1_2_sum[i][IMAG] = 0;
+        fur_1_2[i][REAL] = fur_1[i][REAL]*fur_2[i][REAL] + fur_1[i][IMAG]*fur_2[i][IMAG];
+        fur_1_2[i][IMAG] = -fur_1[i][REAL]*fur_2[i][IMAG] + fur_1[i][IMAG]*fur_2[i][REAL];
     }
+}
+
+void TDE::clear_inner()
+{
+    std::memset(fur_1_2_sum, 0, sizeof( fftw_complex ) * (size / 2 + 1));
+    std::memset(ampl1_sum, 0, sizeof(double) * (size / 2 + 1));
+    std::memset(ampl2_sum, 0, sizeof(double) * (size / 2 + 1));
 }
 
 void TDE::add_mul_to_sum()
@@ -55,8 +74,10 @@ void TDE::normalize_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fur_1_2_sum[i][REAL] /= size;
-        fur_1_2_sum[i][IMAG] /= size;
+        fur_1_2_sum[i][REAL] /= update_count;
+        fur_1_2_sum[i][IMAG] /= update_count;
+        ampl1_sum[i] /= update_count;
+        ampl2_sum[i] /= update_count;
     }
 }
 

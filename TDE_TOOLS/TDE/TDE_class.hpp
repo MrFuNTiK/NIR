@@ -4,10 +4,16 @@
 # include <cstdint>
 # include <fftw3.h>
 
+typedef enum
+{
+    COHERENCE,
+    NONE
+} weighting_func;
+
 class TDE
 {
 public:
-    TDE(uint16_t _size, uint16_t _rate);
+    TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     virtual ~TDE();
 
     virtual void update(double* _first, double* _second) = 0;
@@ -18,6 +24,7 @@ protected:
     uint16_t size;
     uint16_t sample_rate;
     uint16_t update_count;
+    weighting_func w_func;
     double tde;
 
     fftw_complex* fur_1;
@@ -25,9 +32,15 @@ protected:
     fftw_complex* fur_1_2;
     fftw_complex* fur_1_2_sum;
 
+    double* ampl1;
+    double* ampl2;
+    double* ampl1_sum;
+    double* ampl2_sum;
+
 protected:
-    void get_mul();
-    void clear_sum();
+    void make_mul();
+    void make_mul_with_conj();
+    void clear_inner();
     void add_mul_to_sum();
     void normalize_sum();
 };

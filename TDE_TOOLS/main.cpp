@@ -1,11 +1,11 @@
 #include <cstdint>
 #include <iostream>
+#include <memory>
 
 #include "AudioFile.h"
 #include "main.hpp"
-#include "GPS_class.hpp"
-#include "GCC_class.hpp"
 #include "TDE_class.hpp"
+#include "program_environment/program_environment.hpp"
 
 #define TDE_MODE    GCC_TDE
 
@@ -17,14 +17,26 @@ int main()
     double tde = 0;
     double true_delay = SAMPLE_DELAY / static_cast<double>(sample_rate);
 
-#if(TDE_MODE == GCC_TDE)
-    TDE* tde_calc = new GCC(size, sample_rate, COHERENCE);
-#elif(TDE_MODE == GPS_TDE)
-    TDE* tde_calc = new GPS(size, sample_rate, COHERENCE);
-#endif
+    std::unique_ptr<TDE> tde_calc;
+    std::shared_ptr<programm_environment> pe(programm_environment::GetInstance());
+    pe->SetMethodTDE(GCC_TDE);
+    pe->SetWindowSize(size);
+    pe->SetSampleRate(sample_rate);
+    pe->SetWeightingFunction(COHERENCE);
 
-    auto first_array = new double[size];
-    auto second_array = new double[size];
+    try
+    {
+        tde_calc.reset(pe->GetCalculator());
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 0;
+    }
+
+
+    double first_array[size];
+    double second_array[size];
 
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
@@ -47,9 +59,4 @@ int main()
         tde = tde_calc->get_tde();
         std::cout << "TDE:    " << tde << std::endl;
     }
-
-    delete tde_calc;
-
-    delete first_array;
-    delete second_array;
 }

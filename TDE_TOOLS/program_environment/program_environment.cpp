@@ -13,11 +13,11 @@ programm_environment::programm_environment() :
 programm_environment::~programm_environment()
 {}
 
-programm_environment* programm_environment::GetInstance()
+std::shared_ptr<programm_environment> programm_environment::GetInstance()
 {
-    if( _pe == nullptr )
+    if( _pe.get() == nullptr )
     {
-        _pe = new programm_environment();
+        _pe.reset(new programm_environment());
     }
     return _pe;
 }
@@ -65,4 +65,4 @@ TDE* programm_environment::GetCalculator()
     return tde;
 }
 
-programm_environment* programm_environment::_pe = nullptr;
+std::shared_ptr<programm_environment> programm_environment::_pe(nullptr);

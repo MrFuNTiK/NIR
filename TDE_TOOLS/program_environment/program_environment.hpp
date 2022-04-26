@@ -1,12 +1,13 @@
 #ifndef PROGRAMM_ENVORINMENT_HPP
 # define PROGRAMM_ENVORINMENT_HPP
 
+# include <memory>
 # include "../TDE/TDE_class.hpp"
 
 class programm_environment
 {
 private:
-    static programm_environment* _pe;
+    static std::shared_ptr<programm_environment> _pe;
     uint16_t _window_size;
     uint16_t _sample_rate;
     tde_meth _meth;
@@ -15,10 +16,10 @@ private:
 
 public:
     ~programm_environment();
-    programm_environment(programm_environment* po) = delete;
+    programm_environment(programm_environment* pe) = delete;
     void operator = (const programm_environment*) = delete;
 
-    static programm_environment* GetInstance();
+    static std::shared_ptr<programm_environment> GetInstance();
     void SetWindowSize(uint16_t window_size);
     void SetSampleRate(uint16_t sample_rate);
     void SetMethodTDE(tde_meth meth);

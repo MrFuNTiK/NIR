@@ -6,6 +6,11 @@
 
 typedef enum
 {
+    GCC_TDE,
+    GPS_TDE
+} tde_meth;
+typedef enum
+{
     COHERENCE,
     NONE
 } weighting_func;

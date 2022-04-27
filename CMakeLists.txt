@@ -10,9 +10,10 @@ add_subdirectory(${CMAKE_PROJECT_NAME}/fft)
 add_subdirectory(${CMAKE_PROJECT_NAME}/TDE)
 add_subdirectory(${CMAKE_PROJECT_NAME}/GCC)
 add_subdirectory(${CMAKE_PROJECT_NAME}/GPS)
+add_subdirectory(${CMAKE_PROJECT_NAME}/program_environment)
 
 add_executable(tde ${CMAKE_SOURCE_DIR}/${CMAKE_PROJECT_NAME}/main.cpp)
 target_include_directories(tde PRIVATE  ${CMAKE_SOURCE_DIR}/${CMAKE_PROJECT_NAME}/GPS
                                         ${CMAKE_SOURCE_DIR}/${CMAKE_PROJECT_NAME}/GCC
                                         ${CMAKE_SOURCE_DIR}/${CMAKE_PROJECT_NAME}/TDE)
-target_link_libraries(tde GPS_lib GCC_lib TDE_lib core fft fftw3)
+target_link_libraries(tde program_environment GPS_lib GCC_lib TDE_lib core fft fftw3)

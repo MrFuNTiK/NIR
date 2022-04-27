@@ -4,7 +4,7 @@
 # include <fftw3.h>
 # include <cstdint>
 
-# include "TDE_class.hpp"
+# include "../TDE/TDE_class.hpp"
 # include "../fft/fft_forward_class.hpp"
 # include "../fft/fft_reverse_class.hpp"
 

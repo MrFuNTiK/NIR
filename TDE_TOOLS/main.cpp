@@ -10,6 +10,7 @@
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
 static const uint16_t DEFAULT_SAMPLE_RATE = 44100;
 static const uint16_t DEFAULT_WINDOW_SIZE = 1 << 10;
+static const uint16_t DEFAULT_AVRG_NUM = 1;
 static const weighting_func DEFAULT_WEIGHTING_FN = NONE;
 
 static void SetUpEnvironmentByArgs(int argc, char* argv[]);
@@ -20,14 +21,10 @@ static void PrintHelp(const char* progName);
 
 int main(int argc, char* argv[])
 {
-    uint16_t sample_rate = 44100;
-    uint16_t avrg_window_num = 5;
-    uint16_t size = 1 << 10;
     double tde = 0;
-    double true_delay = SAMPLE_DELAY / static_cast<double>(sample_rate);
 
     std::unique_ptr<TDE> tde_calc;
-    std::shared_ptr<programm_environment> pe = programm_environment::GetInstance();
+    std::shared_ptr<program_environment> pe = program_environment::GetInstance();
     if(argc > 1)
     {
         try
@@ -46,12 +43,13 @@ int main(int argc, char* argv[])
         pe->SetMethodTDE(DEFAULT_TDE_METHOD);
         pe->SetWindowSize(DEFAULT_WINDOW_SIZE);
         pe->SetSampleRate(DEFAULT_SAMPLE_RATE);
+        pe->SetWinAvrgNum(DEFAULT_AVRG_NUM);
         pe->SetWeightingFunction(DEFAULT_WEIGHTING_FN);
     }
 
     try
     {
-        tde_calc.reset(pe->GetCalculator());
+        tde_calc.reset(pe->CreateCalculator());
     }
     catch(const std::exception& e)
     {
@@ -59,24 +57,26 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    double first_array[size];
-    double second_array[size];
+    std::unique_ptr<double> first_array(new double[pe->GetWindowSize()]);
+    std::unique_ptr<double> second_array(new double[pe->GetWindowSize()]);
 
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
     uint16_t RATE = file.getSampleRate();
     uint8_t num_channels = file.getNumChannels();
+    uint16_t window_size = pe->GetWindowSize();
+    uint16_t avrg_num = pe->GetWinAvrgNum();
 
     for( int i = 0; i < 5; ++i)
     {
-        for (uint16_t window_num = 3; window_num < avrg_window_num + 3; ++window_num)
+        for (uint16_t window_num = 3; window_num < avrg_num + 3; ++window_num)
         {
-            for (uint16_t sample_num = 0; sample_num < size; ++sample_num)
+            for (uint16_t sample_num = 0; sample_num < window_size; ++sample_num)
             {
-                first_array[sample_num]       = file.samples[0][(i+1)*window_num*size + sample_num + SAMPLE_DELAY];
-                second_array[sample_num]      = file.samples[0][(i+1)*window_num*size + sample_num];
+                first_array.get()[sample_num]       = file.samples[0][(i+1)*window_num*window_size + sample_num + SAMPLE_DELAY];
+                second_array.get()[sample_num]      = file.samples[0][(i+1)*window_num*window_size + sample_num];
             }
-            tde_calc->update(first_array, second_array);
+            tde_calc->update(first_array.get(), second_array.get());
         }
 
         tde_calc->conclude();
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 
 static void SetUpEnvironmentByArgs(int argc, char* argv[])
 {
-    std::shared_ptr<programm_environment> pe = programm_environment::GetInstance();
+    std::shared_ptr<program_environment> pe = program_environment::GetInstance();
 
     const char* progName = *argv;
     --argc;
@@ -138,6 +138,20 @@ static void SetUpEnvironmentByArgs(int argc, char* argv[])
             }
             pe->SetWindowSize(value);
         }
+        else if(ArgMatches("-avrg_num", *argv))
+        {
+            uint16_t value;
+            try
+            {
+                value = static_cast<uint16_t>(std::stoi(*(argv+1)));
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+                throw std::runtime_error("Failed get window size value");
+            }
+            pe->SetWinAvrgNum(value);
+        }
         else if(ArgMatches("-weighting_fn", *argv))
         {
             if(ArgMatches("coherence", *(argv+1)))
@@ -173,11 +187,13 @@ static void PrintHelp(const char* progName)
     std::cout << "Usage:" << std::endl;
     std::cout << progName << " " << "-tde_metod [value] -sample_rate [value] "
                                     "-window_size [value] -weighting_fn [value] "
+                                    "-avrg_num [value] "
                           << std::endl << std::endl;
     std::cout << "Arguments:" << std::endl;
-    std::cout << "\t" << "-tde_method" << "\t" << "[GCC|GPS(default)]" << "\t\t" << "Method of TDE calculation" << std::endl
-              << "\t" << "-sample_rate" << "\t" << "[value]" << "\t\t\t\t" << "Frequence of source signals (Hz)" << std::endl
-              << "\t" << "-window_size" << "\t" << "[value]" << "\t\t\t\t" << "Number signal's samples in one window" << std::endl
-              << "\t" << "-weigting_fn" << "\t" << "[coherence|none(default)]" << "\t" << "Frequency-wieghting function" << std::endl
+    std::cout << "\t" << "-tde_method"  << "\t" << "[GCC|GPS(default)]" << "\t\t"       << "Method of TDE calculation" << std::endl
+              << "\t" << "-sample_rate" << "\t" << "[value]" << "\t\t\t\t"              << "Frequence of source signals (Hz)" << std::endl
+              << "\t" << "-window_size" << "\t" << "[value]" << "\t\t\t\t"              << "Number signal's samples in one window" << std::endl
+              << "\t" << "-weigting_fn" << "\t" << "[coherence|none(default)]" << "\t"  << "Frequency-wieghting function" << std::endl
+              << "\t" << "-avrg_num"    << "\t" << "[value]" << "\t\t\t\t"              << "Number of windows to avergage spectrums" << std::endl
               << "\t" << "-help|-h" << "\t\t\t\t\t" << "Print help message" << std::endl;
 }

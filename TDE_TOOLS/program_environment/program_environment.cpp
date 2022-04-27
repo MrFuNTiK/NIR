@@ -3,46 +3,52 @@
 #include "../GCC/GCC_class.hpp"
 #include "../GPS/GPS_class.hpp"
 
-programm_environment::programm_environment() :
+program_environment::program_environment() :
     _window_size(0),
     _sample_rate(0),
+    _window_avrg_num(1),
     _meth(GPS_TDE),
     _weight_fn(NONE)
 {}
 
-programm_environment::~programm_environment()
+program_environment::~program_environment()
 {}
 
-std::shared_ptr<programm_environment> programm_environment::GetInstance()
+std::shared_ptr<program_environment> program_environment::GetInstance()
 {
     if( _pe.get() == nullptr )
     {
-        _pe.reset(new programm_environment());
+        _pe.reset(new program_environment());
     }
     return _pe;
 }
 
-void programm_environment::SetWindowSize(uint16_t window_size)
+void program_environment::SetWindowSize(uint16_t window_size)
 {
     _window_size = window_size;
 }
 
-void programm_environment::SetSampleRate(uint16_t sample_rate)
+void program_environment::SetSampleRate(uint16_t sample_rate)
 {
     _sample_rate = sample_rate;
 }
 
-void programm_environment::SetMethodTDE(tde_meth meth)
+void program_environment::SetWinAvrgNum(uint16_t num)
+{
+    _window_avrg_num = num;
+}
+
+void program_environment::SetMethodTDE(tde_meth meth)
 {
     _meth = meth;
 }
 
-void programm_environment::SetWeightingFunction(weighting_func weighting_fn)
+void program_environment::SetWeightingFunction(weighting_func weighting_fn)
 {
     _weight_fn = weighting_fn;
 }
 
-TDE* programm_environment::GetCalculator()
+TDE* program_environment::CreateCalculator()
 {
     TDE* tde = nullptr;
     if(_sample_rate == 0)
@@ -52,6 +58,10 @@ TDE* programm_environment::GetCalculator()
     if(_window_size == 0)
     {
         throw std::runtime_error("Windows size was not set");
+    }
+    if(NONE != _weight_fn && _window_avrg_num == 1)
+    {
+        throw std::logic_error("Avergaging number must be greater than 1 to apply frequncy-weighting function");
     }
 
     if( _meth == GCC_TDE )
@@ -65,4 +75,19 @@ TDE* programm_environment::GetCalculator()
     return tde;
 }
 
-std::shared_ptr<programm_environment> programm_environment::_pe(nullptr);
+uint16_t program_environment::GetWindowSize()
+{
+    return _window_size;
+}
+
+uint16_t program_environment::GetSampleRate()
+{
+    return _sample_rate;
+}
+
+uint16_t program_environment::GetWinAvrgNum()
+{
+    return _window_avrg_num;
+}
+
+std::shared_ptr<program_environment> program_environment::_pe(nullptr);

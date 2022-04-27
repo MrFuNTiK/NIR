@@ -1,7 +1,8 @@
 #include <stdexcept>
-#include "program_environment.hpp"
-#include "../GCC/GCC_class.hpp"
-#include "../GPS/GPS_class.hpp"
+
+#include <program_environment.hpp>
+#include <GCC_class.hpp>
+#include <GPS_class.hpp>
 
 program_environment::program_environment() :
     _window_size(0),

@@ -1,12 +1,11 @@
 #ifndef CORRELATION_CLASS_HPP
 # define CORRELATION_CLASS_HPP
 
-# include <fftw3.h>
 # include <cstdint>
 
-# include "../TDE/TDE_class.hpp"
-# include "../fft/fft_forward_class.hpp"
-# include "../fft/fft_reverse_class.hpp"
+# include <TDE_class.hpp>
+# include <fft_forward_class.hpp>
+# include <fft_reverse_class.hpp>
 
 
 class GCC : public TDE

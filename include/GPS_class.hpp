@@ -1,11 +1,10 @@
 #ifndef CORRELATION_PHASE_CLASS_H
 #define CORRELATION_PHASE_CLASS_H
 
-#include <fftw3.h>
 #include <cstdint>
 
-#include "../TDE/TDE_class.hpp"
-#include "../fft/fft_forward_class.hpp"
+#include <TDE_class.hpp>
+#include <fft_forward_class.hpp>
 
 #define BOTTOM_FREQ_BOUND   300
 #define UPPER_FREQ_BOUND    3400

@@ -2,7 +2,8 @@
 # define PROGRAMM_ENVORINMENT_HPP
 
 # include <memory>
-# include "../TDE/TDE_class.hpp"
+
+# include <TDE_class.hpp>
 
 class program_environment
 {

@@ -1,3 +1,6 @@
+///@file GPS_class.hpp
+///@brief Implementation of generalized phase spectrum method of time delay estimation.
+
 #ifndef CORRELATION_PHASE_CLASS_H
 #define CORRELATION_PHASE_CLASS_H
 
@@ -6,10 +9,27 @@
 #include <TDE_class.hpp>
 #include <fft_forward_class.hpp>
 
-#define BOTTOM_FREQ_BOUND   300
-#define UPPER_FREQ_BOUND    3400
+///@addtogroup TDE_interface
+///@{
 
-class GPS final : public TDE
+///@defgroup GPS_TDE
+///@addtogroup GPS_TDE
+///@{
+
+///@defgroup frequency_bounds
+///@addtogroup frequency_bounds
+///@{
+
+#define BOTTOM_FREQ_BOUND   300     /// Frequencies lower this value will not be accounted
+#define UPPER_FREQ_BOUND    3400    /// Frequencies upper this value will not be accounted
+
+///@} frequency_bounds
+
+/**
+ * @class GPS
+ * @brief This class implements calculation of TDE with generalized phase spectrum method.
+ */
+class GPS final : public TDE_calc
 {
 public:
     GPS() = delete;
@@ -25,5 +45,8 @@ private:
     fft_forward forward;
     double* cross_phase_spectrum;
 };
+
+///@} GPS_TDE
+///@} TDE_interface
 
 #endif //CORRELATION_PHASE_CLASS_H

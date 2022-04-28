@@ -8,9 +8,12 @@
 # include <fft_reverse_class.hpp>
 
 
-class GCC : public TDE
+class GCC final : public TDE
 {
 public:
+    GCC() = delete;
+    GCC(GCC*) = delete;
+    void operator = (const GCC*) = delete;
     GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     ~GCC();
 

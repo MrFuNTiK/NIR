@@ -4,7 +4,7 @@
 #include <TDE_class.hpp>
 #include <core.hpp>
 
-TDE::TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
+TDE_calc::TDE_calc(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     size(_size),
     sample_rate(_rate),
     w_func(_w_func),
@@ -37,7 +37,7 @@ TDE::TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     clear_inner();
 }
 
-TDE::~TDE()
+TDE_calc::~TDE_calc()
 {
     fftw_free(fur_1);
     fftw_free(fur_2);
@@ -52,7 +52,7 @@ TDE::~TDE()
     fftw_cleanup();
 }
 
-void TDE::make_mul()
+void TDE_calc::make_mul()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -61,7 +61,7 @@ void TDE::make_mul()
     }
 }
 
-void TDE::make_mul_with_conj()
+void TDE_calc::make_mul_with_conj()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -70,14 +70,14 @@ void TDE::make_mul_with_conj()
     }
 }
 
-void TDE::clear_inner()
+void TDE_calc::clear_inner()
 {
     std::memset(fur_1_2_sum, 0, sizeof( fftw_complex ) * (size / 2 + 1));
     std::memset(ampl1_sum, 0, sizeof(double) * (size / 2 + 1));
     std::memset(ampl2_sum, 0, sizeof(double) * (size / 2 + 1));
 }
 
-void TDE::add_mul_to_sum()
+void TDE_calc::add_mul_to_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -86,7 +86,7 @@ void TDE::add_mul_to_sum()
     }
 }
 
-void TDE::normalize_sum()
+void TDE_calc::normalize_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -97,7 +97,7 @@ void TDE::normalize_sum()
     }
 }
 
-double TDE::get_tde()
+double TDE_calc::get_tde()
 {
     return tde;
 }

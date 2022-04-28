@@ -10,7 +10,7 @@
 
 
 GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
-    TDE(_size, _rate, _w_func),
+    TDE_calc(_size, _rate, _w_func),
     forward(_size),
     reverse(_size)
 {

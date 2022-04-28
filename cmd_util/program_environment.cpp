@@ -53,9 +53,9 @@ void program_environment::SetWeightingFunction(weighting_func weighting_fn)
     _weight_fn = weighting_fn;
 }
 
-TDE* program_environment::CreateCalculator()
+TDE_calc* program_environment::CreateCalculator()
 {
-    TDE* tde = nullptr;
+    TDE_calc* tde = nullptr;
     if(_sample_rate == 0)
     {
         throw std::runtime_error("Sample rate was not set");

@@ -1,3 +1,6 @@
+///@file GCC_class.hpp
+///@brief Implementation of generalized cross correlation method of time delay estimation.
+
 #ifndef CORRELATION_CLASS_HPP
 # define CORRELATION_CLASS_HPP
 
@@ -7,8 +10,14 @@
 # include <fft_forward_class.hpp>
 # include <fft_reverse_class.hpp>
 
+///@addtogroup TDE_interface
+///@{
 
-class GCC final : public TDE
+///@defgroup GCC_TDE
+///@addtogroup GCC_TDE
+///@{
+
+class GCC final : public TDE_calc
 {
 public:
     GCC() = delete;
@@ -31,5 +40,8 @@ private:
     void shift_corr_func();
     void apply_PHAT_func(double* weight_func);
 };
+
+///@} GCC_TDE
+///@} TDE_interface
 
 #endif // CORRELATION_CLASS_HPP

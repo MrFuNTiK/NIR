@@ -2,8 +2,9 @@ project(TDE_TOOLS)
 
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(RESULT_DIRECTORY ${CMAKE_SOURCE_DIR}/result)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RESULT_DIRECTORY}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${RESULT_DIRECTORY}/lib)
 include_directories(include internal_include)
 
 add_subdirectory(fft)

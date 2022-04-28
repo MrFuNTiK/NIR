@@ -1,6 +1,6 @@
 DOXYFILE_ENCODING       = UTF-8
 PROJECT_NAME            = "TDE_TOOLS"
-OUTPUT_DIRECTORY        = "doc/"
+OUTPUT_DIRECTORY        = "result/doc/"
 INPUT                   = "include/"
-INPUT += README.md
-USE_MDFILE_AS_MAINPAGE = README.md
+INPUT                  += README.md
+USE_MDFILE_AS_MAINPAGE  = README.md

@@ -26,23 +26,11 @@ std::shared_ptr<program_environment> program_environment::GetInstance()
 
 void program_environment::SetWindowSize(uint16_t window_size)
 {
-    if(window_size < 4)
-    {
-        throw std::logic_error("Window size must be 4 at least");
-    }
-    if((window_size & (window_size-1)))
-    {
-        throw std::logic_error("Window size must be a power of 2");
-    }
     _window_size = window_size;
 }
 
 void program_environment::SetSampleRate(uint16_t sample_rate)
 {
-    if(!sample_rate)
-    {
-        throw std::logic_error("Sampling frequency must be greater than 0");
-    }
     _sample_rate = sample_rate;
 }
 

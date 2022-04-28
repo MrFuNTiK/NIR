@@ -18,6 +18,9 @@ typedef enum
 class TDE
 {
 public:
+    TDE() = delete;
+    TDE(TDE*) = delete;
+    void operator = (const TDE*) = delete;
     TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     virtual ~TDE();
 

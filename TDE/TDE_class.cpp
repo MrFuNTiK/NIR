@@ -1,6 +1,8 @@
 #include <cstring>
-#include "TDE_class.hpp"
-#include "core.hpp"
+#include <stdexcept>
+
+#include <TDE_class.hpp>
+#include <core.hpp>
 
 TDE::TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     size(_size),
@@ -9,6 +11,20 @@ TDE::TDE(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     update_count(0),
     tde(0)
 {
+    if(4 > size)
+    {
+        throw std::logic_error("Window size must be greater or equal 4");
+    }
+    if(size & (size-1))
+    {
+        throw std::logic_error("Window size must be a power of 2");
+    }
+
+    if(0 == sample_rate)
+    {
+        throw std::logic_error("Sampling rate must be greater than 0");
+    }
+
     fur_1           = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     fur_2           = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     fur_1_2         = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));

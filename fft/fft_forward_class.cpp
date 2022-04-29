@@ -30,7 +30,7 @@ fft_forward::~fft_forward()
     fftw_destroy_plan(forward_plan);
 }
 
-void fft_forward::execute()
+void fft_forward::execute() noexcept
 {
     fftw_execute(forward_plan);
     normalize_fur();
@@ -45,7 +45,7 @@ void fft_forward::normalize_fur()
     }
 }
 
-void fft_forward::conjugate()
+void fft_forward::conjugate() noexcept
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -53,12 +53,12 @@ void fft_forward::conjugate()
     }
 }
 
-void fft_forward::set_real(double* _real)
+void fft_forward::set_real(double* _real) noexcept
 {
     memcpy(real_array, _real, sizeof(double)*size);
 }
 
-void fft_forward::get_fourier_image(fftw_complex* _fourier)
+void fft_forward::get_fourier_image(fftw_complex* _fourier) noexcept
 {
     memcpy(_fourier, fourier_image, sizeof(fftw_complex)*(size/2+1));
 }

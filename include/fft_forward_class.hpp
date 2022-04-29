@@ -43,12 +43,12 @@ public:
     /**
      * @brief Execute direct transform of arrays passed in set_real().
      */
-    void execute();
+    void execute() noexcept;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void conjugate();
+    void conjugate() noexcept;
 
     /**
      * @brief Pass array that should be processed.
@@ -58,14 +58,14 @@ public:
      *
      * @param[in] _real Pointer to array
      */
-    void set_real(double* _real);
+    void set_real(double* _real) noexcept;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void get_fourier_image(fftw_complex* _fourier);
+    void get_fourier_image(fftw_complex* _fourier) noexcept;
 
 private:
     uint16_t size;

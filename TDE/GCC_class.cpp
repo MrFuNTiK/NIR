@@ -33,10 +33,7 @@ void GCC::shift_corr_func()
 {
     for (uint16_t i = 0; i < size/2; ++i)
     {
-        for (uint16_t j = 0; j < size - 1; ++j)
-        {
-            swap<double>(&corr_func[j], &corr_func[j+1]);
-        }
+        swap<double>(&corr_func[i], &corr_func[i + size/2]);
     }
 }
 

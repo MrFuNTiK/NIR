@@ -38,8 +38,8 @@ public:
     GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     ~GPS();
 
-    void update(double* _first, double* _second) override;
-    void conclude() override;
+    void update(double* _first, double* _second) noexcept override;
+    void conclude() noexcept override;
 
 private:
     fft_forward forward;

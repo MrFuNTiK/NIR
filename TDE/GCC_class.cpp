@@ -49,7 +49,7 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::update(double* first_, double* second_)
+void GCC::update(double* first_, double* second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -74,7 +74,7 @@ void GCC::update(double* first_, double* second_)
     ++update_count;
 }
 
-void GCC::conclude()
+void GCC::conclude() noexcept
 {
     normalize_sum();
 

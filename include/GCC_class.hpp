@@ -27,8 +27,8 @@ public:
     ~GCC();
 
     void get_corr_func(double* _corr);
-    void update(double* first_, double* second_) override;
-    void conclude() override;
+    void update(double* first_, double* second_) noexcept override;
+    void conclude() noexcept override;
 
 private:
     double* corr_func;

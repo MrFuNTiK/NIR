@@ -63,7 +63,7 @@ public:
      * @param _first    Pointer to the first channel samples
      * @param _second   Pointer to the second channel samples
      */
-    virtual void update(double* _first, double* _second) = 0;
+    virtual void update(double* _first, double* _second)  noexcept = 0;
 
     /**
      * @brief Calculate TDE.
@@ -73,7 +73,7 @@ public:
      * will calculate TDE value using data, stored by calls of update() after
      * previous call of conclude().
      */
-    virtual void conclude() = 0;
+    virtual void conclude() noexcept = 0;
 
     /**
      * @brief Get value of calculated TDE.

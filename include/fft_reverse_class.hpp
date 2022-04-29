@@ -41,7 +41,7 @@ public:
     /**
      * @brief Execute reverse transform with array passed via set_fourier_image().
      */
-    void execute();
+    void execute() noexcept;
 
     /**
      * @brief Set the fourier image.
@@ -51,14 +51,14 @@ public:
      *
      * @param[in] _fourier      Pointer to complex array to process
      */
-    void set_fourier_image(fftw_complex* _fourier);
+    void set_fourier_image(fftw_complex* _fourier) noexcept;
 
     /**
      * @brief Get the real array.
      *
      * @param[out] _real        Pointer to array where resault should be written
      */
-    void get_real(double* _real);
+    void get_real(double* _real) noexcept;
 
 private:
     uint16_t size;

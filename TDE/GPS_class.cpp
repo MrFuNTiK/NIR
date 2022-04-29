@@ -21,7 +21,7 @@ GPS::~GPS()
     delete[] cross_phase_spectrum;
 }
 
-void GPS::update(double* first_, double* second_)
+void GPS::update(double* first_, double* second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -45,7 +45,7 @@ void GPS::update(double* first_, double* second_)
     ++update_count;
 }
 
-void GPS::conclude()
+void GPS::conclude() noexcept
 {
     double numerator_sum = 0, divider_sum = 0;
 

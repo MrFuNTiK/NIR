@@ -3,10 +3,10 @@
 #include <cstring>
 #include <iostream>
 
-#include "GCC_class.hpp"
-#include "fft_forward_class.hpp"
-#include "fft_reverse_class.hpp"
-#include "core.hpp"
+#include <TDE/GCC_class.hpp>
+#include <FFT/fft_forward_class.hpp>
+#include <FFT/fft_reverse_class.hpp>
+#include <core.hpp>
 
 
 GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :

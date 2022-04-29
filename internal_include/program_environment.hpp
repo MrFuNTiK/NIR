@@ -3,7 +3,7 @@
 
 # include <memory>
 
-# include <TDE_class.hpp>
+# include <TDE/TDE_class.hpp>
 
 class program_environment
 {

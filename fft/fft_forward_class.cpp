@@ -4,8 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "fft_forward_class.hpp"
-#include "core.hpp"
+#include <FFT/fft_forward_class.hpp>
+#include <core.hpp>
 
 fft_forward::fft_forward(uint16_t _size) :
     size(_size)

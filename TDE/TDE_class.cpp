@@ -1,7 +1,7 @@
 #include <cstring>
 #include <stdexcept>
 
-#include <TDE_class.hpp>
+#include <TDE/TDE_class.hpp>
 #include <core.hpp>
 
 TDE_calc::TDE_calc(uint16_t _size, uint16_t _rate, weighting_func _w_func) :

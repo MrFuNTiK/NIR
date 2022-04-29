@@ -3,8 +3,8 @@
 #include <cstring>
 #include <stdexcept>
 
-#include "fft_reverse_class.hpp"
-#include "core.hpp"
+#include <FFT/fft_reverse_class.hpp>
+#include <core.hpp>
 
 fft_reverse::fft_reverse(uint16_t _size) :
     size(_size)

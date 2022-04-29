@@ -4,10 +4,10 @@
 #include <iostream>
 #include <cmath>
 
-#include "GPS_class.hpp"
-#include "fft_forward_class.hpp"
-#include "fft_reverse_class.hpp"
-#include "core.hpp"
+#include <TDE/GPS_class.hpp>
+#include <FFT/fft_forward_class.hpp>
+#include <FFT/fft_reverse_class.hpp>
+#include <core.hpp>
 
 GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     TDE_calc(_size, _rate, _w_func),

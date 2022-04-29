@@ -6,8 +6,8 @@
 
 #include <cstdint>
 
-#include <TDE_class.hpp>
-#include <fft_forward_class.hpp>
+#include "TDE_class.hpp"
+#include <FFT/fft_forward_class.hpp>
 
 ///@addtogroup TDE_interface
 ///@{

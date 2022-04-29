@@ -4,7 +4,7 @@
 
 #include "AudioFile.h"
 #include "main.hpp"
-#include "TDE_class.hpp"
+#include "TDE/TDE_class.hpp"
 #include <program_environment.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;

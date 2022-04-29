@@ -17,6 +17,10 @@
 ///@addtogroup GCC_TDE
 ///@{
 
+/**
+ * @class GCC
+ * @brief This class implements calculation of TDE with generalized cross correlation method.
+ */
 class GCC final : public TDE_calc
 {
 public:

@@ -9,6 +9,9 @@
 #include <FFT/fft_reverse_class.hpp>
 #include <core.hpp>
 
+#define BOTTOM_FREQ_BOUND   300
+#define UPPER_FREQ_BOUND    3400
+
 GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     TDE_calc(_size, _rate, _w_func),
     forward(_size)

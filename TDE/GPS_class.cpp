@@ -4,13 +4,16 @@
 #include <iostream>
 #include <cmath>
 
-#include "GPS_class.hpp"
-#include "fft_forward_class.hpp"
-#include "fft_reverse_class.hpp"
-#include "core.hpp"
+#include <TDE/GPS_class.hpp>
+#include <FFT/fft_forward_class.hpp>
+#include <FFT/fft_reverse_class.hpp>
+#include <core.hpp>
+
+#define BOTTOM_FREQ_BOUND   300
+#define UPPER_FREQ_BOUND    3400
 
 GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
-    TDE(_size, _rate, _w_func),
+    TDE_calc(_size, _rate, _w_func),
     forward(_size)
 {
     cross_phase_spectrum = new double[size/2+1];
@@ -21,7 +24,7 @@ GPS::~GPS()
     delete[] cross_phase_spectrum;
 }
 
-void GPS::update(double* first_, double* second_)
+void GPS::update(double* first_, double* second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -45,7 +48,7 @@ void GPS::update(double* first_, double* second_)
     ++update_count;
 }
 
-void GPS::conclude()
+void GPS::conclude() noexcept
 {
     double numerator_sum = 0, divider_sum = 0;
 

@@ -3,14 +3,14 @@
 #include <cstring>
 #include <iostream>
 
-#include "GCC_class.hpp"
-#include "fft_forward_class.hpp"
-#include "fft_reverse_class.hpp"
-#include "core.hpp"
+#include <TDE/GCC_class.hpp>
+#include <FFT/fft_forward_class.hpp>
+#include <FFT/fft_reverse_class.hpp>
+#include <core.hpp>
 
 
 GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
-    TDE(_size, _rate, _w_func),
+    TDE_calc(_size, _rate, _w_func),
     forward(_size),
     reverse(_size)
 {
@@ -33,10 +33,7 @@ void GCC::shift_corr_func()
 {
     for (uint16_t i = 0; i < size/2; ++i)
     {
-        for (uint16_t j = 0; j < size - 1; ++j)
-        {
-            swap<double>(&corr_func[j], &corr_func[j+1]);
-        }
+        swap<double>(&corr_func[i], &corr_func[i + size/2]);
     }
 }
 
@@ -49,7 +46,7 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::update(double* first_, double* second_)
+void GCC::update(double* first_, double* second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -74,7 +71,7 @@ void GCC::update(double* first_, double* second_)
     ++update_count;
 }
 
-void GCC::conclude()
+void GCC::conclude() noexcept
 {
     normalize_sum();
 

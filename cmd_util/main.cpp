@@ -4,7 +4,7 @@
 
 #include "AudioFile.h"
 #include "main.hpp"
-#include "TDE_class.hpp"
+#include "TDE/TDE_class.hpp"
 #include <program_environment.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 {
     double tde = 0;
 
-    std::unique_ptr<TDE> tde_calc;
+    std::unique_ptr<TDE_calc> tde_calc;
     std::shared_ptr<program_environment> pe = program_environment::GetInstance();
     if(argc > 1)
     {

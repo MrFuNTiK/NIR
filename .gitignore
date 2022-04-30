@@ -1,6 +1,5 @@
 build/
-bin/
-lib/
+result/
 *.txt
 *.sh
 .vscode

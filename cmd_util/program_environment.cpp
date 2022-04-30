@@ -1,8 +1,8 @@
 #include <stdexcept>
 
 #include <program_environment.hpp>
-#include <GCC_class.hpp>
-#include <GPS_class.hpp>
+#include <TDE/GCC_class.hpp>
+#include <TDE/GPS_class.hpp>
 
 program_environment::program_environment() :
     _window_size(0),
@@ -26,23 +26,11 @@ std::shared_ptr<program_environment> program_environment::GetInstance()
 
 void program_environment::SetWindowSize(uint16_t window_size)
 {
-    if(window_size < 4)
-    {
-        throw std::logic_error("Window size must be 4 at least");
-    }
-    if((window_size & (window_size-1)))
-    {
-        throw std::logic_error("Window size must be a power of 2");
-    }
     _window_size = window_size;
 }
 
 void program_environment::SetSampleRate(uint16_t sample_rate)
 {
-    if(!sample_rate)
-    {
-        throw std::logic_error("Sampling frequency must be greater than 0");
-    }
     _sample_rate = sample_rate;
 }
 
@@ -65,9 +53,9 @@ void program_environment::SetWeightingFunction(weighting_func weighting_fn)
     _weight_fn = weighting_fn;
 }
 
-TDE* program_environment::CreateCalculator()
+TDE_calc* program_environment::CreateCalculator()
 {
-    TDE* tde = nullptr;
+    TDE_calc* tde = nullptr;
     if(_sample_rate == 0)
     {
         throw std::runtime_error("Sample rate was not set");

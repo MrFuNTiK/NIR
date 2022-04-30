@@ -2,13 +2,22 @@
 #include <fftw3.h>
 #include <cstring>
 #include <iostream>
+#include <stdexcept>
 
-#include "fft_forward_class.hpp"
-#include "core.hpp"
+#include <FFT/fft_forward_class.hpp>
+#include <core.hpp>
 
 fft_forward::fft_forward(uint16_t _size) :
     size(_size)
 {
+    if(4 > size)
+    {
+        throw std::logic_error("Window size must be greater or equal 4");
+    }
+    if(size & (size-1))
+    {
+        throw std::logic_error("Window size must be a power of 2");
+    }
     real_array = new double[size];
     fourier_image = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
     forward_plan = fftw_plan_dft_r2c_1d(size, real_array, fourier_image, FFTW_ESTIMATE);
@@ -21,7 +30,7 @@ fft_forward::~fft_forward()
     fftw_destroy_plan(forward_plan);
 }
 
-void fft_forward::execute()
+void fft_forward::execute() noexcept
 {
     fftw_execute(forward_plan);
     normalize_fur();
@@ -36,7 +45,7 @@ void fft_forward::normalize_fur()
     }
 }
 
-void fft_forward::conjugate()
+void fft_forward::conjugate() noexcept
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -44,27 +53,12 @@ void fft_forward::conjugate()
     }
 }
 
-void fft_forward::set_real(double* _real)
+void fft_forward::set_real(double* _real) noexcept
 {
     memcpy(real_array, _real, sizeof(double)*size);
-
-    /*
-    std::cout << "\nGOT ARRAY:\n";
-    for (uint16_t i = 0; i < size; ++i)
-    {
-        std::cout << real_array[i] << std::endl;
-    }
-     //*/
 }
 
-void fft_forward::get_fourier_image(fftw_complex* _fourier)
+void fft_forward::get_fourier_image(fftw_complex* _fourier) noexcept
 {
-    /*
-    for (uint16_t i = 0; i < size/2+1; ++i)
-    {
-        _fourier[i][REAL] = fourier_image[i][REAL];
-        _fourier[i][IMAG] = fourier_image[i][IMAG];
-    }
-    */
     memcpy(_fourier, fourier_image, sizeof(fftw_complex)*(size/2+1));
 }

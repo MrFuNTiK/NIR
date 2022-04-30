@@ -3,7 +3,7 @@
 
 # include <memory>
 
-# include <TDE_class.hpp>
+# include <TDE/TDE_class.hpp>
 
 class program_environment
 {
@@ -28,7 +28,7 @@ public:
     void SetMethodTDE(tde_meth meth);
     void SetWeightingFunction(weighting_func feighting_fn);
 
-    TDE* CreateCalculator();
+    TDE_calc* CreateCalculator();
     uint16_t GetWindowSize();
     uint16_t GetSampleRate();
     uint16_t GetWinAvrgNum();

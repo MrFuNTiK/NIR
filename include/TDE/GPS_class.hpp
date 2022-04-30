@@ -16,15 +16,6 @@
 ///@addtogroup GPS_TDE
 ///@{
 
-///@defgroup frequency_bounds
-///@addtogroup frequency_bounds
-///@{
-
-#define BOTTOM_FREQ_BOUND   300     /// Frequencies lower this value will not be accounted
-#define UPPER_FREQ_BOUND    3400    /// Frequencies upper this value will not be accounted
-
-///@} frequency_bounds
-
 /**
  * @class GPS
  * @brief This class implements calculation of TDE with generalized phase spectrum method.

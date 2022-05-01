@@ -19,23 +19,23 @@ uint8_t swap(T* first, T*second)
 /// @brief Function calculates amplitude spectrum of given fourier image of signal and writes it to given pointer.
 /// Memory for spectrum should be allocated before call of this function.
 ///
-/// @param size             - amount of complex elements in given fourier image
-/// @param fourier_image    - given fourier image of signal
-/// @param spectrum         - pointer where GPS spectrum will be written
-void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum);
+/// @param size             amount of complex elements in given fourier image
+/// @param fourier_image    given fourier image of signal
+/// @param spectrum         pointer where GPS spectrum will be written
+void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept;
 
 /// @brief Function calculates phase spectrum of given fourier image of signal and writes it to given pointer.
 /// Memory for spectrum should be allocated before call of this function.
 ///
-/// @param size             - amount of complex elements in given fourier image
-/// @param fourier_image    - given fourier image of signal
-/// @param spectrum         - pointer where GPS spectrum will be written
-void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum);
+/// @param size             amount of complex elements in given fourier image
+/// @param fourier_image    given fourier image of signal
+/// @param spectrum         pointer where GPS spectrum will be written
+void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept;
 
 /// @brief Function unwraps phase spectrum
 ///
-/// @param size             - amount of samples in given spectrum
-/// @param phase_spectrum   - pointer to phase spectrum to unwrap
-void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum);
+/// @param size             amount of samples in given spectrum
+/// @param phase_spectrum   pointer to phase spectrum to unwrap
+void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum) noexcept;
 
 #endif // CORE_H

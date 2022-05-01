@@ -3,7 +3,7 @@
 
 #include "core.hpp"
 
-void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum)
+void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept
 {
     for (uint16_t i = 0; i < size; ++i)
     {
@@ -11,7 +11,7 @@ void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<doubl
     }
 }
 
-void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum)
+void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept
 {
     for (uint16_t i = 0; i < size; ++i)
     {
@@ -19,7 +19,7 @@ void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<doub
     }
 }
 
-void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum)
+void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum) noexcept
 {
     for (uint16_t i = 0; i < size - 1; ++i)
     {

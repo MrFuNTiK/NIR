@@ -29,7 +29,7 @@ public:
     GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func);
     ~GPS();
 
-    void update(double* _first, double* _second) noexcept override;
+    void update(const std::vector<double>& _first, const std::vector<double>& _second) noexcept override;
     void conclude() noexcept override;
 
 private:

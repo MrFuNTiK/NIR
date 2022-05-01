@@ -18,15 +18,13 @@ fft_forward::fft_forward(uint16_t _size) :
     {
         throw std::logic_error("Window size must be a power of 2");
     }
-    real_array = new double[size];
-    fourier_image = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
-    forward_plan = fftw_plan_dft_r2c_1d(size, real_array, fourier_image, FFTW_ESTIMATE);
+    real_array.resize(size);
+    fourier_image.resize(size/2+1);
+    forward_plan = fftw_plan_dft_r2c_1d(size, &real_array[0], reinterpret_cast<fftw_complex*>(&fourier_image[0]), FFTW_ESTIMATE);
 }
 
 fft_forward::~fft_forward()
 {
-    delete[] real_array;
-    fftw_free(fourier_image);
     fftw_destroy_plan(forward_plan);
 }
 
@@ -40,8 +38,7 @@ void fft_forward::normalize_fur()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fourier_image[i][REAL] /= size;
-        fourier_image[i][IMAG] /= size;
+        fourier_image[i] /= size;
     }
 }
 
@@ -49,16 +46,16 @@ void fft_forward::conjugate() noexcept
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fourier_image[i][IMAG] *= -1;
+        fourier_image[i] = std::conj(fourier_image[i]);
     }
 }
 
-void fft_forward::set_real(double* _real) noexcept
+void fft_forward::set_real(const std::vector<double>& _real) noexcept
 {
-    memcpy(real_array, _real, sizeof(double)*size);
+    memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
-void fft_forward::get_fourier_image(fftw_complex* _fourier) noexcept
+void fft_forward::get_fourier_image(std::vector<std::complex<double>>& _fourier) noexcept
 {
-    memcpy(_fourier, fourier_image, sizeof(fftw_complex)*(size/2+1));
+    memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(size/2+1));
 }

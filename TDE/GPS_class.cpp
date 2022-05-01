@@ -24,15 +24,15 @@ GPS::~GPS()
     delete[] cross_phase_spectrum;
 }
 
-void GPS::update(double* first_, double* second_) noexcept
+void GPS::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
-    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_1[0]));
+    forward.get_fourier_image(fur_1);
 
     forward.set_real(second_);
     forward.execute();
-    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_2[0]));
+    forward.get_fourier_image(fur_2);
 
     make_mul_with_conj();
     add_mul_to_sum();

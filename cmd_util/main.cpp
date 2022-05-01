@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
                 first_array[sample_num]       = file.samples[0][(i+1)*window_num*window_size + sample_num + SAMPLE_DELAY];
                 second_array[sample_num]      = file.samples[0][(i+1)*window_num*window_size + sample_num];
             }
-            tde_calc->update(&first_array[0], &second_array[0]);
+            tde_calc->update(first_array, second_array);
         }
 
         tde_calc->conclude();

@@ -65,7 +65,7 @@ public:
      * @param _first    Pointer to the first channel samples
      * @param _second   Pointer to the second channel samples
      */
-    virtual void update(double* _first, double* _second)  noexcept = 0;
+    virtual void update(const std::vector<double>& _first, const std::vector<double>& _second)  noexcept = 0;
 
     /**
      * @brief Calculate TDE.

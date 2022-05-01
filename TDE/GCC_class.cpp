@@ -14,19 +14,16 @@ GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     forward(_size),
     reverse(_size)
 {
-    corr_func = new double[size];
-    PHAT_func = new double[size/2+1];
+    corr_func.resize(size);
+    PHAT_func.resize(size/2+1);
 }
 
 GCC::~GCC()
-{
-    delete[] corr_func;
-    delete[] PHAT_func;
-}
+{}
 
-void GCC::get_corr_func(double* _corr)
+void GCC::get_corr_func(std::vector<double>& _corr)
 {
-    memcpy(_corr, corr_func, sizeof(double)*size);
+    memcpy(&_corr[0], &corr_func[0], sizeof(double)*size);
 }
 
 void GCC::shift_corr_func()
@@ -45,15 +42,15 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::update(double* first_, double* second_) noexcept
+void GCC::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
-    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_1[0]));
+    forward.get_fourier_image(fur_1);
 
     forward.set_real(second_);
     forward.execute();
-    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_2[0]));
+    forward.get_fourier_image(fur_2);
 
     make_mul_with_conj();
     add_mul_to_sum();
@@ -93,7 +90,7 @@ void GCC::conclude() noexcept
     }
     }
 
-    reverse.set_fourier_image(reinterpret_cast<fftw_complex*>(&fur_1_2_sum[0]));
+    reverse.set_fourier_image(fur_1_2_sum);
     reverse.execute();
     reverse.get_real(corr_func);
     shift_corr_func();

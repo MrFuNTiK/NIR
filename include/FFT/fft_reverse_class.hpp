@@ -5,6 +5,8 @@
 # define FFT_REVERSE_CLASS_HPP
 
 # include <cstdint>
+# include <vector>
+# include <complex>
 # include <fftw3.h>
 
 ///@defgroup FFT_interface
@@ -51,20 +53,20 @@ public:
      *
      * @param[in] _fourier      Pointer to complex array to process
      */
-    void set_fourier_image(fftw_complex* _fourier) noexcept;
+    void set_fourier_image(const std::vector<std::complex<double>>& _fourier) noexcept;
 
     /**
      * @brief Get the real array.
      *
      * @param[out] _real        Pointer to array where resault should be written
      */
-    void get_real(double* _real) noexcept;
+    void get_real(std::vector<double>& _real) noexcept;
 
 private:
     uint16_t size;
     fftw_plan reverse_plan;
-    fftw_complex* fourier_image;
-    double* real_array;
+    std::vector<std::complex<double>> fourier_image;
+    std::vector<double> real_array;
 };
 
 ///@} reverse_fourier_transform

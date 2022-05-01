@@ -16,34 +16,6 @@ void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<doub
     for (uint16_t i = 0; i < size; ++i)
     {
         spectrum[i] = std::arg(fourier_image[i]);
-        /*
-        if (fourier_image[i][REAL] > 0)
-        {
-            spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]);
-        }
-        else if (fourier_image[i][REAL] < 0)
-        {
-            if (fourier_image[i][IMAG] >= 0)
-            {
-                spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]) + M_PI;
-            }
-            else
-            {
-                spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]) - M_PI;
-            }
-        }
-        else
-        {
-            if (fourier_image[i][IMAG] > 0)
-            {
-                spectrum[i] = M_PI_2;
-            }
-            else
-            {
-                spectrum[i] = M_PI_2;
-            }
-        }
-        */
     }
 }
 

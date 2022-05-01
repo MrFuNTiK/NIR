@@ -8,7 +8,6 @@
 # include <vector>
 # include <complex>
 # include <fftw3.h>
-# include <memory>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface

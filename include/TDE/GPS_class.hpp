@@ -1,13 +1,13 @@
 ///@file GPS_class.hpp
 ///@brief Implementation of generalized phase spectrum method of time delay estimation.
 
-#ifndef CORRELATION_PHASE_CLASS_H
-#define CORRELATION_PHASE_CLASS_H
+#ifndef PHASE_METHOD_CLASS_H
+# define PHASE_METHOD_CLASS_H
 
-#include <cstdint>
+# include <cstdint>
 
-#include "TDE_class.hpp"
-#include <FFT/fft_forward_class.hpp>
+# include "TDE_class.hpp"
+# include <FFT/fft_forward_class.hpp>
 
 ///@addtogroup TDE_interface
 ///@{
@@ -40,4 +40,4 @@ private:
 ///@} GPS_TDE
 ///@} TDE_interface
 
-#endif //CORRELATION_PHASE_CLASS_H
+#endif // PHASE_METHOD_CLASS_H

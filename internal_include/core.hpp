@@ -1,12 +1,8 @@
 #ifndef CORE_H
 # define CORE_H
 
-# include <fftw3.h>
 # include <vector>
 # include <complex>
-
-# define REAL 0
-# define IMAG 1
 
 template <typename T>
 

@@ -7,7 +7,6 @@
 # include <cstdint>
 # include <vector>
 # include <complex>
-# include <fftw3.h>
 
 ///@defgroup TDE_interface
 ///@addtogroup TDE_interface

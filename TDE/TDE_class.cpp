@@ -1,5 +1,6 @@
 #include <cstring>
 #include <stdexcept>
+#include <fftw3.h>
 
 #include <TDE/TDE_class.hpp>
 #include <core.hpp>

@@ -1,8 +1,8 @@
 ///@file GCC_class.hpp
 ///@brief Implementation of generalized cross correlation method of time delay estimation.
 
-#ifndef CORRELATION_CLASS_HPP
-# define CORRELATION_CLASS_HPP
+#ifndef CORRELATION_METHOD_CLASS_HPP
+# define CORRELATION_METHOD_CLASS_HPP
 
 # include <cstdint>
 
@@ -48,4 +48,4 @@ private:
 ///@} GCC_TDE
 ///@} TDE_interface
 
-#endif // CORRELATION_CLASS_HPP
+#endif // CORRELATION_METHOD_CLASS_HPP

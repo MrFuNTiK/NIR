@@ -33,7 +33,7 @@ public:
      *
      * @param _size     Number of samples of output real array.
      *
-     * Note that _size is number of real arrays. So size of input
+     * Note that _size is number of elements in real arrays. So size of input
      * complex array to set_fourier_image() is (_size / 2 + 1) and
      * size of output real array from get_real() is (_size).
      */

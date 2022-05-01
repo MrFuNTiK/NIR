@@ -24,7 +24,7 @@ GPS::~GPS()
     delete[] cross_phase_spectrum;
 }
 
-void GPS::update(double* first_, double* second_) noexcept
+void GPS::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -37,8 +37,8 @@ void GPS::update(double* first_, double* second_) noexcept
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, ampl1);
-    get_ampl_spectrum(size/2+1, fur_2, ampl2);
+    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
+    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
 
     for( uint32_t i = 0; i < size/2+1; ++i )
     {

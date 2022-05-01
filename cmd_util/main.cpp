@@ -65,8 +65,8 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::unique_ptr<double> first_array(new double[pe->GetWindowSize()]);
-    std::unique_ptr<double> second_array(new double[pe->GetWindowSize()]);
+    std::vector<double> first_array(pe->GetWindowSize());
+    std::vector<double> second_array(pe->GetWindowSize());
 
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
@@ -81,10 +81,10 @@ int main(int argc, char* argv[])
         {
             for (uint16_t sample_num = 0; sample_num < window_size; ++sample_num)
             {
-                first_array.get()[sample_num]       = file.samples[0][(i+1)*window_num*window_size + sample_num + SAMPLE_DELAY];
-                second_array.get()[sample_num]      = file.samples[0][(i+1)*window_num*window_size + sample_num];
+                first_array[sample_num]       = file.samples[0][(i+1)*window_num*window_size + sample_num + SAMPLE_DELAY];
+                second_array[sample_num]      = file.samples[0][(i+1)*window_num*window_size + sample_num];
             }
-            tde_calc->update(first_array.get(), second_array.get());
+            tde_calc->update(first_array, second_array);
         }
 
         tde_calc->conclude();

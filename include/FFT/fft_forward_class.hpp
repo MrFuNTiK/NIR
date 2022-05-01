@@ -5,8 +5,9 @@
 # define FFT_FORWARD_CLASS_HPP
 
 # include <cstdint>
+# include <vector>
+# include <complex>
 # include <fftw3.h>
-# include <memory>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -58,20 +59,20 @@ public:
      *
      * @param[in] _real Pointer to array
      */
-    void set_real(double* _real) noexcept;
+    void set_real(const std::vector<double>& _real) noexcept;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void get_fourier_image(fftw_complex* _fourier) noexcept;
+    void get_fourier_image(std::vector<std::complex<double>>& _fourier) noexcept;
 
 private:
     uint16_t size;
     fftw_plan forward_plan;
-    double* real_array;
-    fftw_complex* fourier_image;
+    std::vector<double> real_array;
+    std::vector<std::complex<double>> fourier_image;
     void normalize_fur();
 };
 

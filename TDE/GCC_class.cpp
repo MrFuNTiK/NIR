@@ -14,19 +14,16 @@ GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     forward(_size),
     reverse(_size)
 {
-    corr_func = new double[size];
-    PHAT_func = new double[size/2+1];
+    corr_func.resize(size);
+    PHAT_func.resize(size/2+1);
 }
 
 GCC::~GCC()
-{
-    delete[] corr_func;
-    delete[] PHAT_func;
-}
+{}
 
-void GCC::get_corr_func(double* _corr)
+void GCC::get_corr_func(std::vector<double>& _corr)
 {
-    memcpy(_corr, corr_func, sizeof(double)*size);
+    memcpy(&_corr[0], &corr_func[0], sizeof(double)*size);
 }
 
 void GCC::shift_corr_func()
@@ -41,12 +38,11 @@ void GCC::apply_PHAT_func(double* weight_func)
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fur_1_2_sum[i][REAL] /= weight_func[i];
-        fur_1_2_sum[i][IMAG] /= weight_func[i];
+        fur_1_2_sum[i] /= weight_func[i];
     }
 }
 
-void GCC::update(double* first_, double* second_) noexcept
+void GCC::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
@@ -59,8 +55,8 @@ void GCC::update(double* first_, double* second_) noexcept
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, ampl1);
-    get_ampl_spectrum(size/2+1, fur_2, ampl2);
+    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
+    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
 
     for( uint32_t i = 0; i < size/2+1; ++i )
     {
@@ -85,8 +81,7 @@ void GCC::conclude() noexcept
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
-            fur_1_2_sum[i][REAL] *= w_func_numerator[i] / w_func_denominator[i];
-            fur_1_2_sum[i][IMAG] *= w_func_numerator[i] / w_func_denominator[i];
+            fur_1_2_sum[i] *= w_func_numerator[i] / w_func_denominator[i];
         }
     }
     case NONE:

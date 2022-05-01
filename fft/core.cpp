@@ -3,48 +3,23 @@
 
 #include "core.hpp"
 
-void get_ampl_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum)
+void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept
 {
     for (uint16_t i = 0; i < size; ++i)
     {
-        spectrum[i] = sqrt(fourier_image[i][REAL]*fourier_image[i][REAL] + fourier_image[i][IMAG]*fourier_image[i][IMAG]);
+        spectrum[i] = std::abs(fourier_image[i]);
     }
 }
 
-void get_phase_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum)
+void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum) noexcept
 {
     for (uint16_t i = 0; i < size; ++i)
     {
-        if (fourier_image[i][REAL] > 0)
-        {
-            spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]);
-        }
-        else if (fourier_image[i][REAL] < 0)
-        {
-            if (fourier_image[i][IMAG] >= 0)
-            {
-                spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]) + M_PI;
-            }
-            else
-            {
-                spectrum[i] = atan(fourier_image[i][IMAG]/fourier_image[i][REAL]) - M_PI;
-            }
-        }
-        else
-        {
-            if (fourier_image[i][IMAG] > 0)
-            {
-                spectrum[i] = M_PI_2;
-            }
-            else
-            {
-                spectrum[i] = M_PI_2;
-            }
-        }
+        spectrum[i] = std::arg(fourier_image[i]);
     }
 }
 
-void unwrap_phase_spectrum(uint16_t size, double* phase_spectrum)
+void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum) noexcept
 {
     for (uint16_t i = 0; i < size - 1; ++i)
     {

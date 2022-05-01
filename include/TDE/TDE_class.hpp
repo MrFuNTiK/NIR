@@ -5,7 +5,8 @@
 # define TDE_CLASS_HPP
 
 # include <cstdint>
-# include <fftw3.h>
+# include <vector>
+# include <complex>
 
 ///@defgroup TDE_interface
 ///@addtogroup TDE_interface
@@ -63,7 +64,7 @@ public:
      * @param _first    Pointer to the first channel samples
      * @param _second   Pointer to the second channel samples
      */
-    virtual void update(double* _first, double* _second)  noexcept = 0;
+    virtual void update(const std::vector<double>& _first, const std::vector<double>& _second)  noexcept = 0;
 
     /**
      * @brief Calculate TDE.
@@ -91,15 +92,15 @@ protected:
     weighting_func w_func;
     double tde;
 
-    fftw_complex* fur_1;
-    fftw_complex* fur_2;
-    fftw_complex* fur_1_2;
-    fftw_complex* fur_1_2_sum;
+    std::vector<std::complex<double>> fur_1;
+    std::vector<std::complex<double>> fur_2;
+    std::vector<std::complex<double>> fur_1_2;
+    std::vector<std::complex<double>> fur_1_2_sum;
 
-    double* ampl1;
-    double* ampl2;
-    double* ampl1_sum;
-    double* ampl2_sum;
+    std::vector<double> ampl1;
+    std::vector<double> ampl2;
+    std::vector<double> ampl1_sum;
+    std::vector<double> ampl2_sum;
 
 protected:
     void make_mul();

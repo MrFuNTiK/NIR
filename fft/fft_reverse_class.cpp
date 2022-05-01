@@ -18,15 +18,13 @@ fft_reverse::fft_reverse(uint16_t _size) :
         throw std::logic_error("Window size must be a power of 2");
     }
 
-    real_array = new double[size];
-    fourier_image = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*(size/2+1));
-    reverse_plan = fftw_plan_dft_c2r_1d(size, fourier_image, real_array, FFTW_ESTIMATE);
+    real_array.resize(size);
+    fourier_image.resize(size/2+1);
+    reverse_plan = fftw_plan_dft_c2r_1d(size, reinterpret_cast<fftw_complex*>(&fourier_image[0]), &real_array[0], FFTW_ESTIMATE);
 }
 
 fft_reverse::~fft_reverse()
 {
-    delete[] real_array;
-    fftw_free(fourier_image);
     fftw_destroy_plan(reverse_plan);
 }
 
@@ -35,12 +33,12 @@ void fft_reverse::execute() noexcept
     fftw_execute(reverse_plan);
 }
 
-void fft_reverse::set_fourier_image(fftw_complex* _fourier) noexcept
+void fft_reverse::set_fourier_image(const std::vector<std::complex<double>>& _fourier) noexcept
 {
-    memcpy(fourier_image, _fourier, sizeof(fftw_complex)*(size/2+1));
+    memcpy(&fourier_image[0], &_fourier[0], sizeof(std::complex<double>)*(size/2+1));
 }
 
-void fft_reverse::get_real(double* _real) noexcept
+void fft_reverse::get_real(std::vector<double>& _real) noexcept
 {
-    memcpy(_real, real_array, sizeof(double)*size);
+    memcpy(&_real[0], &real_array[0], sizeof(double)*size);
 }

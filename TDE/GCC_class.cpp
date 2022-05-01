@@ -41,8 +41,7 @@ void GCC::apply_PHAT_func(double* weight_func)
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
-        fur_1_2_sum[i][REAL] /= weight_func[i];
-        fur_1_2_sum[i][IMAG] /= weight_func[i];
+        fur_1_2_sum[i] /= weight_func[i];
     }
 }
 
@@ -50,17 +49,17 @@ void GCC::update(double* first_, double* second_) noexcept
 {
     forward.set_real(first_);
     forward.execute();
-    forward.get_fourier_image(fur_1);
+    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_1[0]));
 
     forward.set_real(second_);
     forward.execute();
-    forward.get_fourier_image(fur_2);
+    forward.get_fourier_image(reinterpret_cast<fftw_complex*>(&fur_2[0]));
 
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, ampl1);
-    get_ampl_spectrum(size/2+1, fur_2, ampl2);
+    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
+    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
 
     for( uint32_t i = 0; i < size/2+1; ++i )
     {
@@ -85,8 +84,7 @@ void GCC::conclude() noexcept
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
-            fur_1_2_sum[i][REAL] *= w_func_numerator[i] / w_func_denominator[i];
-            fur_1_2_sum[i][IMAG] *= w_func_numerator[i] / w_func_denominator[i];
+            fur_1_2_sum[i] *= w_func_numerator[i] / w_func_denominator[i];
         }
     }
     case NONE:
@@ -95,7 +93,7 @@ void GCC::conclude() noexcept
     }
     }
 
-    reverse.set_fourier_image(fur_1_2_sum);
+    reverse.set_fourier_image(reinterpret_cast<fftw_complex*>(&fur_1_2_sum[0]));
     reverse.execute();
     reverse.get_real(corr_func);
     shift_corr_func();

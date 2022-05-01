@@ -2,6 +2,8 @@
 # define CORE_H
 
 # include <fftw3.h>
+# include <vector>
+# include <complex>
 
 # define REAL 0
 # define IMAG 1
@@ -24,7 +26,7 @@ uint8_t swap(T* first, T*second)
 /// @param size             - amount of complex elements in given fourier image
 /// @param fourier_image    - given fourier image of signal
 /// @param spectrum         - pointer where GPS spectrum will be written
-void get_ampl_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum);
+void get_ampl_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum);
 
 /// @brief Function calculates phase spectrum of given fourier image of signal and writes it to given pointer.
 /// Memory for spectrum should be allocated before call of this function.
@@ -32,12 +34,12 @@ void get_ampl_spectrum(uint16_t size, fftw_complex* fourier_image, double* spect
 /// @param size             - amount of complex elements in given fourier image
 /// @param fourier_image    - given fourier image of signal
 /// @param spectrum         - pointer where GPS spectrum will be written
-void get_phase_spectrum(uint16_t size, fftw_complex* fourier_image, double* spectrum);
+void get_phase_spectrum(const uint16_t size, const std::vector<std::complex<double>>& fourier_image, double* spectrum);
 
 /// @brief Function unwraps phase spectrum
 ///
 /// @param size             - amount of samples in given spectrum
 /// @param phase_spectrum   - pointer to phase spectrum to unwrap
-void unwrap_phase_spectrum(uint16_t size, double* phase_spectrum);
+void unwrap_phase_spectrum(const uint16_t size, double* phase_spectrum);
 
 #endif // CORE_H

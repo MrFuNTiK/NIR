@@ -6,6 +6,7 @@
 #include "main.hpp"
 #include "TDE/TDE_class.hpp"
 #include <program_environment.hpp>
+#include <sound_provider.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
 static const uint16_t DEFAULT_SAMPLE_RATE = 44100;
@@ -75,8 +76,15 @@ int main(int argc, char* argv[])
     uint16_t window_size = pe->GetWindowSize();
     uint16_t avrg_num = pe->GetWinAvrgNum();
 
+
+
+    SoundProvider provider(pe->GetSampleRate(), pe->GetWindowSize());
+
+
+
     for( int i = 0; i < 5; ++i)
     {
+        /*
         for (uint16_t window_num = 3; window_num < avrg_num + 3; ++window_num)
         {
             for (uint16_t sample_num = 0; sample_num < window_size; ++sample_num)
@@ -86,11 +94,28 @@ int main(int argc, char* argv[])
             }
             tde_calc->update(first_array, second_array);
         }
+        //*/
+
+        //*
+        for( uint16_t j = 0; j < avrg_num; ++j)
+        {
+            provider.GetData(first_array, second_array);
+            tde_calc->update(first_array, second_array);
+        }
+        //*/
 
         tde_calc->conclude();
         tde = tde_calc->get_tde();
         std::cout << "TDE:    " << tde << std::endl;
     }
+
+    /*
+    while(1)
+    {
+
+    }
+    */
+    return 0;
 }
 
 static void SetUpEnvironmentByArgs(int argc, char* argv[])

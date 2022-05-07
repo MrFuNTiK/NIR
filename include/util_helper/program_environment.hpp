@@ -14,6 +14,15 @@
 ///@{
 
 /**
+ * @brief Avaliable methods to calculate TDE
+ */
+typedef enum
+{
+    GCC_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GCC
+    GPS_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GPS
+} tde_meth;
+
+/**
  * @class program_environment
  * @brief This class implements singleton manager of utility execution.
  */
@@ -77,9 +86,12 @@ public:
     void SetWeightingFunction(weighting_func feighting_fn);
 
     /**
-     * @brief Enable execution of programm.
+     * @brief Set executable status.
      *
-     * Should be called after all parameters were set.
+     * In order to enable further execution method should be called after all parameters were set.
+     *
+     * Note that program_environment constructor sets up SIGINT interrupt handler
+     * that sets executable value to false in order to correct terminate program.
      *
      * @param executable
      */
@@ -88,11 +100,11 @@ public:
     /**
      * @brief Create a TDE calculator.
      *
-     * Createt object is implementation of method set in SetMethodTDE().
-     * Return object is created with parameters passed by SetWindowSize(),
+     * Created object is implementation of method set in SetMethodTDE().
+     * Returned object is created with parameters passed by SetWindowSize(),
      * SetSampleRate(), SetWeightingFunction().
      *
-     * @throws std::exception   in case of invalid parameters
+     * @throws std::exception   in case of invalid parameters (actually thrown by calculator constructor)
      *
      * @return TDE_calc*
      */
@@ -121,6 +133,9 @@ public:
 
     /**
      * @brief Check wheather the execution is enabled.
+     *
+     * State can be changed explicitly by call of SetExecutable() (true and false) and
+     * implicitly by SIGINT interrupt handler (only false).
      *
      * @return true     if execution enabled
      * @return false    if execution disabled

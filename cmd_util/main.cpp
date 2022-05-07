@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 
     SoundProvider provider(pe->GetSampleRate(), pe->GetWindowSize());
 
-    while(pe->isExecutable())
+    while(pe->isExecutable()) // will be set to false by SIGINT handler
     {
         for( uint16_t j = 0; j < avrg_num; ++j)
         {

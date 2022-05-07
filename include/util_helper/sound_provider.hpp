@@ -19,7 +19,7 @@
 typedef enum
 {
     AWAITS,     ///< Set by RtAudio callback when new data was copied to provider internal storage
-    RECIEVED,   ///< Set by GetData() when data from provider storage was copiet to provided pointers
+    RECIEVED,   ///< Set by @ref SoundProvider::GetData() "GetData()" when data from provider storage was copiet to provided pointers
 } audio_data_status;
 
 /**

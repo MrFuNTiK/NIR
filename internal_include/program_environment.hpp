@@ -14,6 +14,7 @@ private:
     uint16_t _window_avrg_num;
     tde_meth _meth;
     weighting_func _weight_fn;
+    bool _isExecutable;
     program_environment();
 
 public:
@@ -27,11 +28,13 @@ public:
     void SetWinAvrgNum(uint16_t num);
     void SetMethodTDE(tde_meth meth);
     void SetWeightingFunction(weighting_func feighting_fn);
+    void SetExecutable(bool executable);
 
     TDE_calc* CreateCalculator();
     uint16_t GetWindowSize();
     uint16_t GetSampleRate();
     uint16_t GetWinAvrgNum();
+    bool isExecutable();
 };
 
 #endif // PROGRAMM_ENVORINMENT_HPP

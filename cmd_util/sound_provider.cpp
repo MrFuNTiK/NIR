@@ -87,8 +87,10 @@ int record_callback(void* ,
     volatile callback_buffer_t* buffer = reinterpret_cast<callback_buffer_t*>(userData);
     double* inBuffer = reinterpret_cast<double*>(inputBuffer);
 
-    while(buffer->status != RECIEVED )
-    {}
+    if(buffer->status != RECIEVED)
+    {
+        return 0;
+    }
 
     buffer->mutex.try_lock();
 

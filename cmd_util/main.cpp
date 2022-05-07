@@ -5,8 +5,8 @@
 #include "AudioFile.h"
 #include "main.hpp"
 #include "TDE/TDE_class.hpp"
-#include <program_environment.hpp>
-#include <sound_provider.hpp>
+#include <util_helper/program_environment.hpp>
+#include <util_helper/sound_provider.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
 static const uint16_t DEFAULT_SAMPLE_RATE = 44100;

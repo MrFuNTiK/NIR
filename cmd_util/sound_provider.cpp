@@ -73,7 +73,6 @@ void SoundProvider::GetData(std::vector<double>& first, std::vector<double>& sec
     std::memcpy(&first[0], &this->first[0], _windowSize*sizeof(double));
     std::memcpy(&second[0], &this->second[0], _windowSize*sizeof(double));
     status = RECIEVED;
-    std::cout << "Recieved\n";
     mut.unlock();
 }
 
@@ -109,7 +108,6 @@ int record_callback(void* ,
                     buffer->secondChannel.size() * sizeof(double));
 
     buffer->status = AWAITS;
-    std::cout << "Copied\n";
     buffer->mutex.unlock();
     return 0;
 }

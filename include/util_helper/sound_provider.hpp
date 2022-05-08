@@ -67,8 +67,8 @@ public:
      *
      * Method awaits until new data will be avaliable and writes it to provided ponters.
      *
-     * @param first     samples of the first channel
-     * @param second    samples of the second channel
+     * @param[out] first     samples of the first channel
+     * @param[out] second    samples of the second channel
      */
     void GetData(std::vector<double>& first, std::vector<double>& second);
 };

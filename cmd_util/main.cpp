@@ -1,8 +1,12 @@
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <memory>
 
-#include "AudioFile.h"
+#ifdef ENABLE_WAV_FILE_READING
+# include "AudioFile.h"
+#endif
+
 #include "main.hpp"
 #include "TDE/TDE_class.hpp"
 #include <util_helper/program_environment.hpp>
@@ -71,10 +75,13 @@ int main(int argc, char* argv[])
     std::vector<double> first_array(pe->GetWindowSize());
     std::vector<double> second_array(pe->GetWindowSize());
 
+#ifdef ENABLE_WAV_FILE_READING
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
     uint16_t RATE = file.getSampleRate();
     uint8_t num_channels = file.getNumChannels();
+#endif
+
     uint16_t window_size = pe->GetWindowSize();
     uint16_t avrg_num = pe->GetWinAvrgNum();
 

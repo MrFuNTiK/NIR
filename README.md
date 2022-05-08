@@ -10,9 +10,9 @@ Main purpose of these programms is researching and  comparison of GCC(BCC) and G
 - cmd_util - command utility provides functionality to calculate TDE
 
 # Future develop
-- Using data from ADC instead of reading file
 - GUI to draw graphics for weighting functions, amplitude cross-spectrum, phase cross-spectrum
 
 # Used libraries:
 - FFTW3 library: http://fftw.org/
 - Header-only library for wav-files: https://github.com/adamstark/AudioFile
+- RtAudio library for reading data from ADC: https://github.com/thestk/rtaudio

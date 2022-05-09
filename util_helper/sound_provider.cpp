@@ -63,6 +63,7 @@ SoundProvider::SoundProvider(unsigned int sampleRate,
 SoundProvider::~SoundProvider()
 {
     rt.stopStream();
+    rt.closeStream();
 }
 
 void SoundProvider::GetData(std::vector<double>& first, std::vector<double>& second)

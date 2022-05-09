@@ -1,8 +1,10 @@
 #include <stdexcept>
 
-#include <program_environment.hpp>
+#include <util_helper/program_environment.hpp>
 #include <TDE/GCC_class.hpp>
 #include <TDE/GPS_class.hpp>
+
+#include <util_helper/sigint.hpp>
 
 program_environment::program_environment() :
     _window_size(0),
@@ -10,7 +12,10 @@ program_environment::program_environment() :
     _window_avrg_num(1),
     _meth(GPS_TDE),
     _weight_fn(NONE)
-{}
+{
+    _isExecutable = false;
+    signal(SIGINT, SIGINT_handler);
+}
 
 program_environment::~program_environment()
 {}
@@ -53,6 +58,11 @@ void program_environment::SetWeightingFunction(weighting_func weighting_fn)
     _weight_fn = weighting_fn;
 }
 
+void program_environment::SetExecutable(bool executable)
+{
+    _isExecutable = executable;
+}
+
 TDE_calc* program_environment::CreateCalculator()
 {
     TDE_calc* tde = nullptr;
@@ -93,6 +103,11 @@ uint16_t program_environment::GetSampleRate()
 uint16_t program_environment::GetWinAvrgNum()
 {
     return _window_avrg_num;
+}
+
+bool program_environment::isExecutable()
+{
+    return _isExecutable;
 }
 
 std::shared_ptr<program_environment> program_environment::_pe(nullptr);

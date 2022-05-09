@@ -13,21 +13,12 @@
 ///@{
 
 /**
- * @brief Avaliable methods to calculate TDE corresponding @ref GCC "GCC" and @ref GPS "GPS" classes.
- */
-typedef enum
-{
-    GCC_TDE,
-    GPS_TDE,
-} tde_meth;
-
-/**
  * @brief Avaliable frequency-weighting functions.
  */
 typedef enum
 {
-    COHERENCE,
-    NONE,
+    COHERENCE,  ///< Use coherence frequency weighting function
+    NONE,       ///< No frequency weighting function used
 } weighting_func;
 
 /**

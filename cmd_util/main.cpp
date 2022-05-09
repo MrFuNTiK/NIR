@@ -1,11 +1,16 @@
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <memory>
 
-#include "AudioFile.h"
+#ifdef ENABLE_WAV_FILE_READING
+# include "AudioFile.h"
+#endif
+
 #include "main.hpp"
 #include "TDE/TDE_class.hpp"
-#include <program_environment.hpp>
+#include <util_helper/program_environment.hpp>
+#include <util_helper/sound_provider.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
 static const uint16_t DEFAULT_SAMPLE_RATE = 44100;
@@ -65,25 +70,28 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    pe->SetExecutable(true);
+
     std::vector<double> first_array(pe->GetWindowSize());
     std::vector<double> second_array(pe->GetWindowSize());
 
+#ifdef ENABLE_WAV_FILE_READING
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
     uint16_t RATE = file.getSampleRate();
     uint8_t num_channels = file.getNumChannels();
+#endif
+
     uint16_t window_size = pe->GetWindowSize();
     uint16_t avrg_num = pe->GetWinAvrgNum();
 
-    for( int i = 0; i < 5; ++i)
+    SoundProvider provider(pe->GetSampleRate(), pe->GetWindowSize());
+
+    while(pe->isExecutable()) // will be set to false by SIGINT handler
     {
-        for (uint16_t window_num = 3; window_num < avrg_num + 3; ++window_num)
+        for( uint16_t j = 0; j < avrg_num; ++j)
         {
-            for (uint16_t sample_num = 0; sample_num < window_size; ++sample_num)
-            {
-                first_array[sample_num]       = file.samples[0][(i+1)*window_num*window_size + sample_num + SAMPLE_DELAY];
-                second_array[sample_num]      = file.samples[0][(i+1)*window_num*window_size + sample_num];
-            }
+            provider.GetData(first_array, second_array);
             tde_calc->update(first_array, second_array);
         }
 
@@ -91,6 +99,8 @@ int main(int argc, char* argv[])
         tde = tde_calc->get_tde();
         std::cout << "TDE:    " << tde << std::endl;
     }
+
+    return 0;
 }
 
 static void SetUpEnvironmentByArgs(int argc, char* argv[])

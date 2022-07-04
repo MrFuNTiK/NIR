@@ -30,22 +30,8 @@ int main(int argc, char* argv[])
 
     std::unique_ptr<TDE_calc> tde_calc;
     std::shared_ptr<program_environment> pe = program_environment::GetInstance();
-    if(argc > 1)
-    {
-        try
-        {
-            SetUpEnvironmentByArgs(argc, argv);
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            PrintHelp(*argv);
-            return 0;
-        }
-    }
-    else
-    {
-        try
+
+    try
         {
             pe->SetMethodTDE(DEFAULT_TDE_METHOD);
             pe->SetWindowSize(DEFAULT_WINDOW_SIZE);
@@ -56,6 +42,19 @@ int main(int argc, char* argv[])
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
+            return 0;
+        }
+
+    if(argc > 1)
+    {
+        try
+        {
+            SetUpEnvironmentByArgs(argc, argv);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            PrintHelp(*argv);
             return 0;
         }
     }
@@ -78,11 +77,10 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_WAV_FILE_READING
     AudioFile<double> file;
     file.load(WAV_FILE_PATH);
-    uint16_t RATE = file.getSampleRate();
-    uint8_t num_channels = file.getNumChannels();
+    [[maybe_unused]] uint16_t RATE = file.getSampleRate();
+    [[maybe_unused]] uint8_t num_channels = file.getNumChannels();
 #endif
 
-    uint16_t window_size = pe->GetWindowSize();
     uint16_t avrg_num = pe->GetWinAvrgNum();
 
     SoundProvider provider(pe->GetSampleRate(), pe->GetWindowSize());

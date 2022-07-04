@@ -2,9 +2,8 @@
 #include <iostream>
 #include <util_helper/program_environment.hpp>
 
-void SIGINT_handler(int sigNum)
+void SIGINT_handler(int)
 {
     std::cout << "SIGINT recieved\n";
-    std::shared_ptr<program_environment>pe = program_environment::GetInstance();
-    pe->SetExecutable(false);
+    program_environment::GetInstance()->SetExecutable(false);
 }

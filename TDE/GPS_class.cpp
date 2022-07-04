@@ -40,7 +40,7 @@ void GPS::update(const std::vector<double>& first_, const std::vector<double>& s
     get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
     get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
 
-    for( uint32_t i = 0; i < size/2+1; ++i )
+    for( uint32_t i = 0; i < size/2u+1u; ++i )
     {
         ampl1_sum[i] += ampl1[i] * ampl1[i];
         ampl2_sum[i] += ampl2[i] * ampl2[i];
@@ -53,21 +53,24 @@ void GPS::conclude() noexcept
     double numerator_sum = 0, divider_sum = 0;
 
     normalize_sum();
-    double w_func_numerator[size/2+1] = { 0 }, w_func_denominator[size/2+1] = { 0 };
+    std::vector<double> w_func_numerator(size/2+1);
+    std::vector<double> w_func_denominator(size/2+1);
+    //double w_func_numerator[size/2+1] = { 0 }, w_func_denominator[size/2+1] = { 0 };
     switch (w_func)
     {
     case COHERENCE:
     {
-        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator);
+        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator.data());
         for( uint16_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
         }
+        break;
     }
     case NONE:
     {
-
+        break;
     }
     }
     get_phase_spectrum(size/2+1, fur_1_2_sum, cross_phase_spectrum);
@@ -89,11 +92,13 @@ void GPS::conclude() noexcept
                 cross_phase_spectrum[i] *= w_func_numerator[i] / w_func_denominator[i];
                 numerator_sum += harmonica * cross_phase_spectrum[i];
                 divider_sum += harmonica * harmonica;
+                break;
             }
             case NONE:
             {
                 numerator_sum += harmonica * cross_phase_spectrum[i];
                 divider_sum += harmonica * harmonica;
+                break;
             }
             }
         }

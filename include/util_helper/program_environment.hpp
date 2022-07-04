@@ -83,7 +83,7 @@ public:
      *
      * @param feighting_fn
      */
-    void SetWeightingFunction(weighting_func feighting_fn);
+    void SetWeightingFunction(weighting_func weighting_fn);
 
     /**
      * @brief Set executable status.

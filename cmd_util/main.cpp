@@ -31,19 +31,11 @@ int main(int argc, char* argv[])
     std::unique_ptr<TDE_calc> tde_calc;
     std::shared_ptr<program_environment> pe = program_environment::GetInstance();
 
-    try
-        {
-            pe->SetMethodTDE(DEFAULT_TDE_METHOD);
-            pe->SetWindowSize(DEFAULT_WINDOW_SIZE);
-            pe->SetSampleRate(DEFAULT_SAMPLE_RATE);
-            pe->SetWinAvrgNum(DEFAULT_AVRG_NUM);
-            pe->SetWeightingFunction(DEFAULT_WEIGHTING_FN);
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            return 0;
-        }
+    pe->SetMethodTDE(DEFAULT_TDE_METHOD);
+    pe->SetWindowSize(DEFAULT_WINDOW_SIZE);
+    pe->SetSampleRate(DEFAULT_SAMPLE_RATE);
+    pe->SetWinAvrgNum(DEFAULT_AVRG_NUM);
+    pe->SetWeightingFunction(DEFAULT_WEIGHTING_FN);
 
     if(argc > 1)
     {
@@ -206,10 +198,10 @@ static void PrintHelp(const char* progName)
                                     "-avrg_num [value] "
                           << std::endl << std::endl;
     std::cout << "Arguments:" << std::endl;
-    std::cout << "\t" << "-tde_method"  << "\t" << "[GCC|GPS(default)]" << "\t\t"       << "Method of TDE calculation" << std::endl
-              << "\t" << "-sample_rate" << "\t" << "[value]" << "\t\t\t\t"              << "Frequence of source signals (Hz)" << std::endl
-              << "\t" << "-window_size" << "\t" << "[value]" << "\t\t\t\t"              << "Number signal's samples in one window" << std::endl
-              << "\t" << "-weigting_fn" << "\t" << "[coherence|none(default)]" << "\t"  << "Frequency-wieghting function" << std::endl
-              << "\t" << "-avrg_num"    << "\t" << "[value(default - 1)]" << "\t\t"     << "Number of windows to avergage spectrums" << std::endl
-              << "\t" << "-help|-h" << "\t\t\t\t\t" << "Print help message" << std::endl;
+    std::cout << "\t" << "-tde_method"      << "\t" << "[GCC|GPS(default)]" << "\t\t"       << "Method of TDE calculation" << std::endl
+              << "\t" << "-sample_rate"     << "\t" << "[value (default 44100)]" << "\t\t"  << "Frequence of source signals (Hz)" << std::endl
+              << "\t" << "-window_size"     << "\t" << "[value (default 1024)]" << "\t\t"   << "Number signal's samples in one window" << std::endl
+              << "\t" << "-weighting_fn"    << "\t" << "[coherence|none(default)]" << "\t"  << "Frequency-wieghting function" << std::endl
+              << "\t" << "-avrg_num"        << "\t" << "[value (default 1)]" << "\t\t"      << "Number of windows to avergage spectrums" << std::endl
+              << "\t" << "-help|-h"         << "\t\t\t\t\t" << "Print help message" << std::endl;
 }

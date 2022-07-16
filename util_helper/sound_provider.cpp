@@ -11,8 +11,6 @@ int record_callback(void* outputBuffer,
                     RtAudioStreamStatus status,
                     void *userData);
 
-
-
 SoundProvider::SoundProvider(unsigned int sampleRate,
                              unsigned int windowSize) :
     _sampleRate(sampleRate),

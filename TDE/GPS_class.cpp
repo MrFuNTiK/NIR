@@ -55,7 +55,6 @@ void GPS::conclude() noexcept
     normalize_sum();
     std::vector<double> w_func_numerator(size/2+1);
     std::vector<double> w_func_denominator(size/2+1);
-    //double w_func_numerator[size/2+1] = { 0 }, w_func_denominator[size/2+1] = { 0 };
     switch (w_func)
     {
     case COHERENCE:

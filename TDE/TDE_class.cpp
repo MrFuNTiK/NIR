@@ -45,7 +45,6 @@ TDE_calc::~TDE_calc()
 
 void TDE_calc::make_mul()
 {
-    double real, imag;
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
         fur_1_2[i] = fur_1[i] * fur_2[i];
@@ -62,9 +61,9 @@ void TDE_calc::make_mul_with_conj()
 
 void TDE_calc::clear_inner()
 {
-    std::memset(&fur_1_2_sum[0], 0, sizeof( std::complex<double> ) * (size / 2 + 1));
-    std::memset(&ampl1_sum[0], 0, sizeof(double) * (size / 2 + 1));
-    std::memset(&ampl2_sum[0], 0, sizeof(double) * (size / 2 + 1));
+    std::fill(fur_1_2_sum.begin(), fur_1_2_sum.end(), 0);
+    std::fill(ampl1_sum.begin(), ampl1_sum.end(), 0);
+    std::fill(ampl2_sum.begin(), ampl2_sum.end(), 0);
 }
 
 void TDE_calc::add_mul_to_sum()

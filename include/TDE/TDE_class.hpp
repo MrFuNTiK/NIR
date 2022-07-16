@@ -79,8 +79,8 @@ public:
 protected:
     uint16_t size;
     uint16_t sample_rate;
-    uint16_t update_count;
     weighting_func w_func;
+    uint16_t update_count;
     double tde;
 
     std::vector<std::complex<double>> fur_1;

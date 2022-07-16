@@ -11,9 +11,9 @@ program_environment::program_environment() :
     _sample_rate(0),
     _window_avrg_num(1),
     _meth(GPS_TDE),
-    _weight_fn(NONE)
+    _weight_fn(NONE),
+    _isExecutable(false)
 {
-    _isExecutable = false;
     signal(SIGINT, SIGINT_handler);
 }
 

@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <cstring>
-#include <mutex>
 #include <rt_audio/RtAudio.h>
 #include <util_helper/sound_provider.hpp>
 
@@ -66,13 +65,14 @@ SoundProvider::~SoundProvider()
 
 void SoundProvider::GetData(std::vector<double>& first, std::vector<double>& second)
 {
-    while( buffer.status != AWAITS )
-    {}
-    mut.try_lock();
+    std::unique_lock<std::mutex> lock( mut );
+    buffer.cond_var.wait(lock, [=](){return status == AWAITS;});
+
     std::memcpy(&first[0], &this->first[0], _windowSize*sizeof(double));
     std::memcpy(&second[0], &this->second[0], _windowSize*sizeof(double));
+
     status = RECIEVED;
-    mut.unlock();
+    lock.unlock();
 }
 
 int record_callback(void* ,
@@ -90,7 +90,8 @@ int record_callback(void* ,
         return 0;
     }
 
-    buffer->mutex.try_lock();
+    std::unique_lock<std::mutex> lock( buffer->mutex );
+    buffer->cond_var.wait(lock, [=](){return buffer->status == RECIEVED;});
 
     std::memcpy(    &buffer->firstChannel[0],
                     inBuffer,
@@ -107,6 +108,7 @@ int record_callback(void* ,
                     buffer->secondChannel.size() * sizeof(double));
 
     buffer->status = AWAITS;
+    buffer->cond_var.notify_one();
     buffer->mutex.unlock();
     return 0;
 }

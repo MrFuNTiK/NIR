@@ -3,6 +3,7 @@
 
 # include <vector>
 # include <mutex>
+# include <condition_variable>
 # include "rt_audio/RtAudio.h"
 
 ///@defgroup utility_helpers
@@ -31,6 +32,7 @@ typedef struct
     std::vector<double>& secondChannel;
     volatile audio_data_status& status;
     std::mutex& mutex;
+    std::condition_variable& cond_var;
 } callback_buffer_t;
 
 /**
@@ -44,13 +46,14 @@ private:
     unsigned int _sampleRate;
     unsigned int _windowSize;
     std::mutex mut;
-    audio_data_status status = RECIEVED;
+    std::condition_variable cond_var;
+    audio_data_status status = AWAITS;
 
     RtAudio rt;
     RtAudio::StreamParameters params;
     std::vector<double> first;
     std::vector<double> second;
-    callback_buffer_t buffer{first, second, status, mut};
+    callback_buffer_t buffer{first, second, status, mut, cond_var};
 
 public:
     /**

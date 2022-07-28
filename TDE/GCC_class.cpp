@@ -6,6 +6,7 @@
 #include <TDE/GCC_class.hpp>
 #include <FFT/fft_forward_class.hpp>
 #include <FFT/fft_reverse_class.hpp>
+#include <logger/logger.hpp>
 #include <core.hpp>
 
 
@@ -16,10 +17,13 @@ GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
 {
     corr_func.resize(size);
     PHAT_func.resize(size/2+1);
+    TRACE_EVENT(EVENT, "GCC object created");
 }
 
 GCC::~GCC()
-{}
+{
+    TRACE_EVENT(EVENT, "GCC object destroyed");
+}
 
 void GCC::get_corr_func(std::vector<double>& _corr)
 {

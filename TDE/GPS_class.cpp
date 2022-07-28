@@ -7,6 +7,7 @@
 #include <TDE/GPS_class.hpp>
 #include <FFT/fft_forward_class.hpp>
 #include <FFT/fft_reverse_class.hpp>
+#include <logger/logger.hpp>
 #include <core.hpp>
 
 #define BOTTOM_FREQ_BOUND   300
@@ -17,11 +18,13 @@ GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     forward(_size)
 {
     cross_phase_spectrum = new double[size/2+1];
+    TRACE_EVENT(EVENT, "GPS class created");
 }
 
 GPS::~GPS()
 {
     delete[] cross_phase_spectrum;
+    TRACE_EVENT(EVENT, "GPS class destroyed");
 }
 
 void GPS::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept

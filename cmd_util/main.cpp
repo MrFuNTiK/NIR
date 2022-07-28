@@ -11,6 +11,7 @@
 #include "TDE/TDE_class.hpp"
 #include <util_helper/program_environment.hpp>
 #include <util_helper/sound_provider.hpp>
+#include <logger/logger.hpp>
 
 static const tde_meth DEFAULT_TDE_METHOD = GPS_TDE;
 static const uint16_t DEFAULT_SAMPLE_RATE = 44100;
@@ -29,7 +30,7 @@ int main(int argc, char* argv[])
     double tde = 0;
 
     std::unique_ptr<TDE_calc> tde_calc;
-    std::shared_ptr<program_environment> pe = program_environment::GetInstance();
+    auto pe = program_environment::GetInstance();
 
     pe->SetMethodTDE(DEFAULT_TDE_METHOD);
     pe->SetWindowSize(DEFAULT_WINDOW_SIZE);
@@ -50,6 +51,11 @@ int main(int argc, char* argv[])
             return 0;
         }
     }
+
+    auto logger = logger::GetInstance();
+    logger->SetEvents( EVENT | ERROR );
+    logger->SetTrace( "/home/kirill/Study/NIR/FFTW/NIR/result/bin/logfile.txt" );
+    logger->Initialize();
 
     try
     {

@@ -1,6 +1,6 @@
 project(rt_audio)
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 
 add_library(${PROJECT_NAME} STATIC RtAudio.cpp rtaudio_c.cpp)
 target_compile_definitions(rt_audio PRIVATE "__LINUX_ALSA__")

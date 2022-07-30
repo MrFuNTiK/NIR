@@ -1,6 +1,6 @@
 project(TDE_TOOLS LANGUAGES CXX)
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 14)
 set(RESULT_DIRECTORY ${CMAKE_SOURCE_DIR}/result)

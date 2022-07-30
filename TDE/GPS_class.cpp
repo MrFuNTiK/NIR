@@ -18,13 +18,13 @@ GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     forward(_size)
 {
     cross_phase_spectrum = new double[size/2+1];
-    TRACE_EVENT(EVENT, "GPS class created");
+    TRACE_EVENT(EVENTS::EVENT, "GPS class created");
 }
 
 GPS::~GPS()
 {
     delete[] cross_phase_spectrum;
-    TRACE_EVENT(EVENT, "GPS class destroyed");
+    TRACE_EVENT(EVENTS::EVENT, "GPS class destroyed");
 }
 
 void GPS::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept

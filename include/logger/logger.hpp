@@ -6,10 +6,17 @@
 # include <memory>
 # include <cstdint>
 
-typedef int32_t EVENTS;
+enum class EVENTS : int
+{
+    EVENT = 1,
+    ERROR = 2
+};
 
-# define EVENT static_cast<EVENTS>(1)
-# define ERROR static_cast<EVENTS>(2)
+EVENTS operator | (EVENTS ev1, EVENTS ev2);
+
+EVENTS operator & (EVENTS ev1, EVENTS ev2);
+
+bool operator ! (EVENTS ev);
 
 class logger
 {
@@ -23,7 +30,7 @@ public:
 
 private:
     static std::shared_ptr<logger> _logger;
-    logger() = default;
+    logger();
     bool _isInitialized;
     std::mutex _traceMutex;
     std::string _trace;

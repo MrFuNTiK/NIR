@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <unistd.h>
 
 #ifdef ENABLE_WAV_FILE_READING
 # include "AudioFile.h"
@@ -52,9 +53,14 @@ int main(int argc, char* argv[])
         }
     }
 
+    std::string logFile( argv[0] );
+    std::size_t found = logFile.find_last_of('/');
+    logFile = logFile.substr(0, found);
+    logFile += "/logfile.txt";
+
     auto logger = logger::GetInstance();
-    logger->SetEvents( EVENT | ERROR );
-    logger->SetTrace( "/home/kirill/Study/NIR/FFTW/NIR/result/bin/logfile.txt" );
+    logger->SetEvents( EVENTS::EVENT | EVENTS::ERROR );
+    logger->SetTrace( logFile.c_str() );
     logger->Initialize();
 
     try

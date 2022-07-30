@@ -5,6 +5,6 @@
 
 void SIGINT_handler(int)
 {
-    TRACE_EVENT(EVENT, "SIGINT recieved");
+    TRACE_EVENT(EVENTS::EVENT, "SIGINT recieved");
     program_environment::GetInstance()->SetExecutable(false);
 }

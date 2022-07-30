@@ -11,6 +11,11 @@ std::shared_ptr<logger> logger::GetInstance()
     return _logger;
 }
 
+logger::logger() :
+    _isInitialized(false),
+    _trace_stream(nullptr)
+{}
+
 logger::~logger()
 {
     if( !_isInitialized )
@@ -75,12 +80,12 @@ const char* logger::EventToString( EVENTS event )
     const char* str;
     switch (event)
     {
-    case EVENT:
+    case EVENTS::EVENT:
     {
         str = "EVENT";
         break;
     }
-    case ERROR:
+    case EVENTS::ERROR:
     {
         str = "ERROR";
         break;
@@ -90,6 +95,21 @@ const char* logger::EventToString( EVENTS event )
     }
 
     return str;
+}
+
+EVENTS operator | (EVENTS ev1, EVENTS ev2)
+{
+    return static_cast<EVENTS>( static_cast<std::underlying_type<EVENTS>::type>(ev1) | static_cast<std::underlying_type<EVENTS>::type>(ev2) );
+}
+
+EVENTS operator & (EVENTS ev1, EVENTS ev2)
+{
+    return static_cast<EVENTS>( static_cast<std::underlying_type<EVENTS>::type>(ev1) & static_cast<std::underlying_type<EVENTS>::type>(ev2) );
+}
+
+bool operator ! (EVENTS ev)
+{
+    return ( 0 == static_cast<std::underlying_type<EVENTS>::type>(ev) );
 }
 
 std::shared_ptr<logger> logger::_logger( nullptr );

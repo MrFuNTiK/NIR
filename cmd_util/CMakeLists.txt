@@ -1,6 +1,6 @@
 project(cmd_util)
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 
 add_executable(${PROJECT_NAME}
             ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)

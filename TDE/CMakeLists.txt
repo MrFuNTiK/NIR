@@ -1,6 +1,6 @@
 project(TDE_calculator)
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 
 add_library(${PROJECT_NAME} STATIC
             ${CMAKE_CURRENT_SOURCE_DIR}/TDE_class.cpp

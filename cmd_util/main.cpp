@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     logFile += "/logfile.txt";
 
     auto logger = logger::GetInstance();
-    logger->SetEvents( EVENTS::EVENT | EVENTS::ERROR );
+    logger->SetEvents( EVENTS::CREATE | EVENTS::SOUND | EVENTS::MANAGE );
     logger->SetTrace( logFile.c_str() );
     logger->Initialize();
 

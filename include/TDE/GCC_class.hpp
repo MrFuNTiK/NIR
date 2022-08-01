@@ -31,8 +31,8 @@ public:
     ~GCC();
 
     void get_corr_func(std::vector<double>& _corr);
-    void update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept override;
-    void conclude() noexcept override;
+    void update(const std::vector<double>& first_, const std::vector<double>& second_) override;
+    void conclude() override;
 
 private:
     std::vector<double> corr_func;

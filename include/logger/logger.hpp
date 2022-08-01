@@ -8,14 +8,15 @@
 
 enum class EVENTS : int
 {
-    EVENT = 1,
-    ERROR = 2
+    CREATE = 1,
+    SOUND = 2,
+    MANAGE = 4,
+    TDE_CALC = 8,
+    ERROR = 16
 };
 
 EVENTS operator | (EVENTS ev1, EVENTS ev2);
-
 EVENTS operator & (EVENTS ev1, EVENTS ev2);
-
 bool operator ! (EVENTS ev);
 
 class logger

@@ -80,9 +80,24 @@ const char* logger::EventToString( EVENTS event )
     const char* str;
     switch (event)
     {
-    case EVENTS::EVENT:
+    case EVENTS::CREATE:
     {
-        str = "EVENT";
+        str = "CREATE";
+        break;
+    }
+    case EVENTS::SOUND:
+    {
+        str = "SOUND";
+        break;
+    }
+    case EVENTS::MANAGE:
+    {
+        str = "MANAGE";
+        break;
+    }
+    case EVENTS::TDE_CALC:
+    {
+        str = "TDE_CALC";
         break;
     }
     case EVENTS::ERROR:

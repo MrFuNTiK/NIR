@@ -58,10 +58,12 @@ int main(int argc, char* argv[])
     logFile = logFile.substr(0, found);
     logFile += "/logfile.txt";
 
+#ifdef ENABLE_LOGGER
     auto logger = logger::GetInstance();
     logger->SetEvents( EVENTS::CREATE | EVENTS::SOUND | EVENTS::MANAGE );
     logger->SetTrace( logFile.c_str() );
     logger->Initialize();
+#endif
 
     try
     {

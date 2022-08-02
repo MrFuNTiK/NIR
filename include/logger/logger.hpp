@@ -40,7 +40,11 @@ private:
     const char* EventToString( EVENTS event );
 };
 
-# define TRACE_EVENT( EVENT, MESSAGE )  logger::GetInstance()->LogMessage( EVENT, \
-                                        __FILE__, __LINE__, MESSAGE )
+# if defined( ENABLE_LOGGER )
+#  define TRACE_EVENT( EVENT, MESSAGE )  logger::GetInstance()->LogMessage( EVENT, \
+                                         __FILE__, __LINE__, MESSAGE )
+# else
+#  define TRACE_EVENT( EVENT, MESSAGE ) (void)0
+# endif
 
 #endif // LOGGER_HPP

@@ -6,12 +6,15 @@ set(CMAKE_CXX_STANDARD 14)
 set(RESULT_DIRECTORY ${CMAKE_SOURCE_DIR}/result)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RESULT_DIRECTORY}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${RESULT_DIRECTORY}/lib)
+
 option(ENABLE_WAV_FILE_READING CACHE OFF)
+option(ENABLE_LOGGER CACHE OFF)
 option(ENABLE_TEST CACHE OFF)
 
 message(STATUS "Build profile: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Result directory: ${RESULT_DIRECTORY}")
 message(STATUS "Reading wav-file: ${ENABLE_WAV_FILE_READING}")
+message(STATUS "Enable logger: ${ENABLE_LOGGER}")
 message(STATUS "Enable tests: ${ENABLE_TEST}")
 message(STATUS "================================================")
 

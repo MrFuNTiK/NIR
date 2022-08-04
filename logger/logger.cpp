@@ -31,12 +31,12 @@ logger::~logger()
 
 void logger::SetTrace( const char* trace )
 {
-    _trace = trace;
+    if( !_isInitialized ) _trace = trace;
 }
 
 void logger::SetEvents( EVENTS eventTypes )
 {
-    _events = eventTypes;
+    if( !_isInitialized ) _events = eventTypes;
 }
 
 void logger::Initialize()

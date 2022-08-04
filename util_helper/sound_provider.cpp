@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <rt_audio/RtAudio.h>
+#include <logger/logger.hpp>
 #include <util_helper/sound_provider.hpp>
 
 int record_callback(void* outputBuffer,
@@ -13,7 +14,8 @@ int record_callback(void* outputBuffer,
 SoundProvider::SoundProvider(unsigned int sampleRate,
                              unsigned int windowSize) :
     _sampleRate(sampleRate),
-    _windowSize(windowSize)
+    _windowSize(windowSize),
+    status(RECIEVED)
 {
     if(4 > windowSize)
     {
@@ -65,6 +67,7 @@ SoundProvider::~SoundProvider()
 
 void SoundProvider::GetData(std::vector<double>& first, std::vector<double>& second)
 {
+    TRACE_EVENT( EVENTS::SOUND, "Sound has been requested" );
     std::unique_lock<std::mutex> lock( mut );
     buffer.cond_var.wait(lock, [=](){return status == AWAITS;});
 
@@ -73,6 +76,7 @@ void SoundProvider::GetData(std::vector<double>& first, std::vector<double>& sec
 
     status = RECIEVED;
     lock.unlock();
+    TRACE_EVENT( EVENTS::SOUND, "Sound has been recieved" );
 }
 
 int record_callback(void* ,
@@ -82,11 +86,13 @@ int record_callback(void* ,
                     RtAudioStreamStatus ,
                     void *userData)
 {
+    TRACE_EVENT( EVENTS::SOUND, "RtAudio callback called" );
     volatile callback_buffer_t* buffer = reinterpret_cast<callback_buffer_t*>(userData);
     double* inBuffer = reinterpret_cast<double*>(inputBuffer);
 
     if(buffer->status != RECIEVED)
     {
+        TRACE_EVENT( EVENTS::SOUND, "RtAudio callback leaved" );
         return 0;
     }
 
@@ -107,6 +113,7 @@ int record_callback(void* ,
                     0,
                     buffer->secondChannel.size() * sizeof(double));
 
+    TRACE_EVENT( EVENTS::SOUND, "RtAudio callback wrote sound" );
     buffer->status = AWAITS;
     buffer->cond_var.notify_one();
     buffer->mutex.unlock();

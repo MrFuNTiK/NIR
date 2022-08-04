@@ -47,7 +47,7 @@ private:
     unsigned int _windowSize;
     std::mutex mut;
     std::condition_variable cond_var;
-    audio_data_status status = AWAITS;
+    audio_data_status status;
 
     RtAudio rt;
     RtAudio::StreamParameters params;

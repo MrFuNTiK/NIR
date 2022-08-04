@@ -6,6 +6,7 @@
 #include <TDE/GCC_class.hpp>
 #include <FFT/fft_forward_class.hpp>
 #include <FFT/fft_reverse_class.hpp>
+#include <logger/logger.hpp>
 #include <core.hpp>
 
 
@@ -16,10 +17,13 @@ GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
 {
     corr_func.resize(size);
     PHAT_func.resize(size/2+1);
+    TRACE_EVENT(EVENTS::CREATE, "GCC object created");
 }
 
 GCC::~GCC()
-{}
+{
+    TRACE_EVENT(EVENTS::CREATE, "GCC object destroyed");
+}
 
 void GCC::get_corr_func(std::vector<double>& _corr)
 {
@@ -42,8 +46,9 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::update(const std::vector<double>& first_, const std::vector<double>& second_) noexcept
+void GCC::update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
+    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
     forward.set_real(first_);
     forward.execute();
     forward.get_fourier_image(fur_1);
@@ -67,8 +72,10 @@ void GCC::update(const std::vector<double>& first_, const std::vector<double>& s
     ++update_count;
 }
 
-void GCC::conclude() noexcept
+void GCC::conclude()
 {
+    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
+
     normalize_sum();
 
     std::vector<double> w_func_numerator(size/2+1);

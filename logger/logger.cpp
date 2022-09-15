@@ -2,13 +2,10 @@
 #include <iostream>
 #include <logger/logger.hpp>
 
-std::shared_ptr<logger> logger::GetInstance()
+logger* logger::GetInstance()
 {
-    if( !_logger.get() )
-    {
-        _logger.reset(new logger);
-    }
-    return _logger;
+    static logger _logger;
+    return &_logger;
 }
 
 logger::logger() :
@@ -126,5 +123,3 @@ bool operator ! (EVENTS ev)
 {
     return ( 0 == static_cast<std::underlying_type<EVENTS>::type>(ev) );
 }
-
-std::shared_ptr<logger> logger::_logger( nullptr );

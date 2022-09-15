@@ -6,7 +6,6 @@
 
 # include <string>
 # include <mutex>
-# include <memory>
 # include <cstdint>
 
 ///@defgroup utility_helpers
@@ -44,7 +43,7 @@ public:
      *
      * @return std::shared_ptr<logger> Instance of logger.
      */
-    static std::shared_ptr<logger> GetInstance();
+    static logger* GetInstance();
 
     /**
      * @brief Set target trace path.
@@ -92,11 +91,10 @@ public:
      * @throws std::runtime_error In case of logger was not initialized.
      */
     void LogMessage( EVENTS event, const char* file, const int line, const char* message );
-    ~logger();
 
 private:
-    static std::shared_ptr<logger> _logger;
     logger();
+    ~logger();
     bool _isInitialized;
     std::mutex _traceMutex;
     std::string _trace;

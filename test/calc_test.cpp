@@ -33,7 +33,7 @@ void calc_test::SetUp()
 {
     vec1.resize(DEFAULT_WINDOW_SIZE);
     vec2.resize(DEFAULT_WINDOW_SIZE);
-    std::shared_ptr<PE> pe = PE::GetInstance();
+    auto pe = PE::GetInstance();
     ASSERT_NO_THROW(pe->SetWindowSize(DEFAULT_WINDOW_SIZE));
     ASSERT_NO_THROW(pe->SetSampleRate(DEFAULT_SAMPLE_RATE));
     ASSERT_NO_THROW(pe->SetWeightingFunction(std::get<0>(GetParam())));

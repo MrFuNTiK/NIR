@@ -41,7 +41,7 @@ public:
     /**
      * @brief Get the Instance object.
      *
-     * @return std::shared_ptr<logger> Instance of logger.
+     * @return logger* Instance of logger.
      */
     static logger* GetInstance();
 

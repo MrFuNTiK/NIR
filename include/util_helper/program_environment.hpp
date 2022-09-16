@@ -1,8 +1,6 @@
 #ifndef PROGRAMM_ENVORINMENT_HPP
 # define PROGRAMM_ENVORINMENT_HPP
 
-# include <memory>
-
 # include <TDE/TDE_class.hpp>
 
 ///@defgroup utility_helpers
@@ -29,7 +27,6 @@ typedef enum
 class program_environment
 {
 private:
-    static std::shared_ptr<program_environment> _pe;
     uint16_t _window_size;
     uint16_t _sample_rate;
     uint16_t _window_avrg_num;
@@ -37,18 +34,18 @@ private:
     weighting_func _weight_fn;
     bool _isExecutable;
     program_environment();
+    ~program_environment();
 
 public:
-    ~program_environment();
     program_environment(program_environment* pe) = delete;
     void operator = (const program_environment*) = delete;
 
     /**
      * @brief Get the Instance object
      *
-     * @return std::shared_ptr<program_environment> instance of manager object
+     * @return program_environment* instance of manager object
      */
-    static std::shared_ptr<program_environment> GetInstance();
+    static program_environment* GetInstance();
 
     /**
      * @brief Set the size of windows to process.

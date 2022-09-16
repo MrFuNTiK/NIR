@@ -20,13 +20,10 @@ program_environment::program_environment() :
 program_environment::~program_environment()
 {}
 
-std::shared_ptr<program_environment> program_environment::GetInstance()
+program_environment* program_environment::GetInstance()
 {
-    if( _pe.get() == nullptr )
-    {
-        _pe.reset(new program_environment());
-    }
-    return _pe;
+    static program_environment _pe;
+    return &_pe;
 }
 
 void program_environment::SetWindowSize(uint16_t window_size)
@@ -109,5 +106,3 @@ bool program_environment::isExecutable()
 {
     return _isExecutable;
 }
-
-std::shared_ptr<program_environment> program_environment::_pe(nullptr);

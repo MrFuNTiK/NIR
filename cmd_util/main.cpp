@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 
 static void SetUpEnvironmentByArgs(int argc, char* argv[])
 {
-    std::shared_ptr<program_environment> pe = program_environment::GetInstance();
+    auto pe = program_environment::GetInstance();
 
     const char* progName = *argv;
     --argc;

@@ -16,11 +16,15 @@
 ///@addtogroup Logger
 ///@{
 
+namespace logger
+{
+
 /**
  * @brief Avaliable event types to log.
  */
 enum class EVENTS : int
 {
+    NONE = 0,       ///< Do not log any event.
     CREATE = 1,     ///< Resource managing e.g. create or destroy object.
     SOUND = 2,      ///< Actions with sound e.g. copy data from RtAudio buffer.
     MANAGE = 4,     ///< Change behaviour of cmd_util e.g. by calling SIGINT handler.
@@ -28,14 +32,25 @@ enum class EVENTS : int
     ERROR = 16      ///< Error occurred.
 };
 
+static constexpr char NONE_STR[] =      "NONE";
+static constexpr char CREATE_STR[] =    "CREATE";
+static constexpr char SOUND_STR[] =     "SOUND";
+static constexpr char MANAGE_STR[] =    "MANAGE";
+static constexpr char TDE_CALC_STR[] =  "TDE_CALC";
+static constexpr char ERROR_STR[] =     "ERROR";
+
 EVENTS operator | (EVENTS ev1, EVENTS ev2);
 EVENTS operator & (EVENTS ev1, EVENTS ev2);
 bool operator ! (EVENTS ev);
 
+std::string EVENTS_to_str( EVENTS event );
+
+EVENTS EVENTS_from_str( std::string& str );
+
 /**
  * @brief Thread-safe logger singleton
  */
-class logger
+class Logger
 {
 public:
     /**
@@ -43,7 +58,7 @@ public:
      *
      * @return logger* Instance of logger.
      */
-    static logger* GetInstance();
+    static Logger* GetInstance();
 
     /**
      * @brief Set target trace path.
@@ -93,14 +108,17 @@ public:
     void LogMessage( EVENTS event, const char* file, const int line, const char* message );
 
 private:
-    logger();
-    ~logger();
+    Logger();
+    ~Logger();
     bool _isInitialized;
     std::mutex _traceMutex;
     std::string _trace;
-    std::ostream* _trace_stream;
+    std::ostream* _traceStream;
+    std::FILE* _traceFile;
+    bool needCloseFile;
     EVENTS _events;
-    const char* EventToString( EVENTS event );
+    void CreateStream( std::string path );
+    void CloseStream();
 };
 
 /**
@@ -114,11 +132,17 @@ private:
  */
 
 # if defined( ENABLE_LOGGER )
-#  define TRACE_EVENT( EVENT, MESSAGE )  logger::GetInstance()->LogMessage( EVENT, \
+#  define TRACE_EVENT( EVENT, MESSAGE )  logger::Logger::GetInstance()->LogMessage( EVENT, \
                                          __FILE__, __LINE__, MESSAGE )
 # else
 #  define TRACE_EVENT( EVENT, MESSAGE ) (void)0
 # endif
+
+EVENTS EVENTS_parse_events_str( std::string& events );
+
+std::string EVENTS_parse_events( EVENTS events );
+
+} // namespace logger
 
 ///@} Logger
 ///@} utility_helpers

@@ -17,6 +17,13 @@
 /**
  * @brief Status of data provider
  */
+
+namespace utility_helpers
+{
+
+namespace sound_provider
+{
+
 typedef enum
 {
     AWAITS,     ///< Set by RtAudio callback when new data was copied to provider internal storage
@@ -75,6 +82,10 @@ public:
      */
     void GetData(std::vector<double>& first, std::vector<double>& second);
 };
+
+} // namespace sound_provider
+
+} // namespace utility_helpers
 
 ///@} sound_provider
 ///@} utility_helpers

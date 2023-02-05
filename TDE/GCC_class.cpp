@@ -9,9 +9,11 @@
 #include <logger/logger.hpp>
 #include <core.hpp>
 
+using namespace tde::gcc;
+using namespace logger;
 
-GCC::GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
-    TDE_calc(_size, _rate, _w_func),
+GCC::GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
+    iTDE(_size, _rate, _w_func),
     forward(_size),
     reverse(_size)
 {
@@ -25,7 +27,7 @@ GCC::~GCC()
     TRACE_EVENT(EVENTS::CREATE, "GCC object destroyed");
 }
 
-void GCC::get_corr_func(std::vector<double>& _corr)
+void GCC::GetCorrFunc(std::vector<double>& _corr)
 {
     memcpy(&_corr[0], &corr_func[0], sizeof(double)*size);
 }
@@ -46,16 +48,16 @@ void GCC::apply_PHAT_func(double* weight_func)
     }
 }
 
-void GCC::update(const std::vector<double>& first_, const std::vector<double>& second_)
+void GCC::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
     TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
-    forward.set_real(first_);
-    forward.execute();
-    forward.get_fourier_image(fur_1);
+    forward.SetReal(first_);
+    forward.Execute();
+    forward.GetFourierImage(fur_1);
 
-    forward.set_real(second_);
-    forward.execute();
-    forward.get_fourier_image(fur_2);
+    forward.SetReal(second_);
+    forward.Execute();
+    forward.GetFourierImage(fur_2);
 
     make_mul_with_conj();
     add_mul_to_sum();
@@ -72,7 +74,7 @@ void GCC::update(const std::vector<double>& first_, const std::vector<double>& s
     ++update_count;
 }
 
-void GCC::conclude()
+void GCC::Conclude()
 {
     TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
 
@@ -99,9 +101,9 @@ void GCC::conclude()
     }
     }
 
-    reverse.set_fourier_image(fur_1_2_sum);
-    reverse.execute();
-    reverse.get_real(corr_func);
+    reverse.SetFourierImage(fur_1_2_sum);
+    reverse.Execute();
+    reverse.GetReal(corr_func);
     shift_corr_func();
     clear_inner();
 

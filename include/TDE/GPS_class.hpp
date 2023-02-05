@@ -9,6 +9,8 @@
 # include "TDE_class.hpp"
 # include <FFT/fft_forward_class.hpp>
 
+using namespace transform::cpu::fft;
+
 ///@addtogroup TDE_interface
 ///@{
 
@@ -16,26 +18,36 @@
 ///@addtogroup GPS_TDE
 ///@{
 
+namespace tde
+{
+
+namespace gps
+{
+
 /**
  * @class GPS
  * @brief This class implements calculation of TDE with generalized phase spectrum method.
  */
-class GPS final : public TDE_calc
+class GPS final : public iTDE
 {
 public:
     GPS() = delete;
     GPS(GPS*) = delete;
     void operator = (const GPS*) = delete;
-    GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func);
+    GPS(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GPS();
 
-    void update(const std::vector<double>& _first, const std::vector<double>& _second) override;
-    void conclude() override;
+    void Update(const std::vector<double>& _first, const std::vector<double>& _second) override;
+    void Conclude() override;
 
 private:
-    fft_forward forward;
+    Forward forward;
     double* cross_phase_spectrum;
 };
+
+} // namespace gps
+
+} // namespace tde
 
 ///@} GPS_TDE
 ///@} TDE_interface

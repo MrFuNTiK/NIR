@@ -17,20 +17,29 @@
 ///@addtogroup forward_fourier_transform
 ///@{
 
+namespace transform
+{
+
+namespace cpu
+{
+
+namespace fft
+{
+
 /**
- * @class fft_forward
+ * @class Transform
  * @brief This class implements direct Fast Fourier Transform.
  *
  * Size of processed real array should be passed in constructor.
  * Size of output complex array is equal (N / 2 + 1).
  */
-class fft_forward
+class Forward
 {
 public:
 
-    fft_forward() = delete;
-    fft_forward(fft_forward*) = delete;
-    void operator = (const fft_forward*) = delete;
+    Forward() = delete;
+    Forward(Forward*) = delete;
+    void operator = (const Forward*) = delete;
 
     /**
      * @brief Construct a new fft forward object
@@ -38,18 +47,18 @@ public:
      * @param _size     Number of samples of real input samples.
      *                  Output array will contain (_size / 2 + 1) complex samples.
      */
-    fft_forward(uint16_t _size);
-    ~fft_forward();
+    Forward(uint16_t _size);
+    ~Forward();
 
     /**
      * @brief Execute direct transform of arrays passed in set_real().
      */
-    void execute() noexcept;
+    void Execute() noexcept;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void conjugate() noexcept;
+    void Conjugate() noexcept;
 
     /**
      * @brief Pass array that should be processed.
@@ -59,22 +68,28 @@ public:
      *
      * @param[in] _real Pointer to array
      */
-    void set_real(const std::vector<double>& _real) noexcept;
+    void SetReal(const std::vector<double>& _real) noexcept;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void get_fourier_image(std::vector<std::complex<double>>& _fourier) noexcept;
+    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
 
 private:
     uint16_t size;
     fftw_plan forward_plan;
     std::vector<double> real_array;
     std::vector<std::complex<double>> fourier_image;
-    void normalize_fur();
+    void NormalizeFur();
 };
+
+} // namespace fft
+
+} // namespace cpu
+
+} // namespace transform
 
 ///@} forward_fourier_transform
 ///@} FFT_interface

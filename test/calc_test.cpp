@@ -15,8 +15,8 @@ static const uint16_t DEFAULT_AVRG_NUM = 5;
 class calc_test : public testing::TestWithParam<std::tuple<WEIGHTING_FN_TYPE, TDE_METH>>
 {
 public:
-    calc_test();
-    ~calc_test();
+    calc_test() = default;
+    ~calc_test() = default;
 
     void SetUp();
     void TearDown();
@@ -25,22 +25,16 @@ public:
     std::unique_ptr<iTDE> calc;
 };
 
-calc_test::calc_test()
-{}
-
-calc_test::~calc_test()
-{}
-
 void calc_test::SetUp()
 {
     vec1.resize(DEFAULT_WINDOW_SIZE);
     vec2.resize(DEFAULT_WINDOW_SIZE);
-    auto pe = ProgramEnvironment::GetInstance();
-    ASSERT_NO_THROW(pe->SetWindowSize(DEFAULT_WINDOW_SIZE));
-    ASSERT_NO_THROW(pe->SetSampleRate(DEFAULT_SAMPLE_RATE));
-    ASSERT_NO_THROW(pe->SetWeightingFunction(std::get<0>(GetParam())));
-    ASSERT_NO_THROW(pe->SetMethodTDE(std::get<1>(GetParam())));
-    ASSERT_NO_THROW(pe->SetWinAvrgNum(DEFAULT_AVRG_NUM));
+    auto& pe = ProgramEnvironment::GetInstance();
+    ASSERT_NO_THROW(pe.SetWindowSize(DEFAULT_WINDOW_SIZE));
+    ASSERT_NO_THROW(pe.SetSampleRate(DEFAULT_SAMPLE_RATE));
+    ASSERT_NO_THROW(pe.SetWeightingFunction(std::get<0>(GetParam())));
+    ASSERT_NO_THROW(pe.SetMethodTDE(std::get<1>(GetParam())));
+    ASSERT_NO_THROW(pe.SetWinAvrgNum(DEFAULT_AVRG_NUM));
 }
 
 void calc_test::TearDown()
@@ -48,11 +42,11 @@ void calc_test::TearDown()
 
 TEST_P(calc_test, leak_test)
 {
-    ASSERT_NO_THROW(calc.reset(PE::GetInstance()->CreateCalculator()));
+    ASSERT_NO_THROW(calc.reset(PE::GetInstance().CreateCalculator()));
     ASSERT_NE(calc.get(), nullptr);
     for( int i = 0; i < 10; ++i )
     {
-        for( int j = 0; j < PE::GetInstance()->GetWinAvrgNum(); ++j )
+        for( int j = 0; j < PE::GetInstance().GetWinAvrgNum(); ++j )
         {
             calc->Update(vec1, vec2);
         }

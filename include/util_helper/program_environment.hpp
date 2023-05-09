@@ -57,7 +57,7 @@ namespace cmd_params
 
 static const size_t MAX_PARAM_LENGHT =  128;
 
-static constexpr char TDE_METHOD[] =      "tde-method";
+static constexpr char TDE_METHOD[] =    "tde-method";
 static constexpr char SAMPLE_RATE[] =   "sample-rate";
 static constexpr char WINDOWS_SIZE[] =  "win-size";
 static constexpr char AVRG_NUM[] =      "avrg-num";
@@ -81,18 +81,20 @@ private:
     tde::WEIGHTING_FN_TYPE _weight_fn;
     bool _isExecutable;
     ProgramEnvironment();
-    ~ProgramEnvironment();
 
 public:
-    ProgramEnvironment(ProgramEnvironment* pe) = delete;
-    void operator = (const ProgramEnvironment*) = delete;
+    ProgramEnvironment(ProgramEnvironment&) = delete;
+    ProgramEnvironment operator =(ProgramEnvironment&) = delete;
+    ProgramEnvironment(ProgramEnvironment&&) = delete;
+    ProgramEnvironment operator =(ProgramEnvironment&&) = delete;
+    ~ProgramEnvironment();
 
     /**
      * @brief Get the Instance object
      *
      * @return program_environment* instance of manager object
      */
-    static ProgramEnvironment* GetInstance();
+    static ProgramEnvironment& GetInstance();
 
     /**
      * @brief Set the size of windows to process.

@@ -25,7 +25,7 @@ void SIGINT_handler(int)
 {
     std::cout << "\b\b";
     TRACE_EVENT(EVENTS::MANAGE, "SIGINT recieved");
-    ProgramEnvironment::GetInstance()->SetExecutable(false);
+    ProgramEnvironment::GetInstance().SetExecutable(false);
 }
 
 ProgramEnvironment::ProgramEnvironment() :
@@ -38,19 +38,19 @@ ProgramEnvironment::ProgramEnvironment() :
 {
     signal(SIGINT, SIGINT_handler);
 #ifdef ENABLE_LOGGER
-    auto logger = logger::Logger::GetInstance();
-    logger->SetEvents(defaults::LOG_EVENTS);
-    logger->SetTrace(defaults::LOG_PATH);
+    auto& logger = logger::Logger::GetInstance();
+    logger.SetEvents(defaults::LOG_EVENTS);
+    logger.SetTrace(defaults::LOG_PATH);
 #endif // ENABLE_LOGGER
 }
 
 ProgramEnvironment::~ProgramEnvironment()
 {}
 
-ProgramEnvironment* ProgramEnvironment::GetInstance()
+ProgramEnvironment& ProgramEnvironment::GetInstance()
 {
     static ProgramEnvironment _pe;
-    return &_pe;
+    return _pe;
 }
 
 void ProgramEnvironment::SetWindowSize(uint16_t window_size)
@@ -85,12 +85,14 @@ void ProgramEnvironment::SetWeightingFunction(tde::WEIGHTING_FN_TYPE weighting_f
 #ifdef ENABLE_LOGGER
 void ProgramEnvironment::SetLogPath(std::string& path)
 {
-    logger::Logger::GetInstance()->SetTrace(path.c_str());
+    auto& logger = logger::Logger::GetInstance();
+    logger.SetTrace(path.c_str());
 }
 
 void ProgramEnvironment::SetLogEvents(logger::EVENTS events)
 {
-    logger::Logger::GetInstance()->SetEvents(events);
+    auto& logger = logger::Logger::GetInstance();
+    logger.SetEvents(events);
 }
 #endif // ENABLE_LOGGER
 

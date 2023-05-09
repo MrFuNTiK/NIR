@@ -5,10 +5,10 @@
 
 namespace logger{
 
-Logger* Logger::GetInstance()
+Logger& Logger::GetInstance()
 {
     static Logger _logger;
-    return &_logger;
+    return _logger;
 }
 
 Logger::Logger() :

@@ -53,12 +53,19 @@ EVENTS EVENTS_from_str( std::string& str );
 class Logger
 {
 public:
+    Logger(Logger&) = delete;
+    Logger operator =(Logger&) = delete;
+    Logger(Logger&&) = delete;
+    Logger operator =(Logger&&) = delete;
+    ~Logger();
+
+
     /**
      * @brief Get the Instance object.
      *
      * @return logger* Instance of logger.
      */
-    static Logger* GetInstance();
+    static Logger& GetInstance();
 
     /**
      * @brief Set target trace path.
@@ -109,7 +116,6 @@ public:
 
 private:
     Logger();
-    ~Logger();
     bool _isInitialized;
     std::mutex _traceMutex;
     std::string _trace;
@@ -132,10 +138,13 @@ private:
  */
 
 # if defined( ENABLE_LOGGER )
-#  define TRACE_EVENT( EVENT, MESSAGE )  logger::Logger::GetInstance()->LogMessage( EVENT, \
-                                         __FILE__, __LINE__, MESSAGE )
+#  define TRACE_EVENT( EVENT, MESSAGE )    \
+    {                                      \
+        auto& lg = logger::Logger::GetInstance(); \
+        lg.LogMessage( EVENT, __FILE__, __LINE__, MESSAGE ); \
+    }
 # else
-#  define TRACE_EVENT( EVENT, MESSAGE ) (void)0
+#  define TRACE_EVENT( EVENT, MESSAGE )
 # endif
 
 EVENTS EVENTS_parse_events_str( std::string& events );

@@ -25,18 +25,18 @@ int main(int argc, char* argv[])
     double tde = 0;
 
     std::unique_ptr<iTDE> tde_calc;
-    auto pe = ProgramEnvironment::GetInstance();
+    auto& pe = ProgramEnvironment::GetInstance();
 
     if(argc > 1)
     {
         try
         {
-            ProgramEnvironment::GetInstance()->SetUpByArgs(argc, argv);
+            ProgramEnvironment::GetInstance().SetUpByArgs(argc, argv);
         }
         catch(const std::exception& e)
         {
             std::cerr << e.what() << '\n';
-            ProgramEnvironment::GetInstance()->PrintHelp(*argv);
+            ProgramEnvironment::GetInstance().PrintHelp(*argv);
             return 0;
         }
     }
@@ -44,7 +44,8 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_LOGGER
     try
     {
-        logger::Logger::GetInstance()->Initialize();
+        auto& logger = logger::Logger::GetInstance();
+        logger.Initialize();
     }
     catch(const std::exception& e)
     {
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        tde_calc.reset(pe->CreateCalculator());
+        tde_calc.reset(pe.CreateCalculator());
     }
     catch(const std::exception& e)
     {
@@ -62,10 +63,10 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    pe->SetExecutable(true);
+    pe.SetExecutable(true);
 
-    std::vector<double> first_array(pe->GetWindowSize());
-    std::vector<double> second_array(pe->GetWindowSize());
+    std::vector<double> first_array(pe.GetWindowSize());
+    std::vector<double> second_array(pe.GetWindowSize());
 
 #ifdef ENABLE_WAV_FILE_READING
     AudioFile<double> file;
@@ -74,11 +75,11 @@ int main(int argc, char* argv[])
     [[maybe_unused]] uint8_t num_channels = file.getNumChannels();
 #endif
 
-    uint16_t avrg_num = pe->GetWinAvrgNum();
+    uint16_t avrg_num = pe.GetWinAvrgNum();
 
-    SoundProvider provider(pe->GetSampleRate(), pe->GetWindowSize());
+    SoundProvider provider(pe.GetSampleRate(), pe.GetWindowSize());
 
-    while(pe->isExecutable()) // will be set to false by SIGINT handler
+    while(pe.isExecutable()) // will be set to false by SIGINT handler
     {
         for( uint16_t j = 0; j < avrg_num; ++j)
         {

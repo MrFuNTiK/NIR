@@ -1,5 +1,5 @@
 build/
-result/
+_result/
 *.txt
 *.sh
 .vscode

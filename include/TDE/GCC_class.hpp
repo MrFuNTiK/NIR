@@ -10,6 +10,8 @@
 # include <FFT/fft_forward_class.hpp>
 # include <FFT/fft_reverse_class.hpp>
 
+using namespace transform::cpu::fft;
+
 ///@addtogroup TDE_interface
 ///@{
 
@@ -17,33 +19,43 @@
 ///@addtogroup GCC_TDE
 ///@{
 
+namespace tde
+{
+
+namespace gcc
+{
+
 /**
  * @class GCC
  * @brief This class implements calculation of TDE with generalized cross correlation method.
  */
-class GCC final : public TDE_calc
+class GCC final : public iTDE
 {
 public:
     GCC() = delete;
     GCC(GCC*) = delete;
     void operator = (const GCC*) = delete;
-    GCC(uint16_t _size, uint16_t _rate, weighting_func _w_func);
+    GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GCC();
 
-    void get_corr_func(std::vector<double>& _corr);
-    void update(const std::vector<double>& first_, const std::vector<double>& second_) override;
-    void conclude() override;
+    void GetCorrFunc(std::vector<double>& _corr);
+    void Update(const std::vector<double>& first_, const std::vector<double>& second_) override;
+    void Conclude() override;
 
 private:
     std::vector<double> corr_func;
     std::vector<double> PHAT_func;
 
 private:
-    fft_forward forward;
-    fft_reverse reverse;
+    Forward forward;
+    Reverse reverse;
     void shift_corr_func();
     void apply_PHAT_func(double* weight_func);
 };
+
+} // namespace gcc
+
+} // namespce tde
 
 ///@} GCC_TDE
 ///@} TDE_interface

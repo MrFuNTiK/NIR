@@ -8,7 +8,10 @@
 #include <logger/logger.hpp>
 #include <core.hpp>
 
-fft_forward::fft_forward(uint16_t _size) :
+using namespace transform::cpu::fft;
+using namespace logger;
+
+Forward::Forward(uint16_t _size) :
     size(_size)
 {
     if(4 > size)
@@ -25,19 +28,19 @@ fft_forward::fft_forward(uint16_t _size) :
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class created");
 }
 
-fft_forward::~fft_forward()
+Forward::~Forward()
 {
     fftw_destroy_plan(forward_plan);
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class destroyed");
 }
 
-void fft_forward::execute() noexcept
+void Forward::Execute() noexcept
 {
     fftw_execute(forward_plan);
-    normalize_fur();
+    NormalizeFur();
 }
 
-void fft_forward::normalize_fur()
+void Forward::NormalizeFur()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -45,7 +48,7 @@ void fft_forward::normalize_fur()
     }
 }
 
-void fft_forward::conjugate() noexcept
+void Forward::Conjugate() noexcept
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -53,12 +56,12 @@ void fft_forward::conjugate() noexcept
     }
 }
 
-void fft_forward::set_real(const std::vector<double>& _real) noexcept
+void Forward::SetReal(const std::vector<double>& _real) noexcept
 {
     memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
-void fft_forward::get_fourier_image(std::vector<std::complex<double>>& _fourier) noexcept
+void Forward::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
 {
     memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(size/2+1));
 }

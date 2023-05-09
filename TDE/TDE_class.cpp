@@ -1,11 +1,15 @@
 #include <cstring>
 #include <stdexcept>
+#include <sstream>
 #include <fftw3.h>
 
 #include <TDE/TDE_class.hpp>
 #include <core.hpp>
 
-TDE_calc::TDE_calc(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
+namespace tde
+{
+
+iTDE::iTDE(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
     size(_size),
     sample_rate(_rate),
     w_func(_w_func),
@@ -38,12 +42,12 @@ TDE_calc::TDE_calc(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
     clear_inner();
 }
 
-TDE_calc::~TDE_calc()
+iTDE::~iTDE()
 {
     fftw_cleanup();
 }
 
-void TDE_calc::make_mul()
+void iTDE::make_mul()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -51,7 +55,7 @@ void TDE_calc::make_mul()
     }
 }
 
-void TDE_calc::make_mul_with_conj()
+void iTDE::make_mul_with_conj()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -59,14 +63,14 @@ void TDE_calc::make_mul_with_conj()
     }
 }
 
-void TDE_calc::clear_inner()
+void iTDE::clear_inner()
 {
     std::fill(fur_1_2_sum.begin(), fur_1_2_sum.end(), 0);
     std::fill(ampl1_sum.begin(), ampl1_sum.end(), 0);
     std::fill(ampl2_sum.begin(), ampl2_sum.end(), 0);
 }
 
-void TDE_calc::add_mul_to_sum()
+void iTDE::add_mul_to_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -74,7 +78,7 @@ void TDE_calc::add_mul_to_sum()
     }
 }
 
-void TDE_calc::normalize_sum()
+void iTDE::normalize_sum()
 {
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
@@ -84,7 +88,51 @@ void TDE_calc::normalize_sum()
     }
 }
 
-double TDE_calc::get_tde()
+double iTDE::GetTde()
 {
     return tde;
 }
+
+std::string WEIGHTING_FN_TYPE_to_str( WEIGHTING_FN_TYPE type )
+{
+    switch( type )
+    {
+    case WEIGHTING_FN_TYPE::COHERENCE:
+    {
+        return COHERENCE_WEIGHT_FN_STR;
+    }
+    case WEIGHTING_FN_TYPE::NONE:
+    {
+        return NONE_WEIGHTING_FN_STR;
+    }
+    default:
+    {
+        throw std::runtime_error( "Undefined weighting function type" );
+    }
+    }
+}
+
+WEIGHTING_FN_TYPE WEIGHTING_FN_TYPE_from_str( std::string& str )
+{
+    if( str.empty() )
+    {
+        throw std::runtime_error( "String is empty" );
+    }
+
+    if( str == COHERENCE_WEIGHT_FN_STR )
+    {
+        return WEIGHTING_FN_TYPE::COHERENCE;
+    }
+    else if( str == NONE_WEIGHTING_FN_STR )
+    {
+        return WEIGHTING_FN_TYPE::NONE;
+    }
+    else
+    {
+        std::stringstream error;
+        error << "Undefined weghting function: " << str;
+        throw std::runtime_error( error.str() );
+    }
+}
+
+} // namespace tde

@@ -12,6 +12,9 @@
 ///@addtogroup TDE_interface
 ///@{
 
+namespace tde
+{
+
 /**
  * @brief Avaliable frequency-weighting functions.
  */
@@ -19,18 +22,25 @@ typedef enum
 {
     COHERENCE,  ///< Use coherence frequency weighting function
     NONE,       ///< No frequency weighting function used
-} weighting_func;
+} WEIGHTING_FN_TYPE;
+
+static constexpr char COHERENCE_WEIGHT_FN_STR[] = "coherence";
+static constexpr char NONE_WEIGHTING_FN_STR[] = "none";
+
+std::string WEIGHTING_FN_TYPE_to_str( WEIGHTING_FN_TYPE type );
+
+WEIGHTING_FN_TYPE WEIGHTING_FN_TYPE_from_str( std::string& str );
 
 /**
  * @class TDE_calc
  * @brief Class for TDE calculation.
  */
-class TDE_calc
+class iTDE
 {
 public:
-    TDE_calc() = delete;
-    TDE_calc(TDE_calc*) = delete;
-    void operator = (const TDE_calc*) = delete;
+    iTDE() = delete;
+    iTDE(iTDE*) = delete;
+    void operator = (const iTDE*) = delete;
 
     /**
      * @brief Construct a new TDE object.
@@ -39,23 +49,23 @@ public:
      *
      * @param _size     Number source signal's samples in one window
      * @param _rate     Sampling frequency of source signal
-     * @param _w_func   @ref weighting_func "Frequency-weighting" function used to calculate TDE
+     * @param _w_func   @ref WEIGHTING_FN_TYPE "Frequency-weighting" function used to calculate TDE
      */
-    TDE_calc(uint16_t _size, uint16_t _rate, weighting_func _w_func);
-    virtual ~TDE_calc();
+    iTDE(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
+    virtual ~iTDE();
 
     /**
      * @brief Process one window of two channels of source signal.
      *
      * Method calculates and accumulates intermediate spectums and other data
      * according to implementation in inherited class. Can be called
-     * several times before conclude() with different input windows to avergage calculations
+     * several times before Conclude() with different input windows to avergage calculations
      * by several windows. In case of use weighting functions must be calles several times.
      *
      * @param _first    Pointer to the first channel samples
      * @param _second   Pointer to the second channel samples
      */
-    virtual void update(const std::vector<double>& _first, const std::vector<double>& _second) = 0;
+    virtual void Update(const std::vector<double>& _first, const std::vector<double>& _second) = 0;
 
     /**
      * @brief Calculate TDE.
@@ -65,21 +75,21 @@ public:
      * will calculate TDE value using data, stored by calls of update() after
      * previous call of conclude().
      */
-    virtual void conclude() = 0;
+    virtual void Conclude() = 0;
 
     /**
      * @brief Get value of calculated TDE.
      *
      * @return TDE value
      */
-    double get_tde();
+    double GetTde();
 
     ///@} // TDE_interface
 
 protected:
     uint16_t size;
     uint16_t sample_rate;
-    weighting_func w_func;
+    WEIGHTING_FN_TYPE w_func;
     uint16_t update_count;
     double tde;
 
@@ -100,5 +110,7 @@ protected:
     void add_mul_to_sum();
     void normalize_sum();
 };
+
+} // namespace tde
 
 #endif // TDE_CLASS_HPP

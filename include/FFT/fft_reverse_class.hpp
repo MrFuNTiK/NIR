@@ -17,16 +17,25 @@
 ///@addtogroup reverse_fourier_transform
 ///@{
 
+namespace transform
+{
+
+namespace cpu
+{
+
+namespace fft
+{
+
 /**
  * @class fft_reverse
  * @brief This class implements reverse Fast Fourier Transform
  */
-class fft_reverse
+class Reverse
 {
 public:
-    fft_reverse() = delete;
-    fft_reverse(fft_reverse*) = delete;
-    void operator = (const fft_reverse*) = delete;
+    Reverse() = delete;
+    Reverse(Reverse*) = delete;
+    void operator = (const Reverse*) = delete;
 
     /**
      * @brief Construct a new fft reverse object.
@@ -37,13 +46,13 @@ public:
      * complex array to set_fourier_image() is (_size / 2 + 1) and
      * size of output real array from get_real() is (_size).
      */
-    fft_reverse(uint16_t _size);
-    ~fft_reverse();
+    Reverse(uint16_t _size);
+    ~Reverse();
 
     /**
      * @brief Execute reverse transform with array passed via set_fourier_image().
      */
-    void execute() noexcept;
+    void Execute() noexcept;
 
     /**
      * @brief Set the fourier image.
@@ -53,14 +62,14 @@ public:
      *
      * @param[in] _fourier      Pointer to complex array to process
      */
-    void set_fourier_image(const std::vector<std::complex<double>>& _fourier) noexcept;
+    void SetFourierImage(const std::vector<std::complex<double>>& _fourier) noexcept;
 
     /**
      * @brief Get the real array.
      *
      * @param[out] _real        Pointer to array where resault should be written
      */
-    void get_real(std::vector<double>& _real) noexcept;
+    void GetReal(std::vector<double>& _real) noexcept;
 
 private:
     uint16_t size;
@@ -68,6 +77,12 @@ private:
     std::vector<std::complex<double>> fourier_image;
     std::vector<double> real_array;
 };
+
+} // namespace fft
+
+} // namespace cpu
+
+} // namespace transform
 
 ///@} reverse_fourier_transform
 ///@} FFT_interface

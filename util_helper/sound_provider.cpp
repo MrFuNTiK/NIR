@@ -4,6 +4,9 @@
 #include <logger/logger.hpp>
 #include <util_helper/sound_provider.hpp>
 
+using namespace logger;
+using namespace utility_helpers::sound_provider;
+
 int record_callback(void* outputBuffer,
                     void* inputBuffer,
                     unsigned int nFrames,

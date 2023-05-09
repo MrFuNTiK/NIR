@@ -13,8 +13,11 @@
 #define BOTTOM_FREQ_BOUND   300
 #define UPPER_FREQ_BOUND    3400
 
-GPS::GPS(uint16_t _size, uint16_t _rate, weighting_func _w_func) :
-    TDE_calc(_size, _rate, _w_func),
+using namespace tde::gps;
+using namespace logger;
+
+GPS::GPS(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
+    iTDE(_size, _rate, _w_func),
     forward(_size)
 {
     cross_phase_spectrum = new double[size/2+1];
@@ -27,16 +30,16 @@ GPS::~GPS()
     TRACE_EVENT(EVENTS::CREATE, "GPS class destroyed");
 }
 
-void GPS::update(const std::vector<double>& first_, const std::vector<double>& second_)
+void GPS::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
     TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
-    forward.set_real(first_);
-    forward.execute();
-    forward.get_fourier_image(fur_1);
+    forward.SetReal(first_);
+    forward.Execute();
+    forward.GetFourierImage(fur_1);
 
-    forward.set_real(second_);
-    forward.execute();
-    forward.get_fourier_image(fur_2);
+    forward.SetReal(second_);
+    forward.Execute();
+    forward.GetFourierImage(fur_2);
 
     make_mul_with_conj();
     add_mul_to_sum();
@@ -52,7 +55,7 @@ void GPS::update(const std::vector<double>& first_, const std::vector<double>& s
     ++update_count;
 }
 
-void GPS::conclude()
+void GPS::Conclude()
 {
     double numerator_sum = 0, divider_sum = 0;
 

@@ -2,6 +2,7 @@
 # define PROGRAMM_ENVORINMENT_HPP
 
 # include <TDE/TDE_class.hpp>
+# include <logger/logger.hpp>
 
 ///@defgroup utility_helpers
 ///@addtogroup utility_helpers
@@ -14,38 +15,86 @@
 /**
  * @brief Avaliable methods to calculate TDE
  */
+
+namespace utility_helpers
+{
+
+namespace program_environment
+{
+
 typedef enum
 {
     GCC_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GCC
     GPS_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GPS
-} tde_meth;
+} TDE_METH;
+
+static constexpr char TDE_METHOD_GCC_STR[] = "GCC";
+static constexpr char TDE_METHOD_GPS_STR[] = "GPS";
+
+std::string TDE_METH_to_str( TDE_METH meth );
+
+TDE_METH TDE_METH_from_str( std::string& str );
+
+namespace defaults
+{
+
+static const TDE_METH TDE_METHOD = GPS_TDE;
+static const uint16_t SAMPLE_RATE = 44100;
+static const uint16_t WINDOW_SIZE = 1 << 10;
+static const uint16_t AVRG_NUM = 1;
+static const tde::WEIGHTING_FN_TYPE WEIGHTING_FN = tde::NONE;
+#ifdef ENABLE_LOGGER
+static const logger::EVENTS LOG_EVENTS = logger::EVENTS::SOUND |
+                                         logger::EVENTS::MANAGE |
+                                         logger::EVENTS::CREATE;
+static constexpr char LOG_PATH[] = "logfile.txt";
+#endif // ENABLE_LOGGER
+
+} // namespace defaults
+
+namespace cmd_params
+{
+
+static const size_t MAX_PARAM_LENGHT =  128;
+
+static constexpr char TDE_METHOD[] =    "tde-method";
+static constexpr char SAMPLE_RATE[] =   "sample-rate";
+static constexpr char WINDOWS_SIZE[] =  "win-size";
+static constexpr char AVRG_NUM[] =      "avrg-num";
+static constexpr char WEIGHTING_FN[] =  "weight-fn";
+static constexpr char LOG_EVENTS[] =    "log-events";
+static constexpr char LOG_PATH[] =      "log-path";
+
+}
 
 /**
  * @class program_environment
  * @brief This class implements singleton manager of utility execution.
  */
-class program_environment
+class ProgramEnvironment
 {
 private:
     uint16_t _window_size;
     uint16_t _sample_rate;
     uint16_t _window_avrg_num;
-    tde_meth _meth;
-    weighting_func _weight_fn;
+    TDE_METH _meth;
+    tde::WEIGHTING_FN_TYPE _weight_fn;
     bool _isExecutable;
-    program_environment();
-    ~program_environment();
+    ProgramEnvironment();
 
 public:
-    program_environment(program_environment* pe) = delete;
-    void operator = (const program_environment*) = delete;
+    ProgramEnvironment(ProgramEnvironment&) = delete;
+    ProgramEnvironment operator =(ProgramEnvironment&) = delete;
+    ProgramEnvironment(ProgramEnvironment&&) = delete;
+    ProgramEnvironment operator =(ProgramEnvironment&&) = delete;
+    ~ProgramEnvironment();
 
     /**
      * @brief Get the Instance object
      *
      * @return program_environment* instance of manager object
      */
-    static program_environment* GetInstance();
+    static ProgramEnvironment& GetInstance();
 
     /**
      * @brief Set the size of windows to process.
@@ -73,14 +122,45 @@ public:
      *
      * @param meth
      */
-    void SetMethodTDE(tde_meth meth);
+    void SetMethodTDE(TDE_METH meth);
 
     /**
      * @brief Set the frequency weighting function to use.
      *
      * @param feighting_fn
      */
-    void SetWeightingFunction(weighting_func weighting_fn);
+    void SetWeightingFunction(tde::WEIGHTING_FN_TYPE weighting_fn);
+
+# ifdef ENABLE_LOGGER
+    /**
+     * @brief Set kinds of events to write to logs.
+     *
+     * @param events
+     */
+    void SetLogEvents(logger::EVENTS events);
+
+    /**
+     * @brief Set path to logger.
+     *
+     * @param path
+     */
+    void SetLogPath(std::string& path);
+# endif // ENABLE_LOGGER
+
+    /**
+     * @brief Set up environment by cmd arguments
+     *
+     * @param argc
+     * @param argv
+     */
+    void SetUpByArgs(int argc, char** argv);
+
+    /**
+     * @brief
+     *
+     * @param progName
+     */
+    void PrintHelp(const char* progName);
 
     /**
      * @brief Set executable status.
@@ -105,7 +185,7 @@ public:
      *
      * @return TDE_calc*
      */
-    TDE_calc* CreateCalculator();
+    tde::iTDE* CreateCalculator();
 
     /**
      * @brief Get value of window size parameter.
@@ -139,6 +219,10 @@ public:
      */
     bool isExecutable();
 };
+
+} // namespace programm_environment
+
+} // namespace utility_helpers
 
 ///@} program_environment
 ///@} utility_helpers

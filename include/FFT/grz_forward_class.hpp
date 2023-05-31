@@ -1,13 +1,12 @@
 ///@file fft_forward_class.hpp
 ///@brief class-wrapper above fftw3 library that implements forward fourier transform
 
-#ifndef FFT_FORWARD_CLASS_HPP
-# define FFT_FORWARD_CLASS_HPP
+#pragma once
 
 # include <cstdint>
 # include <vector>
 # include <complex>
-# include <fftw3.h>
+# include <goerzel.h>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -23,7 +22,7 @@ namespace transform
 namespace cpu
 {
 
-namespace fft
+namespace grz
 {
 
 /**
@@ -45,10 +44,11 @@ public:
      * @brief Construct a new fft forward object
      *
      * @param _size     Number of samples of real input samples.
-     *                  Output array will contain (_size / 2 + 1) complex samples.
      */
     Forward(uint16_t _size);
     ~Forward();
+
+    void SetBounds( size_t lowerBound, size_t upperBound );
 
     /**
      * @brief Execute direct transform of arrays passed in set_real().
@@ -78,20 +78,21 @@ public:
     void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
 
 private:
-    uint16_t size;
-    fftw_plan forward_plan;
+    uint16_t size = 0;
+    size_t lowerBound_ = 0;
+    size_t upperBound_ = 0;
+    GoerzelTF* goerzHandle = nullptr;
     std::vector<double> real_array;
     std::vector<std::complex<double>> fourier_image;
     void NormalizeFur();
 };
 
-} // namespace fft
+} // namespace grz
 
 } // namespace cpu
 
 } // namespace transform
 
 ///@} forward_fourier_transform
-///@} FFT_interface
 
-#endif // FFT_FORWARD_CLASS_HPP
+///@} FFT_interface

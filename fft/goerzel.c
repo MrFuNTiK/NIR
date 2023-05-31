@@ -8,7 +8,7 @@ struct GoerzTf_st
 {
     double _Complex res;
     double q0, q1, q2;
-    double omega, sin_, cos_;
+    double omega_, sin_, cos_;
 
     size_t numSamples;
     size_t updateCount;
@@ -21,14 +21,6 @@ GoerzelTF* GoerzelTF_create( size_t numSamples )
     {
         tf->numSamples = numSamples;
         tf->updateCount = 0ul;
-
-        if( isnan( tf->omega ) ||
-            isnan( tf->sin_ ) ||
-            isnan( tf->cos_ ) )
-        {
-            free( tf );
-            tf = NULL;
-        }
     }
     return tf;
 }
@@ -43,16 +35,15 @@ int GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
     assert( tf );
     assert( idx < tf->numSamples / 2 + 1 );
 
-
     tf->q0 = 0.0;
     tf->q1 = 0.0;
     tf->q2 = 0.0;
-    tf->omega = 2 * M_PI * idx / tf->numSamples;
-    tf->sin_ = sin( tf->omega );
-    tf->cos_ = cos( tf->omega );
+    tf->omega_ = 2 * M_PI * idx / tf->numSamples;
+    tf->sin_ = sin( tf->omega_ );
+    tf->cos_ = cos( tf->omega_ );
     tf->res = NAN;
 
-    if( isnan( tf->omega ) ||
+    if( isnan( tf->omega_ ) ||
         isnan( tf->sin_ ) ||
         isnan( tf->cos_ ) )
     {

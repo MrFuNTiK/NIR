@@ -62,8 +62,8 @@ void GCC::Update(const std::vector<double>& first_, const std::vector<double>& s
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
-    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
+    get_ampl_spectrum(fur_1, ampl1);
+    get_ampl_spectrum(fur_2, ampl2);
 
     for( uint32_t i = 0; i < size/2u+1u; ++i )
     {
@@ -86,7 +86,7 @@ void GCC::Conclude()
     {
     case COHERENCE:
     {
-        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator.data());
+        get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
         for( uint16_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];

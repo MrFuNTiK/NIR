@@ -4,6 +4,7 @@
 #include <fftw3.h>
 
 #include <TDE/TDE_class.hpp>
+#include <logger/logger.hpp>
 #include <core.hpp>
 
 namespace tde
@@ -49,7 +50,12 @@ iTDE::~iTDE()
 
 void iTDE::make_mul()
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    if( fur_1.size() != fur_2.size() || fur_1.size() != fur_1_2.size() )
+    {
+        TRACE_EVENT( logger::EVENTS::ERROR, "Inconsistent sizes of fourier buffers" );
+    }
+
+    for (size_t i = 0; i < fur_1_2.size(); ++i)
     {
         fur_1_2[i] = fur_1[i] * fur_2[i];
     }
@@ -57,7 +63,12 @@ void iTDE::make_mul()
 
 void iTDE::make_mul_with_conj()
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    if( fur_1.size() != fur_2.size() || fur_1.size() != fur_1_2.size() )
+    {
+        TRACE_EVENT( logger::EVENTS::ERROR, "Inconsistent sizes of fourier buffers" );
+    }
+
+    for (size_t i = 0; i < fur_1_2.size(); ++i)
     {
         fur_1_2[i] = fur_1[i] * std::conj(fur_2[i]);
     }
@@ -72,7 +83,7 @@ void iTDE::clear_inner()
 
 void iTDE::add_mul_to_sum()
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    for (size_t i = 0; i < fur_1_2_sum.size(); ++i)
     {
         fur_1_2_sum[i] += fur_1_2[i];
     }
@@ -80,6 +91,10 @@ void iTDE::add_mul_to_sum()
 
 void iTDE::normalize_sum()
 {
+    if( ampl1_sum.size() != ampl2_sum.size() || fur_1_2_sum.size() != ampl1_sum.size() )
+    {
+        TRACE_EVENT( logger::EVENTS::ERROR, "Inconsistent sizes of amplitude and fourier buffers" );
+    }
     for (uint16_t i = 0; i < size/2+1; ++i)
     {
         fur_1_2_sum[i] /= update_count;

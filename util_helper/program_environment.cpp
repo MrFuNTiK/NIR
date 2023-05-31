@@ -7,6 +7,7 @@
 #include <logger/logger.hpp>
 #include <TDE/GCC_class.hpp>
 #include <TDE/GPS_class.hpp>
+#include <TDE/GPS_GRZ_class.hpp>
 
 #include <util_helper/sigint.hpp>
 
@@ -265,6 +266,10 @@ iTDE* ProgramEnvironment::CreateCalculator()
     {
         return new tde::gps::GPS(_window_size, _sample_rate, _weight_fn);
     }
+    else if( _meth == GPS_GRZ_TDE )
+    {
+        return new tde::gps::GPS_GRZ(_window_size, _sample_rate, _weight_fn);
+    }
     else return nullptr;
 }
 
@@ -300,6 +305,10 @@ std::string TDE_METH_to_str( TDE_METH meth )
     {
         return TDE_METHOD_GPS_STR;
     }
+    case TDE_METH::GPS_GRZ_TDE:
+    {
+        return TDE_METHOD_GPS_GRZ_STR;
+    }
     default:
     {
         throw std::runtime_error( "Undefined TDE method type" );
@@ -321,6 +330,10 @@ TDE_METH TDE_METH_from_str( std::string& str )
     else if( str == TDE_METHOD_GPS_STR )
     {
         return TDE_METH::GPS_TDE;
+    }
+    else if( str == TDE_METHOD_GPS_GRZ_STR )
+    {
+        return TDE_METH::GPS_GRZ_TDE;
     }
     else
     {

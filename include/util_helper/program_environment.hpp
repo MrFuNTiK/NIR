@@ -26,10 +26,12 @@ typedef enum
 {
     GCC_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GCC
     GPS_TDE,    ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GPS
+    GPS_GRZ_TDE ///< @ref program_environment::CreateCalculator() "CreateCalculator()" creates object of GPS_GRZ
 } TDE_METH;
 
 static constexpr char TDE_METHOD_GCC_STR[] = "GCC";
 static constexpr char TDE_METHOD_GPS_STR[] = "GPS";
+static constexpr char TDE_METHOD_GPS_GRZ_STR[] = "GPS_GRZ";
 
 std::string TDE_METH_to_str( TDE_METH meth );
 

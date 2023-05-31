@@ -20,13 +20,12 @@ GPS::GPS(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
     iTDE(_size, _rate, _w_func),
     forward(_size)
 {
-    cross_phase_spectrum = new double[size/2+1];
+    cross_phase_spectrum.resize(size/2+1);
     TRACE_EVENT(EVENTS::CREATE, "GPS class created");
 }
 
 GPS::~GPS()
 {
-    delete[] cross_phase_spectrum;
     TRACE_EVENT(EVENTS::CREATE, "GPS class destroyed");
 }
 
@@ -44,8 +43,8 @@ void GPS::Update(const std::vector<double>& first_, const std::vector<double>& s
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
-    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
+    get_ampl_spectrum(fur_1, ampl1);
+    get_ampl_spectrum(fur_2, ampl2);
 
     for( uint32_t i = 0; i < size/2u+1u; ++i )
     {
@@ -68,7 +67,7 @@ void GPS::Conclude()
     {
     case COHERENCE:
     {
-        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator.data());
+        get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
         for( uint16_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
@@ -81,8 +80,8 @@ void GPS::Conclude()
         break;
     }
     }
-    get_phase_spectrum(size/2+1, fur_1_2_sum, cross_phase_spectrum);
-    unwrap_phase_spectrum(size/2+1, cross_phase_spectrum);
+    get_phase_spectrum(fur_1_2_sum, cross_phase_spectrum);
+    unwrap_phase_spectrum(cross_phase_spectrum);
 
     //std::cout << "HARMONICAS\tCROSS_PHASE\n";
     for (uint16_t i = 1; i < size/2+1; ++i)

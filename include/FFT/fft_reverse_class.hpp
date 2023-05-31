@@ -34,8 +34,8 @@ class Reverse
 {
 public:
     Reverse() = delete;
-    Reverse(Reverse*) = delete;
-    void operator = (const Reverse*) = delete;
+    Reverse(Reverse&) = delete;
+    void operator = (const Reverse&) = delete;
 
     /**
      * @brief Construct a new fft reverse object.

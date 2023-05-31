@@ -1,33 +1,33 @@
 #include <iostream>
 #include <complex>
+#include <memory>
 #include <gtest/gtest.h>
 #include "goerzel.h"
 
+using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
+
 TEST( GoerzTest, test )
 {
-    const size_t SAMPLES = 1 << 5;
+    const size_t SAMPLES = 1 << 10;
 
-    std::array<double, SAMPLES> signal;
-    signal.fill( 10. );
-
-    [[maybe_unused]]double sine[ SAMPLES ];
+    double sine[ SAMPLES ];
     for( size_t i = 0; i < SAMPLES; ++i )
     {
         sine[ i ] = 10 * sin( 4 * 2 * M_PI * i / SAMPLES);
     }
 
-    GoerzelTF* tf = GoerzelTF_create( SAMPLES );
+    GoerzPtr tf( GoerzelTF_create( SAMPLES ), GoerzelTF_destroy );
 
     for( size_t i = 0; i < SAMPLES / 2 + 1 ; ++i )
     {
-        GoerzelTF_set_freq_idx( tf, i );
+        ASSERT_EQ( 1, GoerzelTF_set_freq_idx( tf.get(), i ) );
         ASSERT_NE( tf, nullptr );
         for( auto sample : sine )
         {
-            ASSERT_EQ( 1, GoerzelTF_update( tf, sample ) );
+            ASSERT_EQ( 1, GoerzelTF_update( tf.get(), sample ) );
         }
-        std::complex<double> res = GoerzelTF_result( tf );
-        std::cout << std::abs(res) << "\t" << std::arg(res) << std::endl;
+        std::complex<double> res = GoerzelTF_result( tf.get() );
+        // Check for NaN
+        ASSERT_EQ( res, res );
     }
-    GoerzelTF_destroy( tf );
 }

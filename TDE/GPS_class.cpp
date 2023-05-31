@@ -21,17 +21,17 @@ GPS::GPS(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
     forward(_size)
 {
     cross_phase_spectrum.resize(size/2+1);
-    TRACE_EVENT(EVENTS::CREATE, "GPS class created");
+    TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
 GPS::~GPS()
 {
-    TRACE_EVENT(EVENTS::CREATE, "GPS class destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void GPS::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
     forward.SetReal(first_);
     forward.Execute();
     forward.GetFourierImage(fur_1);
@@ -58,7 +58,7 @@ void GPS::Conclude()
 {
     double numerator_sum = 0, divider_sum = 0;
 
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
 
     normalize_sum();
     std::vector<double> w_func_numerator(size/2+1);

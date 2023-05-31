@@ -44,6 +44,8 @@ void Forward::SetBounds( size_t lowerBound, size_t upperBound )
     }
     lowerBound_ = lowerBound;
     upperBound_ = upperBound;
+
+    fourier_image.resize( upperBound - lowerBound );
 }
 
 void Forward::Execute() noexcept
@@ -51,10 +53,16 @@ void Forward::Execute() noexcept
     size_t freqIndex = lowerBound_;
     for( auto& harmonica : fourier_image )
     {
-        GoerzelTF_set_freq_idx( goerzHandle, freqIndex );
+        if( !GoerzelTF_set_freq_idx( goerzHandle, freqIndex ) )
+        {
+            TRACE_EVENT( EVENTS::ERROR, "GoerzelTF_set_freq_idx() failed" );
+        }
         for( auto sample : real_array )
         {
-            GoerzelTF_update( goerzHandle, sample );
+            if( !GoerzelTF_update( goerzHandle, sample ) )
+            {
+                TRACE_EVENT( EVENTS::ERROR, "GoerzelTF_update() failed" );
+            }
         }
         harmonica = GoerzelTF_result( goerzHandle );
         ++freqIndex;

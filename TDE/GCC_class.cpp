@@ -19,12 +19,12 @@ GCC::GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
 {
     corr_func.resize(size);
     PHAT_func.resize(size/2+1);
-    TRACE_EVENT(EVENTS::CREATE, "GCC object created");
+    TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
 GCC::~GCC()
 {
-    TRACE_EVENT(EVENTS::CREATE, "GCC object destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void GCC::GetCorrFunc(std::vector<double>& _corr)
@@ -50,7 +50,7 @@ void GCC::apply_PHAT_func(double* weight_func)
 
 void GCC::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
     forward.SetReal(first_);
     forward.Execute();
     forward.GetFourierImage(fur_1);
@@ -76,7 +76,7 @@ void GCC::Update(const std::vector<double>& first_, const std::vector<double>& s
 
 void GCC::Conclude()
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
 
     normalize_sum();
 

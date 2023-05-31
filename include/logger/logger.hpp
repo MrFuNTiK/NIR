@@ -29,7 +29,8 @@ enum class EVENTS : int
     SOUND = 2,      ///< Actions with sound e.g. copy data from RtAudio buffer.
     MANAGE = 4,     ///< Change behaviour of cmd_util e.g. by calling SIGINT handler.
     TDE_CALC = 8,   ///< Any math calculations.
-    ERROR = 16      ///< Error occurred.
+    ERROR = 16,     ///< Error occurred.
+    DEBUG = 32      ///< Some debug message.
 };
 
 static constexpr char NONE_STR[] =      "NONE";
@@ -38,6 +39,7 @@ static constexpr char SOUND_STR[] =     "SOUND";
 static constexpr char MANAGE_STR[] =    "MANAGE";
 static constexpr char TDE_CALC_STR[] =  "TDE_CALC";
 static constexpr char ERROR_STR[] =     "ERROR";
+static constexpr char DEBUG_STR[] =     "DEBUG";
 
 EVENTS operator | (EVENTS ev1, EVENTS ev2);
 EVENTS operator & (EVENTS ev1, EVENTS ev2);
@@ -106,13 +108,12 @@ public:
      * Logger must be initialized before call of this method.
      *
      * @param event Type of current event.
-     * @param file Current file where event occurred.
-     * @param line Current line where event occurred.
+     * @param func Function name.
      * @param message Message that should be written to note.
      *
      * @throws std::runtime_error In case of logger was not initialized.
      */
-    void LogMessage( EVENTS event, const char* file, const int line, const char* message );
+    void LogMessage( EVENTS event, const char* func, const char* message );
 
 private:
     Logger();
@@ -141,7 +142,7 @@ private:
 #  define TRACE_EVENT( EVENT, MESSAGE )    \
     {                                      \
         auto& lg = logger::Logger::GetInstance(); \
-        lg.LogMessage( EVENT, __FILE__, __LINE__, MESSAGE ); \
+        lg.LogMessage( EVENT, __PRETTY_FUNCTION__, MESSAGE ); \
     }
 # else
 #  define TRACE_EVENT( EVENT, MESSAGE )

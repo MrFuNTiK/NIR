@@ -59,7 +59,7 @@ void Logger::Initialize()
     _isInitialized = true;
 }
 
-void Logger::LogMessage( EVENTS event, const char* file, const int line, const char* message )
+void Logger::LogMessage( EVENTS event, const char* func, const char* message )
 {
     if( !( _events & event ) )
     {
@@ -74,8 +74,8 @@ void Logger::LogMessage( EVENTS event, const char* file, const int line, const c
     std::string eventStr = EVENTS_to_str( event );
     std::lock_guard<std::mutex> lg( _traceMutex );
 
-    *_traceStream << eventStr.c_str() << ":\t" << file << ":"
-                  << line << "\t" << message <<std::endl;
+    *_traceStream << eventStr.c_str() << ":\t" << func
+                  << "\t" << message <<std::endl;
 }
 
 void Logger::CreateStream( std::string path )
@@ -129,6 +129,10 @@ std::string EVENTS_to_str( EVENTS event )
     {
         return ERROR_STR;
     }
+    case EVENTS::DEBUG:
+    {
+        return DEBUG_STR;
+    }
     default:
         throw std::runtime_error("Unrecognized event type");
     }
@@ -164,6 +168,10 @@ EVENTS EVENTS_from_str( std::string& str )
     else if( str == ERROR_STR )
     {
         return EVENTS::ERROR;
+    }
+    else if( str == DEBUG_STR )
+    {
+        return EVENTS::DEBUG;
     }
     else
     {

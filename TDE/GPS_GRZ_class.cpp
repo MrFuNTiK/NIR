@@ -23,7 +23,7 @@ GPS_GRZ::GPS_GRZ(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
     upperBound = (size/2+1.) / sample_rate * UPPER_FREQ_BOUND;
 
     auto diff = upperBound - lowerBound;
-    std::cout << "diff = " << diff << std::endl;
+    TRACE_EVENT( EVENTS::DEBUG, std::to_string( diff ).c_str() );
 
     /**
      * Force resize buffers to reduced size;
@@ -40,17 +40,20 @@ GPS_GRZ::GPS_GRZ(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
     ampl2_sum.resize(diff);
 
     cross_phase_spectrum.resize(diff);
-    TRACE_EVENT(EVENTS::CREATE, "GPS_GRZ class created");
+
+    forward.SetBounds( lowerBound, upperBound );
+
+    TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
 GPS_GRZ::~GPS_GRZ()
 {
-    TRACE_EVENT(EVENTS::CREATE, "GPS_GRZ class destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void GPS_GRZ::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
     forward.SetReal(first_);
     forward.Execute();
     forward.GetFourierImage(fur_1);
@@ -77,7 +80,7 @@ void GPS_GRZ::Conclude()
 {
     double numerator_sum = 0, divider_sum = 0;
 
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
 
     normalize_sum();
     std::vector<double> w_func_numerator(ampl1_sum.size());

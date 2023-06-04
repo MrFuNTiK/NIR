@@ -100,9 +100,9 @@ int GoerzelTF_update( GoerzelTF* tf, double data )
     assert( tf );
     ++tf->updateCount;
 
-    tf->q0 = 2 * tf->cos_ * tf->q1 - tf->q2 + data;
     tf->q2 = tf->q1;
     tf->q1 = tf->q0;
+    tf->q0 = 2 * tf->cos_ * tf->q1 - tf->q2 + data;
 
     return 1;
 }
@@ -110,8 +110,8 @@ int GoerzelTF_update( GoerzelTF* tf, double data )
 double _Complex GoerzelTF_result( GoerzelTF* tf )
 {
     assert( tf );
-    tf->res = ( tf->q1 - tf->q2 * tf->cos_ ) / ( tf->numSamples ) +
-              ( tf->q2 * tf->sin_ )*I / ( tf->numSamples );
+    tf->res = ( - tf->q1 + tf->q0 * tf->cos_ ) / ( tf->numSamples ) +
+              ( tf->q0 * tf->sin_ )*I / ( tf->numSamples );
     return tf->updateCount > 3 ? tf->res : NAN;
 }
 

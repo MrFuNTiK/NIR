@@ -7,8 +7,8 @@ int main()
     try
     {
         auto& logger_ = logger::Logger::GetInstance();
-        logger_.SetEvents( logger::EVENTS::CREATE | logger::EVENTS::TDE_CALC | logger::EVENTS::ERROR);
-        logger_.SetTrace( "/home/kirill/Study/NIR/FFTW/NIR/_result/bin/log.txt" );
+        logger_.SetEvents( logger::EVENTS::TDE_CALC | logger::EVENTS::ERROR | logger::EVENTS::DEBUG );
+        logger_.SetTrace(  "log.txt" );
         logger_.Initialize();
     }
     catch( std::exception& e )

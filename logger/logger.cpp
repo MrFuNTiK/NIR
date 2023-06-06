@@ -225,6 +225,10 @@ EVENTS EVENTS_parse_events_str( std::string& eventStr )
     {
         events = events | EVENTS::ERROR;
     }
+    if( std::string::npos != eventStr.find( DEBUG_STR ) )
+    {
+        events = events | EVENTS::DEBUG;
+    }
     return events;
 }
 
@@ -254,6 +258,10 @@ std::string EVENTS_parse_events( EVENTS events )
     if( EVENTS::NONE != ( EVENTS::TDE_CALC & events ) )
     {
         eventStr << TDE_CALC_STR <<  "|";
+    }
+    if( EVENTS::NONE != ( EVENTS::DEBUG & events ) )
+    {
+        eventStr << DEBUG_STR << "|";
     }
     eventStr << "\b";
     return eventStr.str();

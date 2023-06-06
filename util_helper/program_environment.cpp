@@ -195,8 +195,8 @@ void ProgramEnvironment::PrintHelp(const char* progName)
 
     std::cout << "Arguments:" << std::endl;
     std::cout << "\t" << cmd_params::paramPrefix << cmd_params::TDE_METHOD
-              << "\t" << "[" << TDE_METHOD_GCC_STR << "|" << TDE_METHOD_GPS_STR << "]"
-              << "\t\t" << "Method of TDE calculation (default: "
+              << "\t" << "[" << TDE_METHOD_GCC_STR << "|" << TDE_METHOD_GPS_STR << "|" <<TDE_METHOD_GPS_GRZ_STR << "]"
+              << "\t" << "Method of TDE calculation (default: "
               << TDE_METH_to_str( defaults::TDE_METHOD ) << ")" << std::endl;
 
     std::cout << "\t" << cmd_params::paramPrefix << cmd_params::SAMPLE_RATE
@@ -234,7 +234,8 @@ void ProgramEnvironment::PrintHelp(const char* progName)
               << "\t" << logger::CREATE_STR << "\t\t" <<    "- constructing and destructing objects" << std::endl
               << "\t" << logger::ERROR_STR << "\t\t" <<     "- critical errors" << std::endl
               << "\t" << logger::MANAGE_STR << "\t\t" <<    "- enabling/disabling furter execution" << std::endl
-              << "\t" << logger::TDE_CALC_STR << "\t" <<    "- calculating TDE" << std::endl;
+              << "\t" << logger::TDE_CALC_STR << "\t" <<  "- calculating TDE" << std::endl
+              << "\t" << logger::DEBUG_STR << "\t\t" <<       "- any debug message" << std::endl;
 #endif // ENABLE_LOGGER
 }
 

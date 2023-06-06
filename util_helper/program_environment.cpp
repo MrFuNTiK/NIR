@@ -7,6 +7,7 @@
 #include <logger/logger.hpp>
 #include <TDE/GCC_class.hpp>
 #include <TDE/GPS_class.hpp>
+#include <TDE/GPS_GRZ_class.hpp>
 
 #include <util_helper/sigint.hpp>
 
@@ -194,8 +195,8 @@ void ProgramEnvironment::PrintHelp(const char* progName)
 
     std::cout << "Arguments:" << std::endl;
     std::cout << "\t" << cmd_params::paramPrefix << cmd_params::TDE_METHOD
-              << "\t" << "[" << TDE_METHOD_GCC_STR << "|" << TDE_METHOD_GPS_STR << "]"
-              << "\t\t" << "Method of TDE calculation (default: "
+              << "\t" << "[" << TDE_METHOD_GCC_STR << "|" << TDE_METHOD_GPS_STR << "|" <<TDE_METHOD_GPS_GRZ_STR << "]"
+              << "\t" << "Method of TDE calculation (default: "
               << TDE_METH_to_str( defaults::TDE_METHOD ) << ")" << std::endl;
 
     std::cout << "\t" << cmd_params::paramPrefix << cmd_params::SAMPLE_RATE
@@ -233,7 +234,8 @@ void ProgramEnvironment::PrintHelp(const char* progName)
               << "\t" << logger::CREATE_STR << "\t\t" <<    "- constructing and destructing objects" << std::endl
               << "\t" << logger::ERROR_STR << "\t\t" <<     "- critical errors" << std::endl
               << "\t" << logger::MANAGE_STR << "\t\t" <<    "- enabling/disabling furter execution" << std::endl
-              << "\t" << logger::TDE_CALC_STR << "\t" <<    "- calculating TDE" << std::endl;
+              << "\t" << logger::TDE_CALC_STR << "\t" <<  "- calculating TDE" << std::endl
+              << "\t" << logger::DEBUG_STR << "\t\t" <<       "- any debug message" << std::endl;
 #endif // ENABLE_LOGGER
 }
 
@@ -264,6 +266,10 @@ iTDE* ProgramEnvironment::CreateCalculator()
     else if( _meth == GPS_TDE )
     {
         return new tde::gps::GPS(_window_size, _sample_rate, _weight_fn);
+    }
+    else if( _meth == GPS_GRZ_TDE )
+    {
+        return new tde::gps::GPS_GRZ(_window_size, _sample_rate, _weight_fn);
     }
     else return nullptr;
 }
@@ -300,6 +306,10 @@ std::string TDE_METH_to_str( TDE_METH meth )
     {
         return TDE_METHOD_GPS_STR;
     }
+    case TDE_METH::GPS_GRZ_TDE:
+    {
+        return TDE_METHOD_GPS_GRZ_STR;
+    }
     default:
     {
         throw std::runtime_error( "Undefined TDE method type" );
@@ -321,6 +331,10 @@ TDE_METH TDE_METH_from_str( std::string& str )
     else if( str == TDE_METHOD_GPS_STR )
     {
         return TDE_METH::GPS_TDE;
+    }
+    else if( str == TDE_METHOD_GPS_GRZ_STR )
+    {
+        return TDE_METH::GPS_GRZ_TDE;
     }
     else
     {

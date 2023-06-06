@@ -42,7 +42,7 @@ public:
 
 private:
     Forward forward;
-    double* cross_phase_spectrum;
+    std::vector<double> cross_phase_spectrum;
 };
 
 } // namespace gps

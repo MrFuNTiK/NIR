@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 #include <tuple>
 #include <memory>
+#include <ctime>
+#include <cstdlib>
+#include <cstring>
 #include <TDE/TDE_class.hpp>
 #include <util_helper/program_environment.hpp>
 
@@ -27,8 +30,14 @@ public:
 
 void calc_test::SetUp()
 {
+    std::srand( std::time(nullptr));
     vec1.resize(DEFAULT_WINDOW_SIZE);
     vec2.resize(DEFAULT_WINDOW_SIZE);
+    for( auto& sample : vec1 )
+    {
+        sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+    }
+    std::memcpy( &vec2[ 0 ], &vec1[ 0 ], sizeof( double ) * vec1.size() );
     auto& pe = ProgramEnvironment::GetInstance();
     ASSERT_NO_THROW(pe.SetWindowSize(DEFAULT_WINDOW_SIZE));
     ASSERT_NO_THROW(pe.SetSampleRate(DEFAULT_SAMPLE_RATE));
@@ -51,11 +60,12 @@ TEST_P(calc_test, leak_test)
             calc->Update(vec1, vec2);
         }
         calc->Conclude();
+        EXPECT_NEAR( calc->GetTde(), 0., 0.00001 );
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(TDE_tests, calc_test,
+INSTANTIATE_TEST_CASE_P(TDE_tests, calc_test,
                          ::testing::Combine(
                              ::testing::Values(tde::COHERENCE, tde::NONE),
-                             ::testing::Values(GCC_TDE, GPS_TDE)
+                             ::testing::Values(GCC_TDE, GPS_TDE, GPS_GRZ_TDE)
                          ));

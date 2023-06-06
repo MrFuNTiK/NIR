@@ -1,4 +1,4 @@
-project(TDE_TOOLS LANGUAGES CXX)
+project(TDE_TOOLS LANGUAGES C CXX)
 
 cmake_minimum_required(VERSION 3.10)
 

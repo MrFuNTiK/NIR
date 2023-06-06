@@ -25,13 +25,13 @@ Forward::Forward(uint16_t _size) :
     real_array.resize(size);
     fourier_image.resize(size/2+1);
     forward_plan = fftw_plan_dft_r2c_1d(size, &real_array[0], reinterpret_cast<fftw_complex*>(&fourier_image[0]), FFTW_ESTIMATE);
-    TRACE_EVENT(EVENTS::CREATE, "fft_forward class created");
+    TRACE_EVENT(EVENTS::CREATE, "created");
 }
 
 Forward::~Forward()
 {
     fftw_destroy_plan(forward_plan);
-    TRACE_EVENT(EVENTS::CREATE, "fft_forward class destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void Forward::Execute() noexcept

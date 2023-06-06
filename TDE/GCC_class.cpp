@@ -19,12 +19,12 @@ GCC::GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
 {
     corr_func.resize(size);
     PHAT_func.resize(size/2+1);
-    TRACE_EVENT(EVENTS::CREATE, "GCC object created");
+    TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
 GCC::~GCC()
 {
-    TRACE_EVENT(EVENTS::CREATE, "GCC object destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void GCC::GetCorrFunc(std::vector<double>& _corr)
@@ -50,7 +50,7 @@ void GCC::apply_PHAT_func(double* weight_func)
 
 void GCC::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::update() has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
     forward.SetReal(first_);
     forward.Execute();
     forward.GetFourierImage(fur_1);
@@ -62,8 +62,8 @@ void GCC::Update(const std::vector<double>& first_, const std::vector<double>& s
     make_mul_with_conj();
     add_mul_to_sum();
 
-    get_ampl_spectrum(size/2+1, fur_1, &ampl1[0]);
-    get_ampl_spectrum(size/2+1, fur_2, &ampl2[0]);
+    get_ampl_spectrum(fur_1, ampl1);
+    get_ampl_spectrum(fur_2, ampl2);
 
     for( uint32_t i = 0; i < size/2u+1u; ++i )
     {
@@ -76,7 +76,7 @@ void GCC::Update(const std::vector<double>& first_, const std::vector<double>& s
 
 void GCC::Conclude()
 {
-    TRACE_EVENT( EVENTS::TDE_CALC, "TDE::conclude has been called" );
+    TRACE_EVENT( EVENTS::TDE_CALC, "called" );
 
     normalize_sum();
 
@@ -86,7 +86,7 @@ void GCC::Conclude()
     {
     case COHERENCE:
     {
-        get_ampl_spectrum(size/2+1, fur_1_2_sum, w_func_numerator.data());
+        get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
         for( uint16_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];

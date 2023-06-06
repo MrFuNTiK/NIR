@@ -25,13 +25,13 @@ Reverse::Reverse(uint16_t _size) :
     real_array.resize(size);
     fourier_image.resize(size/2+1);
     reverse_plan = fftw_plan_dft_c2r_1d(size, reinterpret_cast<fftw_complex*>(&fourier_image[0]), &real_array[0], FFTW_ESTIMATE);
-    TRACE_EVENT(EVENTS::CREATE, "fft_reverse class created");
+    TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
 Reverse::~Reverse()
 {
     fftw_destroy_plan(reverse_plan);
-    TRACE_EVENT(EVENTS::CREATE, "fft_reverse class destroyed");
+    TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
 void Reverse::Execute() noexcept

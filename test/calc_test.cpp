@@ -64,7 +64,7 @@ TEST_P(calc_test, leak_test)
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(TDE_tests, calc_test,
+INSTANTIATE_TEST_CASE_P(TDE_tests, calc_test,
                          ::testing::Combine(
                              ::testing::Values(tde::COHERENCE, tde::NONE),
                              ::testing::Values(GCC_TDE, GPS_TDE, GPS_GRZ_TDE)

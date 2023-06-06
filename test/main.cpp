@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <logger/logger.hpp>
 
-int main()
+int main(int argc, char** argv)
 {
 #ifdef ENABLE_LOGGER
     try
@@ -17,6 +17,6 @@ int main()
         return 0;
     }
 #endif
-    testing::InitGoogleTest();
+    testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

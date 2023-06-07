@@ -46,7 +46,7 @@ public:
      * complex array to set_fourier_image() is (_size / 2 + 1) and
      * size of output real array from get_real() is (_size).
      */
-    Reverse(uint16_t _size);
+    Reverse(size_t _size);
     ~Reverse();
 
     /**
@@ -72,7 +72,7 @@ public:
     void GetReal(std::vector<double>& _real) noexcept;
 
 private:
-    uint16_t size;
+    size_t size;
     fftw_plan reverse_plan;
     std::vector<std::complex<double>> fourier_image;
     std::vector<double> real_array;

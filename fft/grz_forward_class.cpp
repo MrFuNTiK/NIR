@@ -11,7 +11,7 @@
 using namespace transform::cpu::grz;
 using namespace logger;
 
-Forward::Forward(uint16_t _size) :
+Forward::Forward(size_t _size) :
     size(_size)
 {
     if(4 > size)

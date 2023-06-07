@@ -45,7 +45,7 @@ public:
      *
      * @param _size     Number of samples of real input samples.
      */
-    Forward(uint16_t _size);
+    Forward(size_t _size);
     ~Forward();
 
     void SetBounds( size_t lowerBound, size_t upperBound );
@@ -78,7 +78,7 @@ public:
     void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
 
 private:
-    uint16_t size = 0;
+    size_t size = 0;
     size_t lowerBound_ = 0;
     size_t upperBound_ = 0;
     GoerzelTF* goerzHandle = nullptr;

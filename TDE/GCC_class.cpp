@@ -12,7 +12,7 @@
 using namespace tde::gcc;
 using namespace logger;
 
-GCC::GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
+GCC::GCC(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     iTDE(_size, _rate, _w_func),
     forward(_size),
     reverse(_size)
@@ -34,7 +34,7 @@ void GCC::GetCorrFunc(std::vector<double>& _corr)
 
 void GCC::shift_corr_func()
 {
-    for (uint16_t i = 0; i < size/2; ++i)
+    for (size_t i = 0; i < size/2; ++i)
     {
         swap<double>(&corr_func[i], &corr_func[i + size/2]);
     }
@@ -42,7 +42,7 @@ void GCC::shift_corr_func()
 
 void GCC::apply_PHAT_func(double* weight_func)
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    for (size_t i = 0; i < size/2+1; ++i)
     {
         fur_1_2_sum[i] /= weight_func[i];
     }
@@ -87,7 +87,7 @@ void GCC::Conclude()
     case COHERENCE:
     {
         get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
-        for( uint16_t i = 0; i < size/2+1; ++i )
+        for( size_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
@@ -110,7 +110,7 @@ void GCC::Conclude()
 
     double corr_max = corr_func[0];
     int16_t num_max = 0;
-    for (uint16_t i = 1; i < size; ++i)
+    for (size_t i = 1; i < size; ++i)
     {
         if (corr_func[i] > corr_max)
         {

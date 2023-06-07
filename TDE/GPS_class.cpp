@@ -16,7 +16,7 @@
 using namespace tde::gps;
 using namespace logger;
 
-GPS::GPS(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func) :
+GPS::GPS(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     iTDE(_size, _rate, _w_func),
     forward(_size)
 {
@@ -68,7 +68,7 @@ void GPS::Conclude()
     case COHERENCE:
     {
         get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
-        for( uint16_t i = 0; i < size/2+1; ++i )
+        for( size_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
@@ -84,7 +84,7 @@ void GPS::Conclude()
     unwrap_phase_spectrum(cross_phase_spectrum);
 
     //std::cout << "HARMONICAS\tCROSS_PHASE\n";
-    for (uint16_t i = 1; i < size/2+1; ++i)
+    for (size_t i = 1; i < size/2+1; ++i)
     {
         double harmonica = 2 * M_PI *i * sample_rate / size;
         if (harmonica / (2*M_PI) > BOTTOM_FREQ_BOUND)

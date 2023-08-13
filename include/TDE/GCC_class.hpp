@@ -33,8 +33,8 @@ class GCC final : public iTDE
 {
 public:
     GCC() = delete;
-    GCC(GCC*) = delete;
-    void operator = (const GCC*) = delete;
+    GCC(const GCC&) = delete;
+    void operator = (const GCC&) = delete;
     GCC(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GCC();
 

@@ -39,8 +39,8 @@ class iTDE
 {
 public:
     iTDE() = delete;
-    iTDE(iTDE*) = delete;
-    void operator = (const iTDE*) = delete;
+    iTDE(const iTDE&) = delete;
+    void operator = (const iTDE&) = delete;
 
     /**
      * @brief Construct a new TDE object.

@@ -49,7 +49,7 @@ void calc_test::SetUp()
 void calc_test::TearDown()
 {}
 
-TEST_P(calc_test, leak_test)
+TEST_P(calc_test, UpdateConcludeExpectSuccess)
 {
     ASSERT_NO_THROW(calc.reset(PE::GetInstance().CreateCalculator()));
     ASSERT_NE(calc.get(), nullptr);

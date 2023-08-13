@@ -32,8 +32,8 @@ class GPS final : public iTDE
 {
 public:
     GPS() = delete;
-    GPS(GPS*) = delete;
-    void operator = (const GPS*) = delete;
+    GPS(const GPS&) = delete;
+    void operator = (const GPS&) = delete;
     GPS(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GPS();
 

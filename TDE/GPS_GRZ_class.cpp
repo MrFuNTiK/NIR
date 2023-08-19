@@ -17,7 +17,9 @@ using namespace logger;
 
 GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     iTDE(_size, _rate, _w_func),
-    forward(_size)
+    forward(_size,
+            (size/2+1.) / sample_rate * BOTTOM_FREQ_BOUND,
+            (size/2+1.) / sample_rate * UPPER_FREQ_BOUND)
 {
     lowerBound = (size/2+1.) / sample_rate * BOTTOM_FREQ_BOUND;
     upperBound = (size/2+1.) / sample_rate * UPPER_FREQ_BOUND;
@@ -40,8 +42,6 @@ GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     ampl2_sum.resize(diff);
 
     cross_phase_spectrum.resize(diff);
-
-    forward.SetBounds( lowerBound, upperBound );
 
     TRACE_EVENT(EVENTS::CREATE, "success");
 }

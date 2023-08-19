@@ -73,11 +73,8 @@ int GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
 #endif
     tf->res = NAN;
 
-    if( isnan( tf->sin_ ) ||
-        isnan( tf->cos_ ) )
-    {
-        return 0;
-    }
+    assert( !isnan( tf->sin_ ) );
+    assert( !isnan( tf->cos_ ) );
 
     return 1;
 }

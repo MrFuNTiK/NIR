@@ -12,7 +12,7 @@ constexpr size_t NUM_BENCH_ITERS = 100;
 int main()
 {
     size_t N[] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
-    size_t diff[] { 3, 4, 5, 6, 7, 8, 10, 12, 15, 20, 25, 30, 35, 40, 50 };
+    size_t diff[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 50 };
 
     TimeBecnmark bench;
 
@@ -27,11 +27,10 @@ int main()
         {
             sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
         }
-        transform::cpu::grz::Forward transform( 1 << N_ );
-        transform.SetReal( data );
         for( auto diff_ : diff )
         {
-            transform.SetBounds( GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
+            transform::cpu::grz::Forward transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
+            transform.SetReal( data );
             for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
             {
                 auto begin = std::chrono::steady_clock::now();

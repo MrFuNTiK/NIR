@@ -39,8 +39,7 @@ TEST( GoerzTest, UpdateResultExpectSuccess )
 TEST( GoerzTest, Goerzel_VS_fftw3 )
 {
     transform::cpu::fft::Forward fft( SAMPLES );
-    transform::cpu::grz::Forward grz( SAMPLES );
-    grz.SetBounds( 0, SAMPLES / 2 + 1 );
+    transform::cpu::grz::Forward grz( SAMPLES, 0, SAMPLES / 2 + 1 );
 
     std::vector<double> sine( SAMPLES );
     for( size_t i = 0; i < SAMPLES; ++i )

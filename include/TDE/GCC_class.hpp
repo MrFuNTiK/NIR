@@ -35,7 +35,7 @@ public:
     GCC() = delete;
     GCC(GCC*) = delete;
     void operator = (const GCC*) = delete;
-    GCC(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
+    GCC(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GCC();
 
     void GetCorrFunc(std::vector<double>& _corr);

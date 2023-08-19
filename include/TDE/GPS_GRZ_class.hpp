@@ -35,7 +35,7 @@ public:
     GPS_GRZ() = delete;
     GPS_GRZ(GPS_GRZ&) = delete;
     void operator = (const GPS_GRZ&) = delete;
-    GPS_GRZ(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
+    GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func);
     ~GPS_GRZ();
 
     void Update(const std::vector<double>& _first, const std::vector<double>& _second) override;

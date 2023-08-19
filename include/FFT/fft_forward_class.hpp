@@ -47,7 +47,7 @@ public:
      * @param _size     Number of samples of real input samples.
      *                  Output array will contain (_size / 2 + 1) complex samples.
      */
-    Forward(uint16_t _size);
+    Forward(size_t _size);
     ~Forward();
 
     /**
@@ -78,7 +78,7 @@ public:
     void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
 
 private:
-    uint16_t size;
+    size_t size;
     fftw_plan forward_plan;
     std::vector<double> real_array;
     std::vector<std::complex<double>> fourier_image;

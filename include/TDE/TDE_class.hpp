@@ -51,7 +51,7 @@ public:
      * @param _rate     Sampling frequency of source signal
      * @param _w_func   @ref WEIGHTING_FN_TYPE "Frequency-weighting" function used to calculate TDE
      */
-    iTDE(uint16_t _size, uint16_t _rate, WEIGHTING_FN_TYPE _w_func);
+    iTDE(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func);
     virtual ~iTDE();
 
     /**
@@ -87,10 +87,10 @@ public:
     ///@} // TDE_interface
 
 protected:
-    uint16_t size;
-    uint16_t sample_rate;
+    size_t size;
+    size_t sample_rate;
     WEIGHTING_FN_TYPE w_func;
-    uint16_t update_count;
+    size_t update_count;
     double tde;
 
     std::vector<std::complex<double>> fur_1;

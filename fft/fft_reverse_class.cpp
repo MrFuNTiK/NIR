@@ -10,7 +10,7 @@
 using namespace transform::cpu::fft;
 using namespace logger;
 
-Reverse::Reverse(uint16_t _size) :
+Reverse::Reverse(size_t _size) :
     size(_size)
 {
     if(4 > size)

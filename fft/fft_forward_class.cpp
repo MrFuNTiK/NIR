@@ -11,7 +11,7 @@
 using namespace transform::cpu::fft;
 using namespace logger;
 
-Forward::Forward(uint16_t _size) :
+Forward::Forward(size_t _size) :
     size(_size)
 {
     if(4 > size)
@@ -42,7 +42,7 @@ void Forward::Execute() noexcept
 
 void Forward::NormalizeFur()
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    for (size_t i = 0; i < size/2+1; ++i)
     {
         fourier_image[i] /= size;
     }
@@ -50,7 +50,7 @@ void Forward::NormalizeFur()
 
 void Forward::Conjugate() noexcept
 {
-    for (uint16_t i = 0; i < size/2+1; ++i)
+    for (size_t i = 0; i < size/2+1; ++i)
     {
         fourier_image[i] = std::conj(fourier_image[i]);
     }

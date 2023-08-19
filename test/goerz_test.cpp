@@ -25,11 +25,10 @@ TEST( GoerzTest, UpdateResultExpectSuccess )
 
     for( size_t i = 0; i < SAMPLES / 2 + 1 ; ++i )
     {
-        ASSERT_EQ( 1, GoerzelTF_set_freq_idx( tf.get(), i ) );
-        ASSERT_NE( tf, nullptr );
+        GoerzelTF_set_freq_idx( tf.get(), i );
         for( auto sample : sine )
         {
-            ASSERT_EQ( 1, GoerzelTF_update( tf.get(), sample ) );
+            GoerzelTF_update( tf.get(), sample );
         }
         std::complex<double> res = GoerzelTF_result( tf.get() );
         ASSERT_EQ( res, res );

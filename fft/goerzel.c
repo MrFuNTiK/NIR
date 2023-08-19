@@ -54,7 +54,7 @@ void GoerzelTF_destroy( GoerzelTF* tf )
     free( tf );
 }
 
-int GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
+void GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
 {
     assert( tf );
 
@@ -75,22 +75,16 @@ int GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
 
     assert( !isnan( tf->sin_ ) );
     assert( !isnan( tf->cos_ ) );
-
-    return 1;
 }
 
-int GoerzelTF_update( GoerzelTF* tf, double data )
+void GoerzelTF_update( GoerzelTF* tf, double data )
 {
     assert( tf );
-    assert( !isnan( tf->sin_ ) );;
-    assert( !isnan( tf->cos_ ) );
     ++tf->updateCount;
 
     tf->q2 = tf->q1;
     tf->q1 = tf->q0;
     tf->q0 = 2 * tf->cos_ * tf->q1 - tf->q2 + data;
-
-    return 1;
 }
 
 double _Complex GoerzelTF_result( GoerzelTF* tf )

@@ -2,12 +2,18 @@
 #include <chrono>
 #include <iostream>
 #include <ctime>
+#include <memory>
 #include <FFT/grz_forward_class.hpp>
 #include <FFT/fft_forward_class.hpp>
+#include <goerzel.h>
 #include "time_benchmark.hpp"
 
 constexpr size_t GRZ_INDEX_FIRST = 5;
 constexpr size_t NUM_BENCH_ITERS = 100;
+
+#define RAW_GOERZEL
+#define FFT_GOERZEL
+#define FFT_FFTW3
 
 int main()
 {
@@ -18,8 +24,49 @@ int main()
 
     std::srand( std::time(nullptr));
 
-    std::cout << "Goerzel benchmark" << std::endl << std::endl;
+#ifdef RAW_GOERZEL
+    std::cout << "Goerzel raw benchmark" << std::endl << std::endl;
+    for( auto N_ : N )
+    {
+        std::vector< double > data( 1 << N_ );
+        for( auto& sample : data )
+        {
+            sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+        }
+        transform::cpu::grz::GoerzPtr transform{ GoerzelTF_create( 1 << N_ ), GoerzelTF_destroy };
+        for( auto diff_ : diff )
+        {
+            if( !GoerzelTF_precalc( transform.get(), GRZ_INDEX_FIRST, diff_ ) )
+            {
+                std::cout << "Precalc failed" << std::endl;
+            }
+            for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
+            {
+                auto begin = std::chrono::steady_clock::now();
+                for( size_t freq = GRZ_INDEX_FIRST; freq < GRZ_INDEX_FIRST + diff_; ++freq )
+                {
+                    for( auto& sample : data )
+                    {
+                        GoerzelTF_update( transform.get(), sample );
+                    }
+                }
+                auto finish = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
+                bench.UpdateRes( duration );
+            }
+            bench.CalcStats();
+            std::cout << "N: " << N_ << "\t" << "diff: " << diff_ << "  \t\t"
+                      << "min: " << bench.GetMin() << " \t" << "max: " << bench.GetMax() << " \t"
+                      << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
+            bench.Reset();
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+#endif // RAW_GOERZEL
 
+#ifdef FFT_GOERZEL
+    std::cout << "Goerzel benchmark" << std::endl << std::endl;
     for( auto N_ : N )
     {
         std::vector< double > data( 1 << N_ );
@@ -47,10 +94,11 @@ int main()
         }
         std::cout << std::endl;
     }
-
     std::cout << std::endl;
-    std::cout << "Fourier benchmark" << std::endl << std::endl;
+#endif // FFT_GOERZEL
 
+#ifdef FFT_FFTW3
+    std::cout << "Fourier benchmark" << std::endl << std::endl;
     for( auto N_ : N )
     {
         std::vector< double > data( 1 << N_ );
@@ -74,4 +122,5 @@ int main()
                   << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
         bench.Reset();
     }
+#endif // FFT_FFTW3
 }

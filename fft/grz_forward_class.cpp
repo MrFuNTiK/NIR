@@ -59,11 +59,7 @@ void Forward::Execute() noexcept
     size_t freqIndex = lowerBound_;
     for( auto& harmonica : fourier_image )
     {
-        if( !GoerzelTF_set_freq_idx( goerzHandle.get(), freqIndex ) )
-        {
-            TRACE_EVENT( EVENTS::ERROR, "GoerzelTF_set_freq_idx() failed" );
-            return;
-        }
+        GoerzelTF_set_freq_idx( goerzHandle.get(), freqIndex );
         for( auto sample : real_array )
         {
             GoerzelTF_update( goerzHandle.get(), sample );

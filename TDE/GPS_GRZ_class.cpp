@@ -27,10 +27,6 @@ GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     auto diff = upperBound - lowerBound;
     TRACE_EVENT( EVENTS::DEBUG, std::to_string( diff ).c_str() );
 
-    /**
-     * Force resize buffers to reduced size;
-     *
-     */
     fur_1.resize(diff);
     fur_2.resize(diff);
     fur_1_2.resize(diff);
@@ -43,6 +39,7 @@ GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
 
     cross_phase_spectrum.resize(diff);
 
+    clear_inner();
     TRACE_EVENT(EVENTS::CREATE, "success");
 }
 

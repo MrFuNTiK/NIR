@@ -6,8 +6,6 @@
 #include <FFT/grz_forward_class.hpp>
 #include "goerzel.h"
 
-using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
-
 static const size_t SAMPLES = 1 << 5;
 
 TEST( GoerzTest, UpdateResultExpectSuccess )
@@ -20,7 +18,7 @@ TEST( GoerzTest, UpdateResultExpectSuccess )
         sine[ i ] = 10 * sin( 3 * 2 * M_PI * i / SAMPLES);
     }
 
-    GoerzPtr tf( GoerzelTF_create( SAMPLES ), GoerzelTF_destroy );
+    transform::cpu::grz::GoerzPtr tf( GoerzelTF_create( SAMPLES ), GoerzelTF_destroy );
     ASSERT_EQ( 1, GoerzelTF_precalc( tf.get(), 0, SAMPLES / 2 + 1 ) );
 
     for( size_t i = 0; i < SAMPLES / 2 + 1 ; ++i )

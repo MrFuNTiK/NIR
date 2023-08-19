@@ -30,17 +30,6 @@ iTDE::iTDE(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     {
         throw std::logic_error("Sampling rate must be greater than 0");
     }
-
-    fur_1.resize(size/2+1);
-    fur_2.resize(size/2+1);
-    fur_1_2.resize(size/2+1);
-    fur_1_2_sum.resize(size/2+1);
-
-    ampl1.resize(size/2+1);
-    ampl2.resize(size/2+1);
-    ampl1_sum.resize(size/2+1);
-    ampl2_sum.resize(size/2+1);
-    clear_inner();
 }
 
 iTDE::~iTDE()
@@ -95,7 +84,7 @@ void iTDE::normalize_sum()
     {
         TRACE_EVENT( logger::EVENTS::ERROR, "Inconsistent sizes of amplitude and fourier buffers" );
     }
-    for (size_t i = 0; i < size/2+1; ++i)
+    for (size_t i = 0; i < fur_1_2_sum.size(); ++i)
     {
         fur_1_2_sum[i] /= update_count;
         ampl1_sum[i] /= update_count;

@@ -64,6 +64,8 @@ void GoerzelTF_set_freq_idx( GoerzelTF* tf, size_t idx )
 #ifdef ENABLE_PRECALC
     assert( idx >= tf->firstFreqIndex_ );
     assert( idx <= tf->firstFreqIndex_ + tf->freqIndexWidth_ );
+    assert( tf->preCalcTable[ SIN_TABLE ] );
+    assert( tf->preCalcTable[ COS_TABLE ] );
     tf->sin_ = tf->preCalcTable[ SIN_TABLE ][ idx - tf->firstFreqIndex_ ];
     tf->cos_ = tf->preCalcTable[ COS_TABLE ][ idx - tf->firstFreqIndex_ ];
 #else
@@ -111,6 +113,8 @@ int GoerzelTF_precalc( GoerzelTF* tf, size_t firstIdx, size_t numSamples )
     tf->firstFreqIndex_ = firstIdx;
     tf->freqIndexWidth_ = numSamples;
 
+    free( tf->preCalcTable[ SIN_TABLE ] );
+    free( tf->preCalcTable[ COS_TABLE ] );
     tf->preCalcTable[ SIN_TABLE ] = ( double* )malloc( sizeof( double ) * numSamples );
     tf->preCalcTable[ COS_TABLE ] = ( double* )malloc( sizeof( double ) * numSamples );
 

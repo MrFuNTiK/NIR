@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <logger/logger.hpp>
+#include "test_env.hpp"
 
 int main(int argc, char** argv)
 {
@@ -8,7 +9,7 @@ int main(int argc, char** argv)
     {
         auto& logger_ = logger::Logger::GetInstance();
         logger_.SetEvents( logger::EVENTS::DEBUG );
-        logger_.SetTrace( "log.txt" );
+        logger_.SetTrace( "stdout" );
         logger_.Initialize();
     }
     catch( std::exception& e )
@@ -18,5 +19,6 @@ int main(int argc, char** argv)
     }
 #endif
     testing::InitGoogleTest(&argc, argv);
+    testing::AddGlobalTestEnvironment( new TestEnvironment( argc, argv ) );
     return RUN_ALL_TESTS();
 }

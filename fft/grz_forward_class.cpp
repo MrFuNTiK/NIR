@@ -25,7 +25,7 @@ Forward::Forward(size_t _size, size_t lowerBound, size_t upperBound) :
         throw std::logic_error( "Bounds must be less then size+1" );
     }
 
-    if( lowerBound > upperBound )
+    if( lowerBound >= upperBound )
     {
         throw std::logic_error( "Lower bound is greater then upper" );
     }

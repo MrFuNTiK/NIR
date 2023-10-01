@@ -17,7 +17,9 @@ using namespace logger;
 
 GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     iTDE(_size, _rate, _w_func),
-    forward(_size)
+    forward(_size,
+            (size/2+1.) / sample_rate * BOTTOM_FREQ_BOUND,
+            (size/2+1.) / sample_rate * UPPER_FREQ_BOUND)
 {
     lowerBound = (size/2+1.) / sample_rate * BOTTOM_FREQ_BOUND;
     upperBound = (size/2+1.) / sample_rate * UPPER_FREQ_BOUND;
@@ -25,10 +27,6 @@ GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     auto diff = upperBound - lowerBound;
     TRACE_EVENT( EVENTS::DEBUG, std::to_string( diff ).c_str() );
 
-    /**
-     * Force resize buffers to reduced size;
-     *
-     */
     fur_1.resize(diff);
     fur_2.resize(diff);
     fur_1_2.resize(diff);
@@ -41,8 +39,7 @@ GPS_GRZ::GPS_GRZ(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
 
     cross_phase_spectrum.resize(diff);
 
-    forward.SetBounds( lowerBound, upperBound );
-
+    clear_inner();
     TRACE_EVENT(EVENTS::CREATE, "success");
 }
 

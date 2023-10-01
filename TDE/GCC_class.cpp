@@ -17,8 +17,20 @@ GCC::GCC(size_t _size, size_t _rate, WEIGHTING_FN_TYPE _w_func) :
     forward(_size),
     reverse(_size)
 {
+    fur_1.resize(size/2+1);
+    fur_2.resize(size/2+1);
+    fur_1_2.resize(size/2+1);
+    fur_1_2_sum.resize(size/2+1);
+
+    ampl1.resize(size/2+1);
+    ampl2.resize(size/2+1);
+    ampl1_sum.resize(size/2+1);
+    ampl2_sum.resize(size/2+1);
+
     corr_func.resize(size);
     PHAT_func.resize(size/2+1);
+
+    clear_inner();
     TRACE_EVENT(EVENTS::CREATE, "success");
 }
 

@@ -3,10 +3,11 @@
 
 #pragma once
 
-# include <cstdint>
-# include <vector>
-# include <complex>
-# include <goerzel.h>
+#include <cstdint>
+#include <vector>
+#include <complex>
+#include <memory>
+#include <goerzel.h>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -25,6 +26,8 @@ namespace cpu
 namespace grz
 {
 
+using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
+
 /**
  * @class Transform
  * @brief This class implements direct Fast Fourier Transform.
@@ -35,20 +38,18 @@ namespace grz
 class Forward
 {
 public:
-
     Forward() = delete;
     Forward(Forward&) = delete;
-    void operator = (const Forward&) = delete;
+    Forward operator = (const Forward&) = delete;
 
     /**
      * @brief Construct a new fft forward object
      *
-     * @param _size     Number of samples of real input samples.
+     * @param size     Number of samples of real input samples.
      */
-    Forward(size_t _size);
+    Forward(size_t size);
+    Forward(size_t size, size_t lowerBound, size_t upperBound);
     ~Forward();
-
-    void SetBounds( size_t lowerBound, size_t upperBound );
 
     /**
      * @brief Execute direct transform of arrays passed in set_real().
@@ -81,7 +82,7 @@ private:
     size_t size = 0;
     size_t lowerBound_ = 0;
     size_t upperBound_ = 0;
-    GoerzelTF* goerzHandle = nullptr;
+    GoerzPtr goerzHandle{ nullptr, GoerzelTF_destroy };
     std::vector<double> real_array;
     std::vector<std::complex<double>> fourier_image;
     void NormalizeFur();

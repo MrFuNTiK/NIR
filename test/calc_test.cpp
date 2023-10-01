@@ -11,10 +11,6 @@ using namespace tde;
 using namespace utility_helpers::program_environment;
 using PE = ProgramEnvironment;
 
-static const uint16_t DEFAULT_SAMPLE_RATE = 44100;
-static const uint16_t DEFAULT_WINDOW_SIZE = 1 << 10;
-static const uint16_t DEFAULT_AVRG_NUM = 5;
-
 class calc_test : public testing::TestWithParam<std::tuple<WEIGHTING_FN_TYPE, TDE_METH>>
 {
 public:
@@ -31,25 +27,27 @@ public:
 void calc_test::SetUp()
 {
     std::srand( std::time(nullptr));
-    vec1.resize(DEFAULT_WINDOW_SIZE);
-    vec2.resize(DEFAULT_WINDOW_SIZE);
+    auto& pe = ProgramEnvironment::GetInstance();
+
+    vec1.resize(pe.GetWindowSize());
+    vec2.resize(pe.GetWindowSize());
+
     for( auto& sample : vec1 )
     {
         sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
     }
     std::memcpy( &vec2[ 0 ], &vec1[ 0 ], sizeof( double ) * vec1.size() );
-    auto& pe = ProgramEnvironment::GetInstance();
-    ASSERT_NO_THROW(pe.SetWindowSize(DEFAULT_WINDOW_SIZE));
-    ASSERT_NO_THROW(pe.SetSampleRate(DEFAULT_SAMPLE_RATE));
+
+    // override some parameters
     ASSERT_NO_THROW(pe.SetWeightingFunction(std::get<0>(GetParam())));
     ASSERT_NO_THROW(pe.SetMethodTDE(std::get<1>(GetParam())));
-    ASSERT_NO_THROW(pe.SetWinAvrgNum(DEFAULT_AVRG_NUM));
+    ASSERT_NO_THROW(pe.SetWinAvrgNum( 5 ));
 }
 
 void calc_test::TearDown()
 {}
 
-TEST_P(calc_test, leak_test)
+TEST_P(calc_test, UpdateConcludeExpectSuccess)
 {
     ASSERT_NO_THROW(calc.reset(PE::GetInstance().CreateCalculator()));
     ASSERT_NE(calc.get(), nullptr);

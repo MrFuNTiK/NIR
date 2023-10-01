@@ -18,7 +18,7 @@ TEST( GoerzTest, UpdateResultExpectSuccess )
         sine[ i ] = 10 * sin( 3 * 2 * M_PI * i / SAMPLES);
     }
 
-    transform::cpu::grz::GoerzPtr tf( GoerzelTF_create( SAMPLES ), GoerzelTF_destroy );
+    transform::cpu::forward::GoerzPtr tf( GoerzelTF_create( SAMPLES ), GoerzelTF_destroy );
     ASSERT_EQ( 1, GoerzelTF_precalc( tf.get(), 0, SAMPLES / 2 + 1 ) );
 
     for( size_t i = 0; i < SAMPLES / 2 + 1 ; ++i )
@@ -35,8 +35,8 @@ TEST( GoerzTest, UpdateResultExpectSuccess )
 
 TEST( GoerzTest, Goerzel_VS_fftw3 )
 {
-    transform::cpu::fft::Forward fft( SAMPLES );
-    transform::cpu::grz::Forward grz( SAMPLES, 0, SAMPLES / 2 + 1 );
+    transform::cpu::forward::FFT fft( SAMPLES );
+    transform::cpu::forward::Goerzel grz( SAMPLES, 0, SAMPLES / 2 + 1 );
 
     std::vector<double> sine( SAMPLES );
     for( size_t i = 0; i < SAMPLES; ++i )
@@ -65,6 +65,11 @@ TEST( GoerzTest, Goerzel_VS_fftw3 )
             EXPECT_NEAR( fftRes[ i ].imag(), grzRes[ i ].imag(), 0.000001 );
             EXPECT_NEAR( abs( fftRes[ i ] ), abs( grzRes[ i ] ), 0.000001 );
             EXPECT_NEAR( arg( fftRes[ i ] ), arg( grzRes[ i ] ), 0.000001 );
+        }
+        else
+        {
+            EXPECT_NEAR( abs( fftRes[ i ] ), 0., 0.000001 );
+            EXPECT_NEAR( abs( grzRes[ i ] ), 0., 0.000001 );
         }
     }
 }

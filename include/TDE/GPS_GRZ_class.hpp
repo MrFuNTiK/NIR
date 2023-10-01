@@ -44,7 +44,7 @@ public:
 private:
     size_t lowerBound;
     size_t upperBound;
-    grz::Forward forward;
+    forward::Goerzel forward;
     std::vector<double> cross_phase_spectrum;
 };
 

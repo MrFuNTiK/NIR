@@ -1,15 +1,12 @@
 ///@file GPS_class.hpp
 ///@brief Implementation of generalized phase spectrum method of time delay estimation.
 
-#ifndef PHASE_METHOD_CLASS_H
-# define PHASE_METHOD_CLASS_H
+#pragma once
 
-# include <cstdint>
+#include "TDE_class.hpp"
+#include <FFT/fft_forward_class.hpp>
 
-# include "TDE_class.hpp"
-# include <FFT/fft_forward_class.hpp>
-
-using namespace transform::cpu::fft;
+using namespace transform::cpu;
 
 ///@addtogroup TDE_interface
 ///@{
@@ -41,7 +38,7 @@ public:
     void Conclude() override;
 
 private:
-    Forward forward;
+    forward::FFT forward;
     std::vector<double> cross_phase_spectrum;
 };
 
@@ -51,5 +48,3 @@ private:
 
 ///@} GPS_TDE
 ///@} TDE_interface
-
-#endif // PHASE_METHOD_CLASS_H

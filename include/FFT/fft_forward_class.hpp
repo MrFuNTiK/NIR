@@ -1,13 +1,10 @@
 ///@file fft_forward_class.hpp
 ///@brief class-wrapper above fftw3 library that implements forward fourier transform
 
-#ifndef FFT_FORWARD_CLASS_HPP
-# define FFT_FORWARD_CLASS_HPP
+#pragma once
 
-# include <cstdint>
-# include <vector>
-# include <complex>
-# include <fftw3.h>
+#include <FFT/fft_base.hpp>
+#include <fftw3.h>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -23,7 +20,7 @@ namespace transform
 namespace cpu
 {
 
-namespace fft
+namespace forward
 {
 
 /**
@@ -33,13 +30,13 @@ namespace fft
  * Size of processed real array should be passed in constructor.
  * Size of output complex array is equal (N / 2 + 1).
  */
-class Forward
+class FFT final : Forward
 {
 public:
 
-    Forward() = delete;
-    Forward(Forward&) = delete;
-    void operator = (const Forward&) = delete;
+    FFT() = delete;
+    FFT(const FFT&) = delete;
+    FFT& operator = (const Forward&) = delete;
 
     /**
      * @brief Construct a new fft forward object
@@ -47,18 +44,18 @@ public:
      * @param _size     Number of samples of real input samples.
      *                  Output array will contain (_size / 2 + 1) complex samples.
      */
-    Forward(size_t _size);
-    ~Forward();
+    FFT(size_t _size);
+    ~FFT();
 
     /**
      * @brief Execute direct transform of arrays passed in set_real().
      */
-    void Execute() noexcept;
+    void Execute() noexcept override;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void Conjugate() noexcept;
+    void Conjugate() noexcept override;
 
     /**
      * @brief Pass array that should be processed.
@@ -68,14 +65,14 @@ public:
      *
      * @param[in] _real Pointer to array
      */
-    void SetReal(const std::vector<double>& _real) noexcept;
+    void SetReal(const std::vector<double>& _real) noexcept override;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
+    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
 
 private:
     size_t size;
@@ -93,5 +90,3 @@ private:
 
 ///@} forward_fourier_transform
 ///@} FFT_interface
-
-#endif // FFT_FORWARD_CLASS_HPP

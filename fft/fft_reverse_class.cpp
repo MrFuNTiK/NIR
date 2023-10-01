@@ -7,10 +7,10 @@
 #include <logger/logger.hpp>
 #include <core.hpp>
 
-using namespace transform::cpu::fft;
+using namespace transform::cpu::reverse;
 using namespace logger;
 
-Reverse::Reverse(size_t _size) :
+FFT::FFT(size_t _size) :
     size(_size)
 {
     if(4 > size)
@@ -28,23 +28,23 @@ Reverse::Reverse(size_t _size) :
     TRACE_EVENT(EVENTS::CREATE, "success");
 }
 
-Reverse::~Reverse()
+FFT::~FFT()
 {
     fftw_destroy_plan(reverse_plan);
     TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
-void Reverse::Execute() noexcept
+void FFT::Execute() noexcept
 {
     fftw_execute(reverse_plan);
 }
 
-void Reverse::SetFourierImage(const std::vector<std::complex<double>>& _fourier) noexcept
+void FFT::SetFourierImage(const std::vector<std::complex<double>>& _fourier) noexcept
 {
     memcpy(&fourier_image[0], &_fourier[0], sizeof(std::complex<double>)*(size/2+1));
 }
 
-void Reverse::GetReal(std::vector<double>& _real) noexcept
+void FFT::GetReal(std::vector<double>& _real) noexcept
 {
     memcpy(&_real[0], &real_array[0], sizeof(double)*size);
 }

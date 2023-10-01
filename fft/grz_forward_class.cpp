@@ -9,10 +9,10 @@
 #include <logger/logger.hpp>
 //#include <core.hpp>
 
-using namespace transform::cpu::grz;
+using namespace transform::cpu::forward;
 using namespace logger;
 
-Forward::Forward(size_t _size, size_t lowerBound, size_t upperBound) :
+Goerzel::Goerzel(size_t _size, size_t lowerBound, size_t upperBound) :
     size(_size)
 {
     if(4 > size)
@@ -46,15 +46,15 @@ Forward::Forward(size_t _size, size_t lowerBound, size_t upperBound) :
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class created");
 }
 
-Forward::Forward(size_t _size) : Forward( _size, 0, _size/2+1 )
+Goerzel::Goerzel(size_t _size) : Goerzel( _size, 0, _size/2+1 )
 {};
 
-Forward::~Forward()
+Goerzel::~Goerzel()
 {
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class destroyed");
 }
 
-void Forward::Execute() noexcept
+void Goerzel::Execute() noexcept
 {
     size_t freqIndex = lowerBound_;
     for( auto& harmonica : fourier_image )
@@ -69,7 +69,7 @@ void Forward::Execute() noexcept
     }
 }
 
-void Forward::NormalizeFur()
+void Goerzel::NormalizeFur()
 {
     for (auto& harmonica : fourier_image)
     {
@@ -77,7 +77,7 @@ void Forward::NormalizeFur()
     }
 }
 
-void Forward::Conjugate() noexcept
+void Goerzel::Conjugate() noexcept
 {
     for (auto& harmonica : fourier_image)
     {
@@ -85,12 +85,12 @@ void Forward::Conjugate() noexcept
     }
 }
 
-void Forward::SetReal(const std::vector<double>& _real) noexcept
+void Goerzel::SetReal(const std::vector<double>& _real) noexcept
 {
     memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
-void Forward::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
+void Goerzel::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
 {
     memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(upperBound_ - lowerBound_));
 }

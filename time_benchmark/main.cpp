@@ -13,7 +13,7 @@ constexpr size_t NUM_BENCH_ITERS = 100;
 
 #define RAW_GOERZEL
 #define FFT_GOERZEL
-// #define FFT_FFTW3
+#define FFT_FFTW3
 
 int main()
 {
@@ -76,7 +76,7 @@ int main()
         }
         for( auto diff_ : diff )
         {
-            transform::cpu::grz::Forward transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
+            transform::cpu::forward::Goerzel transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
             transform.SetReal( data );
             for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
             {
@@ -106,7 +106,7 @@ int main()
         {
             sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
         }
-        transform::cpu::fft::Forward transform( 1 << N_ );
+        transform::cpu::forward::FFT transform( 1 << N_ );
         transform.SetReal( data );
         for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
         {

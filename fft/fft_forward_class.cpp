@@ -8,10 +8,10 @@
 #include <logger/logger.hpp>
 #include <core.hpp>
 
-using namespace transform::cpu::fft;
+using namespace transform::cpu::forward;
 using namespace logger;
 
-Forward::Forward(size_t _size) :
+FFT::FFT(size_t _size) :
     size(_size)
 {
     if(4 > size)
@@ -28,19 +28,19 @@ Forward::Forward(size_t _size) :
     TRACE_EVENT(EVENTS::CREATE, "created");
 }
 
-Forward::~Forward()
+FFT::~FFT()
 {
     fftw_destroy_plan(forward_plan);
     TRACE_EVENT(EVENTS::CREATE, "destroyed");
 }
 
-void Forward::Execute() noexcept
+void FFT::Execute() noexcept
 {
     fftw_execute(forward_plan);
     NormalizeFur();
 }
 
-void Forward::NormalizeFur()
+void FFT::NormalizeFur()
 {
     for (size_t i = 0; i < size/2+1; ++i)
     {
@@ -48,7 +48,7 @@ void Forward::NormalizeFur()
     }
 }
 
-void Forward::Conjugate() noexcept
+void FFT::Conjugate() noexcept
 {
     for (size_t i = 0; i < size/2+1; ++i)
     {
@@ -56,12 +56,12 @@ void Forward::Conjugate() noexcept
     }
 }
 
-void Forward::SetReal(const std::vector<double>& _real) noexcept
+void FFT::SetReal(const std::vector<double>& _real) noexcept
 {
     memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
-void Forward::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
+void FFT::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
 {
     memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(size/2+1));
 }

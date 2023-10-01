@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include <cstdint>
-#include <vector>
+#include <FFT/fft_base.hpp>
 #include <complex>
 #include <memory>
 #include <goerzel.h>
@@ -23,7 +22,7 @@ namespace transform
 namespace cpu
 {
 
-namespace grz
+namespace forward
 {
 
 using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
@@ -35,31 +34,31 @@ using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
  * Size of processed real array should be passed in constructor.
  * Size of output complex array is equal (N / 2 + 1).
  */
-class Forward
+class Goerzel final : Forward
 {
 public:
-    Forward() = delete;
-    Forward(Forward&) = delete;
-    Forward operator = (const Forward&) = delete;
+    Goerzel() = delete;
+    Goerzel(const Goerzel&) = delete;
+    Goerzel& operator = (const Goerzel&) = delete;
 
     /**
      * @brief Construct a new fft forward object
      *
      * @param size     Number of samples of real input samples.
      */
-    Forward(size_t size);
-    Forward(size_t size, size_t lowerBound, size_t upperBound);
-    ~Forward();
+    Goerzel(size_t size);
+    Goerzel(size_t size, size_t lowerBound, size_t upperBound);
+    ~Goerzel();
 
     /**
      * @brief Execute direct transform of arrays passed in set_real().
      */
-    void Execute() noexcept;
+    void Execute() noexcept override;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void Conjugate() noexcept;
+    void Conjugate() noexcept override;
 
     /**
      * @brief Pass array that should be processed.
@@ -69,14 +68,14 @@ public:
      *
      * @param[in] _real Pointer to array
      */
-    void SetReal(const std::vector<double>& _real) noexcept;
+    void SetReal(const std::vector<double>& _real) noexcept override;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
+    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
 
 private:
     size_t size = 0;

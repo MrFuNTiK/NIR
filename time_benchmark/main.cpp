@@ -5,6 +5,7 @@
 #include <memory>
 #include <FFT/grz_forward_class.hpp>
 #include <FFT/fft_forward_class.hpp>
+#include <FFT/sfft_class.hpp>
 #include <goerzel.h>
 #include "time_benchmark.hpp"
 
@@ -13,6 +14,7 @@ constexpr size_t NUM_BENCH_ITERS = 100;
 
 #define RAW_GOERZEL
 #define FFT_GOERZEL
+#define SLIDING_FFT
 #define FFT_FFTW3
 
 int main()
@@ -96,6 +98,35 @@ int main()
     }
     std::cout << std::endl;
 #endif // FFT_GOERZEL
+
+#ifdef SLIDING_FFT
+
+    std::cout << "Sliding Fourier benchmark" << std::endl << std::endl;
+    for( auto N_ : N )
+    {
+        std::vector< double > data( 1 << N_ );
+        for( auto& sample : data )
+        {
+            sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+        }
+        transform::cpu::forward::SFFT transform( 1 << N_ );
+        transform.SetReal( data );
+        for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
+        {
+            auto begin = std::chrono::steady_clock::now();
+            transform.Execute();
+            auto finish = std::chrono::steady_clock::now();
+            auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
+            bench.UpdateRes( duration );
+        }
+        bench.CalcStats();
+        std::cout << "N: " << N_ << "\t\t"
+                  << "min: " << bench.GetMin() << "\t" << "max: " << bench.GetMax() << "\t"
+                  << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
+        bench.Reset();
+    }
+
+#endif // SLIDING_FFT
 
 #ifdef FFT_FFTW3
     std::cout << "Fourier benchmark" << std::endl << std::endl;

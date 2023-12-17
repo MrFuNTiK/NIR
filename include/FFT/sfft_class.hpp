@@ -57,6 +57,11 @@ public:
     void Execute() noexcept override;
 
     /**
+     * @brief Overload to update with partial window.
+     */
+    void Execute( const std::vector< double> data );
+
+    /**
      * @brief Make complex conjugation of result of transform.
      */
     void Conjugate() noexcept override;

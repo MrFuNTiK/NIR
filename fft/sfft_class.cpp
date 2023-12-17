@@ -48,6 +48,20 @@ void SFFT::Execute() noexcept
     NormalizeFur();
 }
 
+void SFFT::Execute( const std::vector< double> data )
+{
+    for( const auto& sample : data )
+    {
+        SlidingFFT_update( slidingHandle.get(), sample );
+    }
+
+    const auto res = SlidingFFT_GetSpectrum( slidingHandle.get() );
+    for( size_t i = 0; i < size / 2 + 1; ++i )
+    {
+        fourier_image[ i ] = res[ i ];
+    }
+}
+
 void SFFT::NormalizeFur()
 {
     for (size_t i = 0; i < size/2+1; ++i)

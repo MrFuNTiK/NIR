@@ -21,8 +21,8 @@ SFFT::SFFT(size_t _size) :
     {
         throw std::logic_error("Window size must be a power of 2");
     }
-    real_array.resize(size);
-    fourier_image.resize(size/2+1);
+    //real_array.resize(size);
+    //fourier_image.resize(size/2+1);
     slidingHandle.reset( SlidingFFT_create( size ) );
     TRACE_EVENT(EVENTS::CREATE, "created");
 }
@@ -34,6 +34,7 @@ SFFT::~SFFT()
 
 void SFFT::Execute() noexcept
 {
+    /*
     for( const auto sample : real_array )
     {
         SlidingFFT_update( slidingHandle.get(), sample );
@@ -46,44 +47,56 @@ void SFFT::Execute() noexcept
     }
 
     NormalizeFur();
+    //*/
 }
 
-void SFFT::Execute( const std::vector< double> data )
+void SFFT::Execute( const std::vector< double >& real_ )
 {
-    for( const auto& sample : data )
+    ( void )real_;
+    //*
+    for( const auto sample : real_ )
     {
         SlidingFFT_update( slidingHandle.get(), sample );
     }
 
-    const auto res = SlidingFFT_GetSpectrum( slidingHandle.get() );
-    for( size_t i = 0; i < size / 2 + 1; ++i )
-    {
-        fourier_image[ i ] = res[ i ];
-    }
+    //const auto res = SlidingFFT_GetSpectrum( slidingHandle.get() );
+    //for( size_t i = 0; i < size / 2 + 1; ++i )
+    //{
+    //    fourier_image[ i ] = res[ i ];
+    //}
+
+    NormalizeFur();
+    //*/
 }
 
 void SFFT::NormalizeFur()
 {
-    for (size_t i = 0; i < size/2+1; ++i)
-    {
-        fourier_image[i] /= size;
-    }
+    //for (size_t i = 0; i < size/2+1; ++i)
+    //{
+    //    fourier_image[i] /= size;
+    //}
 }
 
 void SFFT::Conjugate() noexcept
 {
-    for (size_t i = 0; i < size/2+1; ++i)
-    {
-        fourier_image[i] = std::conj(fourier_image[i]);
-    }
+    //for (size_t i = 0; i < size/2+1; ++i)
+    //{
+    //    fourier_image[i] = std::conj(fourier_image[i]);
+    //}
 }
 
 void SFFT::SetReal(const std::vector<double>& _real) noexcept
 {
-    memcpy(&real_array[0], &_real[0], sizeof(double)*size);
+    ( void )_real;
+    //memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
 void SFFT::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
 {
-    memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(size/2+1));
+    //memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(size/2+1));
+    auto spectrum = SlidingFFT_GetSpectrum( slidingHandle.get() );
+    for( size_t i = 0; i < size/2+1; ++i )
+    {
+        _fourier[ i ] = spectrum[ i ] / size;
+    }
 }

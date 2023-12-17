@@ -55,6 +55,8 @@ public:
      */
     void Execute() noexcept override;
 
+    void Execute( const std::vector< double >& _real );
+
     /**
      * @brief Make complex conjugation of result of transform.
      */
@@ -82,7 +84,7 @@ private:
     size_t lowerBound_ = 0;
     size_t upperBound_ = 0;
     GoerzPtr goerzHandle{ nullptr, GoerzelTF_destroy };
-    std::vector<double> real_array;
+    //std::vector<double> real_array;
     std::vector<std::complex<double>> fourier_image;
     void NormalizeFur();
 };

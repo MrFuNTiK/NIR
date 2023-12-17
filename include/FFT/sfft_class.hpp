@@ -59,7 +59,7 @@ public:
     /**
      * @brief Overload to update with partial window.
      */
-    void Execute( const std::vector< double> data );
+    void Execute( const std::vector< double>& data );
 
     /**
      * @brief Make complex conjugation of result of transform.
@@ -86,8 +86,8 @@ public:
 private:
     size_t size;
     SlidingFftPtr slidingHandle{ nullptr, SlidingFFT_destroy };
-    std::vector<double> real_array;
-    std::vector<std::complex<double>> fourier_image;
+    //std::vector<double> real_array;
+    //std::vector<std::complex<double>> fourier_image;
     void NormalizeFur();
 };
 

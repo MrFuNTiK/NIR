@@ -57,9 +57,9 @@ TEST( GoerzTest, Goerzel_VS_fftw3 )
     fft.Execute();
     fft.GetFourierImage( fftRes );
 
-    grz.SetReal( sine );
-    grz.Execute();
-    grz.Execute();
+    //grz.SetReal( sine );
+    grz.Execute( sine );
+    grz.Execute( sine );
     grz.GetFourierImage( grzRes );
 
     for( size_t i = 0; i < fftRes.size(); ++i )
@@ -103,9 +103,9 @@ TEST( GoerzTest, Sliding_VS_fftw3 )
     fft.Execute();
     fft.GetFourierImage( fftRes );
 
-    sfft.SetReal( sine );
-    sfft.Execute();
-    sfft.Execute();
+    //sfft.SetReal( sine );
+    sfft.Execute( sine );
+    sfft.Execute( sine );
     sfft.GetFourierImage( sfftRes );
 
     for( size_t i = 0; i < fftRes.size(); ++i )

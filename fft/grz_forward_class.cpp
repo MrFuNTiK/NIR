@@ -41,7 +41,7 @@ Goerzel::Goerzel(size_t _size, size_t lowerBound, size_t upperBound) :
         throw std::runtime_error( "Failed to evaluate precalculation" );
     }
 
-    real_array.resize(size);
+    //real_array.resize(size);
     fourier_image.resize( upperBound_ - lowerBound_ );
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class created");
 }
@@ -56,11 +56,28 @@ Goerzel::~Goerzel()
 
 void Goerzel::Execute() noexcept
 {
+    /*
     size_t freqIndex = lowerBound_;
     for( auto& harmonica : fourier_image )
     {
         GoerzelTF_set_freq_idx( goerzHandle.get(), freqIndex );
         for( auto sample : real_array )
+        {
+            GoerzelTF_update( goerzHandle.get(), sample );
+        }
+        harmonica = GoerzelTF_result( goerzHandle.get() );
+        ++freqIndex;
+    }
+    //*/
+}
+
+void Goerzel::Execute( const std::vector< double >& _real )
+{
+    size_t freqIndex = lowerBound_;
+    for( auto& harmonica : fourier_image )
+    {
+        GoerzelTF_set_freq_idx( goerzHandle.get(), freqIndex );
+        for( auto sample : _real )
         {
             GoerzelTF_update( goerzHandle.get(), sample );
         }
@@ -87,7 +104,8 @@ void Goerzel::Conjugate() noexcept
 
 void Goerzel::SetReal(const std::vector<double>& _real) noexcept
 {
-    memcpy(&real_array[0], &_real[0], sizeof(double)*size);
+    ( void )_real;
+    //memcpy(&real_array[0], &_real[0], sizeof(double)*size);
 }
 
 void Goerzel::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept

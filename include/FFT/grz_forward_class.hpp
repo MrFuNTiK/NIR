@@ -51,16 +51,21 @@ public:
     ~Goerzel();
 
     /**
-     * @brief Execute direct transform of arrays passed in set_real().
+     * @brief Execute direct transform of arrays passed in @ref SetReal().
      */
-    void Execute() noexcept override;
+    void Execute() override;
 
-    void Execute( const std::vector< double >& _real );
+    /**
+     * @brief Execute direct transform of arrays passed in @p real.
+     *
+     * @param real
+     */
+    void Execute( const std::vector<double>& real ) override;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void Conjugate() noexcept override;
+    void Conjugate() override;
 
     /**
      * @brief Pass array that should be processed.
@@ -68,24 +73,23 @@ public:
      * Passed array will be copied inside class, so you can safely
      * reuse passed array.
      *
-     * @param[in] _real Pointer to array
+     * @param[in] real Pointer to array
      */
-    void SetReal(const std::vector<double>& _real) noexcept override;
+    void SetReal(const std::vector<double>& real) override;
 
     /**
      * @brief Get the result of direct transform
      *
-     * @param[out] _fourier Pointer to array where the result should be copied
+     * @param[out] fourier Pointer to array where the result should be copied
      */
-    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
+    void GetFourierImage(std::vector<std::complex<double>>& fourier) noexcept override;
 
 private:
-    size_t size = 0;
+    size_t size_ = 0;
     size_t lowerBound_ = 0;
     size_t upperBound_ = 0;
-    GoerzPtr goerzHandle{ nullptr, GoerzelTF_destroy };
-    //std::vector<double> real_array;
-    std::vector<std::complex<double>> fourier_image;
+    GoerzPtr goerzHandle_{ nullptr, GoerzelTF_destroy };
+    std::vector<std::complex<double>> fourier_image_;
     void NormalizeFur();
 };
 

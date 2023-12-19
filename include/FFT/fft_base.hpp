@@ -44,12 +44,19 @@ public:
     /**
      * @brief Execute direct transform of arrays passed in set_real().
      */
-    virtual void Execute() noexcept = 0;
+    virtual void Execute() = 0;
+
+    /**
+     * @brief Execute direct transform of passed array;
+     *
+     * @param real      Data to transform.
+     */
+    virtual void Execute( const std::vector<double>& real ) = 0;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    virtual void Conjugate() noexcept = 0;
+    virtual void Conjugate() = 0;
 
     /**
      * @brief Pass array that should be processed.
@@ -59,7 +66,7 @@ public:
      *
      * @param[in] real Pointer to array
      */
-    virtual void SetReal(const std::vector<double>& real) noexcept = 0;
+    virtual void SetReal(const std::vector<double>& real) = 0;
 
     /**
      * @brief Get the result of direct transform
@@ -109,7 +116,7 @@ public:
     /**
      * @brief Execute reverse transform with array passed via set_fourier_image().
      */
-    virtual void Execute() noexcept = 0;
+    virtual void Execute() = 0;
 
     /**
      * @brief Set the fourier image.
@@ -119,14 +126,14 @@ public:
      *
      * @param[in] fourier      Complex vector to process.
      */
-    virtual void SetFourierImage(const std::vector<std::complex<double>>& fourier) noexcept = 0;
+    virtual void SetFourierImage(const std::vector<std::complex<double>>& fourier) = 0;
 
     /**
      * @brief Get the real array.
      *
      * @param[out] _real        Pointer to array where resault should be written
      */
-    virtual void GetReal(std::vector<double>& _real) noexcept = 0;
+    virtual void GetReal(std::vector<double>& _real) = 0;
 };
 
 } // namespace transform

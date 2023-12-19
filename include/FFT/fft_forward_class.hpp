@@ -41,21 +41,26 @@ public:
     /**
      * @brief Construct a new fft forward object
      *
-     * @param _size     Number of samples of real input samples.
-     *                  Output array will contain (_size / 2 + 1) complex samples.
+     * @param size     Number of samples of real input samples.
+     *                  Output array will contain (size / 2 + 1) complex samples.
      */
-    FFT(size_t _size);
+    FFT(size_t size);
     ~FFT();
 
     /**
-     * @brief Execute direct transform of arrays passed in set_real().
+     * @brief Execute direct transform of arrays passed in @ref SetReal().
      */
-    void Execute() noexcept override;
+    void Execute() override;
+
+    /**
+     * @brief Execute direct transform of arrays passed in @p real.
+     */
+    void Execute(const std::vector<double>& real) override;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void Conjugate() noexcept override;
+    void Conjugate() override;
 
     /**
      * @brief Pass array that should be processed.
@@ -63,9 +68,9 @@ public:
      * Passed array will be copied inside class, so you can safely
      * reuse passed array.
      *
-     * @param[in] _real Pointer to array
+     * @param[in] real Pointer to array
      */
-    void SetReal(const std::vector<double>& _real) noexcept override;
+    void SetReal(const std::vector<double>& real) override;
 
     /**
      * @brief Get the result of direct transform
@@ -75,10 +80,10 @@ public:
     void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
 
 private:
-    size_t size;
-    fftw_plan forward_plan;
-    std::vector<double> real_array;
-    std::vector<std::complex<double>> fourier_image;
+    size_t size_;
+    fftw_plan forward_plan_;
+    std::vector<double> real_array_;
+    std::vector<std::complex<double>> fourier_image_;
     void NormalizeFur();
 };
 

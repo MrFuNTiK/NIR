@@ -32,16 +32,16 @@ class FFT final : Reverse
 public:
     FFT() = delete;
     FFT(const FFT&) = delete;
-    const FFT& operator = (FFT&) = delete;
+    FFT& operator = (const FFT&) = delete;
 
     /**
      * @brief Construct a new fft reverse object.
      *
-     * @param _size     Number of samples of output real array.
+     * @param size     Number of samples of output real array.
      *
      * Note that _size is number of elements in real arrays. So size of input
-     * complex array to set_fourier_image() is (_size / 2 + 1) and
-     * size of output real array from get_real() is (_size).
+     * complex array to set_fourier_image() is (size / 2 + 1) and
+     * size of output real array from get_real() is (size).
      */
     FFT(size_t size);
     ~FFT();
@@ -49,7 +49,7 @@ public:
     /**
      * @brief Execute reverse transform with array passed via set_fourier_image().
      */
-    void Execute() noexcept override;
+    void Execute() override;
 
     /**
      * @brief Set the fourier image.
@@ -57,22 +57,22 @@ public:
      * Passed array will be copied inside class, so can safely
      * reuse passed array.
      *
-     * @param[in] _fourier      Pointer to complex array to process
+     * @param[in] fourier      Pointer to complex array to process
      */
-    void SetFourierImage(const std::vector<std::complex<double>>& _fourier) noexcept override;
+    void SetFourierImage(const std::vector<std::complex<double>>& fourier) override;
 
     /**
      * @brief Get the real array.
      *
-     * @param[out] _real        Pointer to array where resault should be written
+     * @param[out] real        Pointer to array where resault should be written
      */
-    void GetReal(std::vector<double>& _real) noexcept override;
+    void GetReal(std::vector<double>& real) override;
 
 private:
-    size_t size;
-    fftw_plan reverse_plan;
-    std::vector<std::complex<double>> fourier_image;
-    std::vector<double> real_array;
+    size_t size_;
+    fftw_plan reverse_plan_;
+    std::vector<std::complex<double>> fourier_image_;
+    std::vector<double> real_array_;
 };
 
 } // namespace fft

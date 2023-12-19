@@ -96,7 +96,7 @@ int SlidingFFT_update( SlidingFFT* tf, double sample )
     return 1;
 }
 
-const double _Complex* SlidingFFT_GetSpectrum( SlidingFFT* tf )
+double _Complex* SlidingFFT_GetSpectrum( SlidingFFT* tf )
 {
     if( !tf )
     {

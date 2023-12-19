@@ -1,6 +1,6 @@
 DOXYFILE_ENCODING       = UTF-8
 PROJECT_NAME            = "TDE_TOOLS"
-OUTPUT_DIRECTORY        = "result/doc/"
+OUTPUT_DIRECTORY        = "_result/doc/"
 RECURSIVE               = TRUE
 INPUT                   = "include/"
 INPUT                  += README.md

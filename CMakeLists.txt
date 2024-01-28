@@ -9,17 +9,24 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${RESULT_DIRECTORY}/lib)
 
 option(ENABLE_WAV_FILE_READING CACHE OFF)
 option(ENABLE_LOGGER CACHE OFF)
+option(ENABLE_LOOP_UNROLLING CACHE OFF)
 option(ENABLE_TEST CACHE OFF)
 
 message(STATUS "Build profile: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Result directory: ${RESULT_DIRECTORY}")
 message(STATUS "Reading wav-file: ${ENABLE_WAV_FILE_READING}")
 message(STATUS "Enable logger: ${ENABLE_LOGGER}")
+message(STATUS "Enable loop unrolling: ${ENABLE_LOOP_UNROLLING}")
 message(STATUS "Enable tests: ${ENABLE_TEST}")
 message(STATUS "================================================")
 
 include_directories(include internal_include)
 add_compile_options(-Wall -Wextra -Werror)
+
+# Global enabling of loop unrolling
+if(ENABLE_LOOP_UNROLLING)
+    add_compile_definitions(ENABLE_LOOP_UNROLLING)
+endif()
 
 enable_testing()
 

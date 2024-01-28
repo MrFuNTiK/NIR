@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <loop_unrolling.h>
 #include "sliding_fft.h"
 
 typedef enum
@@ -80,11 +81,18 @@ int SlidingFFT_update( SlidingFFT* tf, double sample )
     prev = tf->real[ tf->realIdx ];
     tf->real[ tf->realIdx ] = sample;
 
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, tf->numSamples / 2 + 1,
+        tf->spectrum[ i ] = tf->twiddleCoef[ COS_TABLE ][ i ] * ( tf->spectrum[ i ] - prev + sample ) +
+                            tf->twiddleCoef[ SIN_TABLE ][ i ] * ( tf->spectrum[ i ] - prev + sample ) * I;
+    )
+#else
     for( size_t i = 0; i < tf->numSamples / 2 + 1; ++i )
     {
         tf->spectrum[ i ] = tf->twiddleCoef[ COS_TABLE ][ i ] * ( tf->spectrum[ i ] - prev + sample ) +
                             tf->twiddleCoef[ SIN_TABLE ][ i ] * ( tf->spectrum[ i ] - prev + sample ) * I;
     }
+#endif // ENABLE_LOOP_UNROLLING
 
     size_t newIdx = ( ++( tf->realIdx ) ) % tf->numSamples;
     tf->realIdx = newIdx;

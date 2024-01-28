@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "goerzel.h"
+#include "loop_unrolling.h"
 
 #define ENABLE_PRECALC
 
@@ -124,6 +125,17 @@ int GoerzelTF_precalc( GoerzelTF* tf, size_t firstIdx, size_t numSamples )
         return 0;
     }
 
+# ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, tf->freqIndexWidth_,
+        double omega = 2 * M_PI * ( tf->firstFreqIndex_ + i ) / tf->numSamples;
+        if( isnan( omega ) )
+        {
+            return 0;
+        }
+        tf->preCalcTable[ SIN_TABLE ][ i ] = sin( omega );
+        tf->preCalcTable[ COS_TABLE ][ i ] = cos( omega );
+    )
+# else
     for( size_t i = 0; i < tf->freqIndexWidth_; ++i )
     {
         double omega = 2 * M_PI * ( tf->firstFreqIndex_ + i ) / tf->numSamples;
@@ -134,7 +146,10 @@ int GoerzelTF_precalc( GoerzelTF* tf, size_t firstIdx, size_t numSamples )
         tf->preCalcTable[ SIN_TABLE ][ i ] = sin( omega );
         tf->preCalcTable[ COS_TABLE ][ i ] = cos( omega );
     }
+# endif // ENABLE_LOOP_UNROLLING
+
     return 1;
+
 #else
     ( void )tf;
     ( void )firstIdx;

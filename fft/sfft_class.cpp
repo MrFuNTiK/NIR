@@ -6,6 +6,7 @@
 
 #include <FFT/sfft_class.hpp>
 #include <logger/logger.hpp>
+#include <loop_unrolling.h>
 
 using namespace transform::cpu::forward;
 using namespace logger;
@@ -35,12 +36,20 @@ void SFFT::Execute()
     Forward::Execute();
 }
 
-void SFFT::Execute( const std::vector< double >& real_ )
+void SFFT::Execute( const std::vector< double >& real )
 {
-    for( const auto sample : real_ )
+#ifdef ENABLE_LOOP_UNROLLING
+    auto sample = real.data();
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, real.size(),
+        SlidingFFT_update( slidingHandle.get(), *sample );
+        ++sample;
+    )
+#else
+    for( const auto sample : real )
     {
         SlidingFFT_update( slidingHandle.get(), sample );
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void SFFT::Conjugate()

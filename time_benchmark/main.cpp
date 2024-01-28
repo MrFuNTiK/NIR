@@ -12,24 +12,24 @@
 constexpr size_t GRZ_INDEX_FIRST = 0;
 constexpr size_t NUM_BENCH_ITERS = 100;
 
-#define RAW_GOERZEL
-#define FFT_GOERZEL_NUMBER
+//#define RAW_GOERZEL
+//#define FFT_GOERZEL_NUMBER
 #define FFT_GOERZEL_PERCENT
 
-#define SLIDING_FFT_NUMBER
+//#define SLIDING_FFT_NUMBER
 #define SLIDING_FFT_PERCENT
 
 //#define FFT_FFTW3
 
 int main()
 {
-    [[maybe_unused]]size_t N[] = { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };                  // window size, exponent of 2
+    [[maybe_unused]]size_t N[] = { 12, 13, 14, 15, 16, 17, 18 };                  // window size, exponent of 2
 
     [[maybe_unused]]size_t diff[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 50 };  // number freqs to calculate
-    [[maybe_unused]]size_t diffPercent[] = { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };                   // percents of the half-spectrum to calculate
+    [[maybe_unused]]size_t diffPercent[] = { 100 };              // percents of the half-spectrum to calculate
 
     [[maybe_unused]]size_t slideWidth[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30 };        // number samples to update
-    [[maybe_unused]]size_t slidePercent[] = { 50, 60, 70, 80, 90, 95, 96, 97, 98, 99 };                 // overlap,  persents of window length
+    [[maybe_unused]]size_t slidePercent[] = { 0 };                 // overlap,  persents of window length
 
     TimeBecnmark bench;
 
@@ -127,11 +127,11 @@ std::cout << "Goerzel freq percent benchmark" << std::endl << std::endl;
             }
 
             transform::cpu::forward::Goerzel transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diffSize );
-            transform.SetReal( data );
+            //transform.SetReal( data );
             for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
             {
                 auto begin = std::chrono::steady_clock::now();
-                transform.Execute();
+                transform.Execute( data );
                 auto finish = std::chrono::steady_clock::now();
                 auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
                 bench.UpdateRes( duration );
@@ -205,8 +205,8 @@ std::cout << "Goerzel freq percent benchmark" << std::endl << std::endl;
             {
                 sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
             }
-            transform.SetReal( data );
-            transform.Execute();
+            //transform.SetReal( data );
+            transform.Execute( data );
             for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
             {
                 auto begin = std::chrono::steady_clock::now();

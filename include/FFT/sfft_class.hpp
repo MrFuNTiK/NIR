@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <FFT/fft_base.hpp>
-#include <complex>
 #include <memory>
-#include <goerzel.h>
+#include <complex>
+#include <FFT/fft_base.hpp>
+#include "sliding_fft.h"
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -25,7 +25,7 @@ namespace cpu
 namespace forward
 {
 
-using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
+using SlidingFftPtr = std::unique_ptr< SlidingFFT, decltype( &SlidingFFT_destroy ) >;
 
 /**
  * @class Transform
@@ -34,33 +34,32 @@ using GoerzPtr = std::unique_ptr< GoerzelTF, decltype( &GoerzelTF_destroy ) >;
  * Size of processed real array should be passed in constructor.
  * Size of output complex array is equal (N / 2 + 1).
  */
-class Goerzel final : Forward
+class SFFT final : Forward
 {
 public:
-    Goerzel() = delete;
-    Goerzel(const Goerzel&) = delete;
-    Goerzel& operator = (const Goerzel&) = delete;
+
+    SFFT() = delete;
+    SFFT(const SFFT&) = delete;
+    SFFT& operator = (const SFFT&) = delete;
 
     /**
      * @brief Construct a new fft forward object
      *
-     * @param size     Number of samples of real input samples.
+     * @param _size     Number of samples of real input samples.
+     *                  Output array will contain (_size / 2 + 1) complex samples.
      */
-    Goerzel(size_t size);
-    Goerzel(size_t size, size_t lowerBound, size_t upperBound);
-    ~Goerzel();
+    SFFT(size_t _size);
+    ~SFFT();
 
     /**
-     * @brief Execute direct transform of arrays passed in @ref SetReal().
+     * @brief Execute direct transform of arrays passed in set_real().
      */
     void Execute() override;
 
     /**
-     * @brief Execute direct transform of arrays passed in @p real.
-     *
-     * @param real
+     * @brief Overload to update with partial window.
      */
-    void Execute( const std::vector<double>& real ) override;
+    void Execute( const std::vector< double>& data ) override;
 
     /**
      * @brief Make complex conjugation of result of transform.
@@ -73,32 +72,28 @@ public:
      * Passed array will be copied inside class, so you can safely
      * reuse passed array.
      *
-     * @param[in] real Pointer to array
+     * @param[in] _real Pointer to array
      */
-    void SetReal(const std::vector<double>& real) override;
+    void SetReal(const std::vector<double>& _real) override;
 
     /**
      * @brief Get the result of direct transform
      *
-     * @param[out] fourier Pointer to array where the result should be copied
+     * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void GetFourierImage(std::vector<std::complex<double>>& fourier) noexcept override;
+    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
 
 private:
-    size_t size_ = 0;
-    size_t lowerBound_ = 0;
-    size_t upperBound_ = 0;
-    GoerzPtr goerzHandle_{ nullptr, GoerzelTF_destroy };
-    std::vector<std::complex<double>> fourier_image_;
+    size_t size;
+    SlidingFftPtr slidingHandle{ nullptr, SlidingFFT_destroy };
     void NormalizeFur();
 };
 
-} // namespace grz
+} // namespace fft
 
 } // namespace cpu
 
 } // namespace transform
 
 ///@} forward_fourier_transform
-
 ///@} FFT_interface

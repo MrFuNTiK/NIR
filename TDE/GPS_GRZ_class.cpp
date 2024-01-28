@@ -51,12 +51,12 @@ GPS_GRZ::~GPS_GRZ()
 void GPS_GRZ::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
     TRACE_EVENT( EVENTS::TDE_CALC, "called" );
-    forward.SetReal(first_);
-    forward.Execute();
+    //forward.SetReal(first_);
+    forward.Execute(first_);
     forward.GetFourierImage(fur_1);
 
-    forward.SetReal(second_);
-    forward.Execute();
+    //forward.SetReal(second_);
+    forward.Execute(second_);
     forward.GetFourierImage(fur_2);
 
     make_mul_with_conj();

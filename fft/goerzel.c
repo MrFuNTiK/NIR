@@ -8,8 +8,9 @@
 
 typedef enum
 {
-    SIN_TABLE = 0,
-    COS_TABLE = 1
+    SIN_TABLE,
+    COS_TABLE,
+    NUM_TABLES
 } PRECALC_TABLES;
 
 struct GoerzTf_st
@@ -19,7 +20,7 @@ struct GoerzTf_st
     double sin_, cos_;
 
 #ifdef ENABLE_PRECALC
-    double* preCalcTable[ 2 ];
+    double* preCalcTable[ NUM_TABLES ];
     size_t firstFreqIndex_, freqIndexWidth_;
 #endif
 

@@ -5,20 +5,31 @@
 #include <memory>
 #include <FFT/grz_forward_class.hpp>
 #include <FFT/fft_forward_class.hpp>
+#include <FFT/sfft_class.hpp>
 #include <goerzel.h>
 #include "time_benchmark.hpp"
 
-constexpr size_t GRZ_INDEX_FIRST = 5;
+constexpr size_t GRZ_INDEX_FIRST = 0;
 constexpr size_t NUM_BENCH_ITERS = 100;
 
 #define RAW_GOERZEL
-#define FFT_GOERZEL
-// #define FFT_FFTW3
+#define FFT_GOERZEL_NUMBER
+#define FFT_GOERZEL_PERCENT
+
+#define SLIDING_FFT_NUMBER
+#define SLIDING_FFT_PERCENT
+
+//#define FFT_FFTW3
 
 int main()
 {
-    [[maybe_unused]]size_t N[] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
-    [[maybe_unused]]size_t diff[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 50 };
+    [[maybe_unused]]size_t N[] = { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };                  // window size, exponent of 2
+
+    [[maybe_unused]]size_t diff[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 50 };  // number freqs to calculate
+    [[maybe_unused]]size_t diffPercent[] = { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };                   // percents of the half-spectrum to calculate
+
+    [[maybe_unused]]size_t slideWidth[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30 };        // number samples to update
+    [[maybe_unused]]size_t slidePercent[] = { 50, 60, 70, 80, 90, 95, 96, 97, 98, 99 };                 // overlap,  persents of window length
 
     TimeBecnmark bench;
 
@@ -65,8 +76,8 @@ int main()
     std::cout << std::endl;
 #endif // RAW_GOERZEL
 
-#ifdef FFT_GOERZEL
-    std::cout << "Goerzel benchmark" << std::endl << std::endl;
+#ifdef FFT_GOERZEL_NUMBER
+    std::cout << "Goerzel freq number benchmark" << std::endl << std::endl;
     for( auto N_ : N )
     {
         std::vector< double > data( 1 << N_ );
@@ -76,7 +87,7 @@ int main()
         }
         for( auto diff_ : diff )
         {
-            transform::cpu::grz::Forward transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
+            transform::cpu::forward::Goerzel transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diff_ );
             transform.SetReal( data );
             for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
             {
@@ -95,7 +106,125 @@ int main()
         std::cout << std::endl;
     }
     std::cout << std::endl;
-#endif // FFT_GOERZEL
+#endif // FFT_GOERZEL_NUMBER
+
+#ifdef FFT_GOERZEL_PERCENT
+std::cout << "Goerzel freq percent benchmark" << std::endl << std::endl;
+    for( auto N_ : N )
+    {
+        std::vector< double > data( 1 << N_ );
+        for( auto& sample : data )
+        {
+            sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+        }
+        for( auto diff_ : diffPercent )
+        {
+            size_t diffSize = ( ( 1ul << N_ ) / 2 + 1 ) * ( diff_ ) / 100;
+
+            if( diffSize < 1 )
+            {
+                continue;
+            }
+
+            transform::cpu::forward::Goerzel transform( 1 << N_, GRZ_INDEX_FIRST, GRZ_INDEX_FIRST + diffSize );
+            transform.SetReal( data );
+            for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
+            {
+                auto begin = std::chrono::steady_clock::now();
+                transform.Execute();
+                auto finish = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
+                bench.UpdateRes( duration );
+            }
+            bench.CalcStats();
+            std::cout << "N: " << N_ << "\t" << "diff: " << diffSize << "  \t\t"
+                      << "min: " << bench.GetMin() << " \t" << "max: " << bench.GetMax() << " \t"
+                      << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
+            bench.Reset();
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+#endif // FFT_GOERZEL_PERCENT
+
+#ifdef SLIDING_FFT_NUMBER
+    std::cout << "Sliding Fourier number benchmark" << std::endl << std::endl;
+    for( auto N_ : N )
+    {
+        std::vector< double > data( 1 << N_ );
+        for( auto& sample : data )
+        {
+            sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+        }
+        transform::cpu::forward::SFFT transform( 1 << N_ );
+        transform.SetReal( data );
+        transform.Execute();
+        for( const auto& slide : slideWidth )
+        {
+            std::vector< double > updateVec( slide );
+            for( auto& sample : updateVec )
+            {
+                sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+            }
+            transform.SetReal( data );
+            transform.Execute();
+            for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
+            {
+                auto begin = std::chrono::steady_clock::now();
+                transform.Execute( updateVec );
+                auto finish = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
+                bench.UpdateRes( duration );
+            }
+            bench.CalcStats();
+            std::cout << "N: " << N_ << "\t" << "slide samples: " << slide << "\t\t"
+                      << "min: " << bench.GetMin() << "\t" << "max: " << bench.GetMax() << "\t"
+                      << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
+            bench.Reset();
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+#endif // SLIDING_FFT_NUMBER
+
+#ifdef SLIDING_FFT_PERCENT
+    std::cout << "Sliding Fourier percent benchmark" << std::endl << std::endl;
+    for( auto N_ : N )
+    {
+        std::vector< double > data( 1 << N_ );
+        for( auto& sample : data )
+        {
+            sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+        }
+        transform::cpu::forward::SFFT transform( 1 << N_ );
+        for( const auto& slide : slidePercent )
+        {
+            size_t updateSize = ( 1 << N_ ) * ( 100 - slide ) / 100 ;
+            std::vector< double > updateVec( updateSize );
+            for( auto& sample : updateVec )
+            {
+                sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
+            }
+            transform.SetReal( data );
+            transform.Execute();
+            for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
+            {
+                auto begin = std::chrono::steady_clock::now();
+                transform.Execute( updateVec );
+                auto finish = std::chrono::steady_clock::now();
+                auto duration = std::chrono::duration_cast< std::chrono::microseconds >( finish - begin).count();
+                bench.UpdateRes( duration );
+            }
+            bench.CalcStats();
+            std::cout << "N: " << N_ << "\t" << "slide samples: " << updateSize << "\t\t"
+                      << "min: " << bench.GetMin() << "\t" << "max: " << bench.GetMax() << "\t"
+                      << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
+            bench.Reset();
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+#endif // SLIDING_FFT_PERCENT
 
 #ifdef FFT_FFTW3
     std::cout << "Fourier benchmark" << std::endl << std::endl;
@@ -106,7 +235,7 @@ int main()
         {
             sample = static_cast<double>( std::rand() ) / RAND_MAX - 0.5;
         }
-        transform::cpu::fft::Forward transform( 1 << N_ );
+        transform::cpu::forward::FFT transform( 1 << N_ );
         transform.SetReal( data );
         for( size_t i = 0; i < NUM_BENCH_ITERS; ++i )
         {
@@ -122,5 +251,6 @@ int main()
                   << "mid: " << bench.GetMiddle() << "\t" << "CKO: " << bench.GetCKO() << std::endl;
         bench.Reset();
     }
+    std::cout << std::endl;
 #endif // FFT_FFTW3
 }

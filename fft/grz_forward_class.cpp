@@ -7,90 +7,93 @@
 
 #include <FFT/grz_forward_class.hpp>
 #include <logger/logger.hpp>
-//#include <core.hpp>
 
-using namespace transform::cpu::grz;
+using namespace transform::cpu::forward;
 using namespace logger;
 
-Forward::Forward(size_t _size, size_t lowerBound, size_t upperBound) :
-    size(_size)
+Goerzel::Goerzel(size_t size, size_t lowerBound, size_t upperBound) :
+    size_(size),
+    lowerBound_(lowerBound),
+    upperBound_(upperBound)
 {
     if(4 > size)
     {
         throw std::logic_error("Window size must be greater or equal 4");
     }
 
-    if( lowerBound > size/2u+1u || upperBound > size/2u+1u )
+    if( lowerBound > size_/2u+1u || upperBound_ > size_/2u+1u )
     {
         throw std::logic_error( "Bounds must be less then size+1" );
     }
 
-    if( lowerBound >= upperBound )
+    if( lowerBound_ >= upperBound_ )
     {
         throw std::logic_error( "Lower bound is greater then upper" );
     }
-    lowerBound_ = lowerBound;
-    upperBound_ = upperBound;
-    goerzHandle.reset( GoerzelTF_create( size ) );
-    if( !goerzHandle.get() )
+    goerzHandle_.reset( GoerzelTF_create( size_ ) );
+    if( !goerzHandle_.get() )
     {
         throw std::runtime_error( "Could not create Goerzel transform handle" );
     }
-    if( !GoerzelTF_precalc( goerzHandle.get(), lowerBound_, upperBound_ ) )
+    if( !GoerzelTF_precalc( goerzHandle_.get(), lowerBound_, upperBound_ ) )
     {
         throw std::runtime_error( "Failed to evaluate precalculation" );
     }
 
-    real_array.resize(size);
-    fourier_image.resize( upperBound_ - lowerBound_ );
+    fourier_image_.resize( upperBound_ - lowerBound_ );
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class created");
 }
 
-Forward::Forward(size_t _size) : Forward( _size, 0, _size/2+1 )
+Goerzel::Goerzel(size_t size) : Goerzel( size, 0, size/2+1 )
 {};
 
-Forward::~Forward()
+Goerzel::~Goerzel()
 {
     TRACE_EVENT(EVENTS::CREATE, "fft_forward class destroyed");
 }
 
-void Forward::Execute() noexcept
+void Goerzel::Execute()
+{
+    Forward::Execute();
+}
+
+void Goerzel::Execute( const std::vector< double >& real )
 {
     size_t freqIndex = lowerBound_;
-    for( auto& harmonica : fourier_image )
+    for( auto& harmonica : fourier_image_ )
     {
-        GoerzelTF_set_freq_idx( goerzHandle.get(), freqIndex );
-        for( auto sample : real_array )
+        GoerzelTF_set_freq_idx( goerzHandle_.get(), freqIndex );
+        for( auto sample : real )
         {
-            GoerzelTF_update( goerzHandle.get(), sample );
+            GoerzelTF_update( goerzHandle_.get(), sample );
         }
-        harmonica = GoerzelTF_result( goerzHandle.get() );
+        harmonica = GoerzelTF_result( goerzHandle_.get() );
         ++freqIndex;
     }
 }
 
-void Forward::NormalizeFur()
+void Goerzel::NormalizeFur()
 {
-    for (auto& harmonica : fourier_image)
+    for (auto& harmonica : fourier_image_)
     {
-        harmonica /= size;
+        harmonica /= size_;
     }
 }
 
-void Forward::Conjugate() noexcept
+void Goerzel::Conjugate()
 {
-    for (auto& harmonica : fourier_image)
+    for (auto& harmonica : fourier_image_)
     {
         harmonica = std::conj(harmonica);
     }
 }
 
-void Forward::SetReal(const std::vector<double>& _real) noexcept
+void Goerzel::SetReal(const std::vector<double>& real)
 {
-    memcpy(&real_array[0], &_real[0], sizeof(double)*size);
+    Forward::SetReal(real);
 }
 
-void Forward::GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept
+void Goerzel::GetFourierImage(std::vector<std::complex<double>>& fourier) noexcept
 {
-    memcpy(&_fourier[0], &fourier_image[0], sizeof(std::complex<double>)*(upperBound_ - lowerBound_));
+    memcpy(&fourier[0], &fourier_image_[0], sizeof(std::complex<double>)*(upperBound_ - lowerBound_));
 }

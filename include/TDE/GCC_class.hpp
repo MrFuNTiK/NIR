@@ -10,7 +10,7 @@
 # include <FFT/fft_forward_class.hpp>
 # include <FFT/fft_reverse_class.hpp>
 
-using namespace transform::cpu::fft;
+using namespace transform::cpu;
 
 ///@addtogroup TDE_interface
 ///@{
@@ -47,8 +47,8 @@ private:
     std::vector<double> PHAT_func;
 
 private:
-    Forward forward;
-    Reverse reverse;
+    forward::FFT forward;
+    reverse::FFT reverse;
     void shift_corr_func();
     void apply_PHAT_func(double* weight_func);
 };

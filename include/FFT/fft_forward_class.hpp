@@ -1,13 +1,10 @@
 ///@file fft_forward_class.hpp
 ///@brief class-wrapper above fftw3 library that implements forward fourier transform
 
-#ifndef FFT_FORWARD_CLASS_HPP
-# define FFT_FORWARD_CLASS_HPP
+#pragma once
 
-# include <cstdint>
-# include <vector>
-# include <complex>
-# include <fftw3.h>
+#include <FFT/fft_base.hpp>
+#include <fftw3.h>
 
 ///@defgroup FFT_interface
 ///@addtogroup FFT_interface
@@ -23,7 +20,7 @@ namespace transform
 namespace cpu
 {
 
-namespace fft
+namespace forward
 {
 
 /**
@@ -33,32 +30,37 @@ namespace fft
  * Size of processed real array should be passed in constructor.
  * Size of output complex array is equal (N / 2 + 1).
  */
-class Forward
+class FFT final : Forward
 {
 public:
 
-    Forward() = delete;
-    Forward(Forward&) = delete;
-    void operator = (const Forward&) = delete;
+    FFT() = delete;
+    FFT(const FFT&) = delete;
+    FFT& operator = (const Forward&) = delete;
 
     /**
      * @brief Construct a new fft forward object
      *
-     * @param _size     Number of samples of real input samples.
-     *                  Output array will contain (_size / 2 + 1) complex samples.
+     * @param size     Number of samples of real input samples.
+     *                  Output array will contain (size / 2 + 1) complex samples.
      */
-    Forward(size_t _size);
-    ~Forward();
+    FFT(size_t size);
+    ~FFT();
 
     /**
-     * @brief Execute direct transform of arrays passed in set_real().
+     * @brief Execute direct transform of arrays passed in @ref SetReal().
      */
-    void Execute() noexcept;
+    void Execute() override;
+
+    /**
+     * @brief Execute direct transform of arrays passed in @p real.
+     */
+    void Execute(const std::vector<double>& real) override;
 
     /**
      * @brief Make complex conjugation of result of transform.
      */
-    void Conjugate() noexcept;
+    void Conjugate() override;
 
     /**
      * @brief Pass array that should be processed.
@@ -66,22 +68,22 @@ public:
      * Passed array will be copied inside class, so you can safely
      * reuse passed array.
      *
-     * @param[in] _real Pointer to array
+     * @param[in] real Pointer to array
      */
-    void SetReal(const std::vector<double>& _real) noexcept;
+    void SetReal(const std::vector<double>& real) override;
 
     /**
      * @brief Get the result of direct transform
      *
      * @param[out] _fourier Pointer to array where the result should be copied
      */
-    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept;
+    void GetFourierImage(std::vector<std::complex<double>>& _fourier) noexcept override;
 
 private:
-    size_t size;
-    fftw_plan forward_plan;
-    std::vector<double> real_array;
-    std::vector<std::complex<double>> fourier_image;
+    size_t size_;
+    fftw_plan forward_plan_;
+    std::vector<double> real_array_;
+    std::vector<std::complex<double>> fourier_image_;
     void NormalizeFur();
 };
 
@@ -93,5 +95,3 @@ private:
 
 ///@} forward_fourier_transform
 ///@} FFT_interface
-
-#endif // FFT_FORWARD_CLASS_HPP

@@ -7,6 +7,7 @@
 
 #include <FFT/grz_forward_class.hpp>
 #include <logger/logger.hpp>
+#include <loop_unrolling.h>
 
 using namespace transform::cpu::forward;
 using namespace logger;
@@ -63,10 +64,20 @@ void Goerzel::Execute( const std::vector< double >& real )
     for( auto& harmonica : fourier_image_ )
     {
         GoerzelTF_set_freq_idx( goerzHandle_.get(), freqIndex );
-        for( auto sample : real )
+
+#ifdef ENABLE_LOOP_UNROLLING
+        const double* sample = real.data();
+        UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, real.size(),
+            GoerzelTF_update( goerzHandle_.get(), *sample );
+            ++sample;
+        )
+#else
+        for( auto& sample : real )
         {
             GoerzelTF_update( goerzHandle_.get(), sample );
         }
+#endif // ENABLE_LOOP_UNROLLING
+
         harmonica = GoerzelTF_result( goerzHandle_.get() );
         ++freqIndex;
     }
@@ -74,18 +85,34 @@ void Goerzel::Execute( const std::vector< double >& real )
 
 void Goerzel::NormalizeFur()
 {
-    for (auto& harmonica : fourier_image_)
+    #ifdef ENABLE_LOOP_UNROLLING
+    auto harmonica = fourier_image_.data();
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, size_/2+1,
+        *harmonica /= size_;
+        ++harmonica;
+    )
+#else
+    for ( auto& harmonica : fourier_image_ )
     {
         harmonica /= size_;
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void Goerzel::Conjugate()
 {
-    for (auto& harmonica : fourier_image_)
+#ifdef ENABLE_LOOP_UNROLLING
+    auto harmonica = fourier_image_.data();
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, fourier_image_.size(),
+        *harmonica = std::conj(*harmonica);
+        ++harmonica;
+    )
+#else
+    for ( auto& harmonica : fourier_image_ )
     {
         harmonica = std::conj(harmonica);
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void Goerzel::SetReal(const std::vector<double>& real)

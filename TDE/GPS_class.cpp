@@ -9,6 +9,7 @@
 #include <FFT/fft_reverse_class.hpp>
 #include <logger/logger.hpp>
 #include <core.hpp>
+#include <loop_unrolling.h>
 
 #define BOTTOM_FREQ_BOUND   300
 #define UPPER_FREQ_BOUND    3400
@@ -58,11 +59,18 @@ void GPS::Update(const std::vector<double>& first_, const std::vector<double>& s
     get_ampl_spectrum(fur_1, ampl1);
     get_ampl_spectrum(fur_2, ampl2);
 
-    for( uint32_t i = 0; i < size/2u+1u; ++i )
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, size/2+1,
+        ampl1_sum[i] += ampl1[i] * ampl1[i];
+        ampl2_sum[i] += ampl2[i] * ampl2[i];
+    )
+#else
+    for( size_t i = 0; i < size/2+1; ++i )
     {
         ampl1_sum[i] += ampl1[i] * ampl1[i];
         ampl2_sum[i] += ampl2[i] * ampl2[i];
     }
+#endif // ENABLE_LOOP_UNROLLING
     ++update_count;
 }
 
@@ -80,11 +88,18 @@ void GPS::Conclude()
     case COHERENCE:
     {
         get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
+#ifdef ENABLE_LOOP_UNROLLING
+        UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, size/2+1,
+            w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
+            w_func_numerator[i] *= w_func_numerator[i];
+        )
+#else
         for( size_t i = 0; i < size/2+1; ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
         }
+#endif // ENABLE_LOOP_UNROLLING
         break;
     }
     case NONE:

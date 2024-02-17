@@ -2,23 +2,36 @@
 #include <cmath>
 
 #include "core.hpp"
+#include "loop_unrolling.h"
 
 void get_ampl_spectrum(const std::vector<std::complex<double>>& fourier_image,
                        std::vector<double>& spectrum) noexcept
 {
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, fourier_image.size(),
+        spectrum[i] = std::abs(fourier_image[i]);
+    )
+#else
     for (size_t i = 0; i < fourier_image.size(); ++i)
     {
         spectrum[i] = std::abs(fourier_image[i]);
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void get_phase_spectrum(const std::vector<std::complex<double>>& fourier_image,
                         std::vector<double>& spectrum) noexcept
 {
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, fourier_image.size(),
+        spectrum[i] = std::arg(fourier_image[i]);
+    )
+#else
     for (size_t i = 0; i < fourier_image.size(); ++i)
     {
         spectrum[i] = std::arg(fourier_image[i]);
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void unwrap_phase_spectrum(std::vector<double>& phase_spectrum) noexcept

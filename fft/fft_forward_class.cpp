@@ -7,6 +7,7 @@
 #include <FFT/fft_forward_class.hpp>
 #include <logger/logger.hpp>
 #include <core.hpp>
+#include <loop_unrolling.h>
 
 using namespace transform::cpu::forward;
 using namespace logger;
@@ -48,18 +49,34 @@ void FFT::Execute(const std::vector<double>& real)
 
 void FFT::NormalizeFur()
 {
-    for (size_t i = 0; i < size_/2+1; ++i)
+#ifdef ENABLE_LOOP_UNROLLING
+    auto harmonica = fourier_image_.data();
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, size_/2+1,
+        *harmonica /= size_;
+        ++harmonica;
+    )
+#else
+    for ( auto& harmonica : fourier_image_ )
     {
-        fourier_image_[i] /= size_;
+        harmonica /= size_;
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void FFT::Conjugate()
 {
-    for (size_t i = 0; i < size_/2+1; ++i)
+#ifdef ENABLE_LOOP_UNROLLING
+    auto harmonica = fourier_image_.data();
+    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, fourier_image_.size(),
+        *harmonica = std::conj(*harmonica);
+        ++harmonica;
+    )
+#else
+    for ( auto& harmonica : fourier_image_ )
     {
-        fourier_image_[i] = std::conj(fourier_image_[i]);
+        harmonica = std::conj(harmonica);
     }
+#endif // ENABLE_LOOP_UNROLLING
 }
 
 void FFT::SetReal(const std::vector<double>& real)

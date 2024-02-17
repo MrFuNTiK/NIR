@@ -8,6 +8,7 @@
 #include <FFT/grz_forward_class.hpp>
 #include <logger/logger.hpp>
 #include <core.hpp>
+#include <loop_unrolling.h>
 
 #define BOTTOM_FREQ_BOUND   300
 #define UPPER_FREQ_BOUND    3400
@@ -51,11 +52,9 @@ GPS_GRZ::~GPS_GRZ()
 void GPS_GRZ::Update(const std::vector<double>& first_, const std::vector<double>& second_)
 {
     TRACE_EVENT( EVENTS::TDE_CALC, "called" );
-    //forward.SetReal(first_);
     forward.Execute(first_);
     forward.GetFourierImage(fur_1);
 
-    //forward.SetReal(second_);
     forward.Execute(second_);
     forward.GetFourierImage(fur_2);
 
@@ -65,11 +64,18 @@ void GPS_GRZ::Update(const std::vector<double>& first_, const std::vector<double
     get_ampl_spectrum(fur_1, ampl1);
     get_ampl_spectrum(fur_2, ampl2);
 
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, ampl1_sum.size(),
+        ampl1_sum[i] += ampl1[i] * ampl1[i];
+        ampl2_sum[i] += ampl2[i] * ampl2[i];
+    )
+#else
     for( size_t i = 0; i < ampl1_sum.size(); ++i )
     {
         ampl1_sum[i] += ampl1[i] * ampl1[i];
         ampl2_sum[i] += ampl2[i] * ampl2[i];
     }
+#endif // ENABLE_LOOP_UNROLLING
     ++update_count;
 }
 
@@ -87,11 +93,18 @@ void GPS_GRZ::Conclude()
     case COHERENCE:
     {
         get_ampl_spectrum(fur_1_2_sum, w_func_numerator);
+#ifdef ENABLE_LOOP_UNROLLING
+        UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, w_func_numerator.size(),
+            w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
+            w_func_numerator[i] *= w_func_numerator[i];
+        )
+#else
         for( size_t i = 0; i < w_func_numerator.size(); ++i )
         {
             w_func_denominator[i] = ampl1_sum[i] * ampl2_sum[i];
             w_func_numerator[i] *= w_func_numerator[i];
         }
+#endif // ENABLE_LOOP_UNROLLING
         break;
     }
     case NONE:
@@ -103,6 +116,27 @@ void GPS_GRZ::Conclude()
     unwrap_phase_spectrum(cross_phase_spectrum);
 
     //std::cout << "HARMONICAS\tCROSS_PHASE\n";
+#ifdef ENABLE_LOOP_UNROLLING
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 1, upperBound - lowerBound,
+                double harmonica = 2 * M_PI *i * sample_rate / size;
+        switch(w_func)
+        {
+        case COHERENCE:
+        {
+            cross_phase_spectrum[i] *= w_func_numerator[i] / w_func_denominator[i];
+            numerator_sum += harmonica * cross_phase_spectrum[i];
+            divider_sum += harmonica * harmonica;
+            break;
+        }
+        case NONE:
+        {
+            numerator_sum += harmonica * cross_phase_spectrum[i];
+            divider_sum += harmonica * harmonica;
+            break;
+        }
+        }
+    )
+#else
     for (size_t i = 1; i < upperBound - lowerBound; ++i)
     {
         double harmonica = 2 * M_PI *i * sample_rate / size;
@@ -123,6 +157,7 @@ void GPS_GRZ::Conclude()
         }
         }
     }
+#endif // ENABLE_LOOP_UNROLLING
     tde = -1 * numerator_sum / divider_sum;
     clear_inner();
     update_count = 0;

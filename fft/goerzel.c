@@ -126,7 +126,7 @@ int GoerzelTF_precalc( GoerzelTF* tf, size_t firstIdx, size_t numSamples )
     }
 
 # ifdef ENABLE_LOOP_UNROLLING
-    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, tf->freqIndexWidth_,
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, tf->freqIndexWidth_,
         double omega = 2 * M_PI * ( tf->firstFreqIndex_ + i ) / tf->numSamples;
         if( isnan( omega ) )
         {

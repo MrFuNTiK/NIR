@@ -67,7 +67,7 @@ void Goerzel::Execute( const std::vector< double >& real )
 
 #ifdef ENABLE_LOOP_UNROLLING
         const double* sample = real.data();
-        UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, real.size(),
+        UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, real.size(),
             GoerzelTF_update( goerzHandle_.get(), *sample );
             ++sample;
         )
@@ -87,7 +87,7 @@ void Goerzel::NormalizeFur()
 {
     #ifdef ENABLE_LOOP_UNROLLING
     auto harmonica = fourier_image_.data();
-    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, size_/2+1,
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, size_/2+1,
         *harmonica /= size_;
         ++harmonica;
     )
@@ -103,7 +103,7 @@ void Goerzel::Conjugate()
 {
 #ifdef ENABLE_LOOP_UNROLLING
     auto harmonica = fourier_image_.data();
-    UNROLL_LOOP( UNROLL_FACTOR_EIGHT, i, 0, fourier_image_.size(),
+    UNROLL_LOOP( UNROLL_FACTOR_THIRTY_TWO, i, 0, fourier_image_.size(),
         *harmonica = std::conj(*harmonica);
         ++harmonica;
     )
